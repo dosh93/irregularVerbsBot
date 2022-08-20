@@ -31,4 +31,9 @@ public class Verb {
     @OneToMany(mappedBy = "verb", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     private List<Learning> learnings;
+
+    @Override
+    public String toString() {
+        return String.format("%s - %s - %s - %s", firstForm, secondForm, thirdForm, translate);
+    }
 }

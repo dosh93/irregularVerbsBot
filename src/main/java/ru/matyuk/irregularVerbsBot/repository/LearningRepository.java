@@ -9,8 +9,6 @@ import java.util.List;
 public interface LearningRepository extends CrudRepository<Learning, Long> {
 
     List<Learning> findByUser(User user);
-    List<Learning> findByUserOrderByCountSuccessfulAsc(User user);
     List<Learning> findByUserAndCountSuccessfulLessThanOrderByCountSuccessfulAsc(User user, int countSuccessful);
     Learning findByUserAndState(User user, boolean state);
-    int countByUser(User user);
 }

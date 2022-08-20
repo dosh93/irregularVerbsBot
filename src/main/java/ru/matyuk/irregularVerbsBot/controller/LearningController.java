@@ -40,10 +40,6 @@ public class LearningController {
         }
     }
 
-    public int getCountLearningByUser(User user){
-        return learningRepository.countByUser(user);
-    }
-
     public Verb getVerbForLearning(User user) {
         List<Learning> learnings = learningRepository
                 .findByUserAndCountSuccessfulLessThanOrderByCountSuccessfulAsc(user, MAX_COUNT_SUCCESSFUL);
