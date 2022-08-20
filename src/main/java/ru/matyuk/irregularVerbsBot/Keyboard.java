@@ -7,7 +7,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import ru.matyuk.irregularVerbsBot.controller.GroupVerbController;
 import ru.matyuk.irregularVerbsBot.enums.Command;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
-import ru.matyuk.irregularVerbsBot.model.GroupVerb;
+import ru.matyuk.irregularVerbsBot.model.Compilation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,22 +31,22 @@ public class Keyboard {
         switch (state){
             case REGISTERED:
             case START_LEARN:
-                row = new KeyboardRow();
-                row.add(Command.VIEW_GROUP.getName());
-                row.add(Command.CHOOSE_GROUP.getName());
-                keyboardRowList.add(row);
                 if(state == START_LEARN){
                     row = new KeyboardRow();
                     row.add(LEARNING.getName());
                     keyboardRowList.add(row);
                 }
+                row = new KeyboardRow();
+                row.add(Command.VIEW_GROUP.getName());
+                row.add(Command.CHOOSE_GROUP.getName());
+                keyboardRowList.add(row);
                 break;
             case VIEW_GROUP:
             case CHOOSE_GROUP:
-                List<GroupVerb> groups = groupVerbController.getGroupsWithVerbs();
+                List<Compilation> groups = groupVerbController.getGroupsWithVerbs();
                 int offset = 0;
                 row = new KeyboardRow();
-                for (GroupVerb group: groups) {
+                for (Compilation group: groups) {
                     if(offset == lengthRow){
                         keyboardRowList.add(row);
                         row = new KeyboardRow();

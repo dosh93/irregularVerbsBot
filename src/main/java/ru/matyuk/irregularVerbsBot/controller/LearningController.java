@@ -4,15 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.matyuk.irregularVerbsBot.model.Learning;
 import ru.matyuk.irregularVerbsBot.model.User;
+import ru.matyuk.irregularVerbsBot.model.UserVerbId;
 import ru.matyuk.irregularVerbsBot.model.Verb;
 import ru.matyuk.irregularVerbsBot.repository.LearningRepository;
 import ru.matyuk.irregularVerbsBot.utils.CommonUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
 
 @Component
 public class LearningController {
@@ -35,25 +34,24 @@ public class LearningController {
                 Learning learning = new Learning();
                 learning.setUser(user);
                 learning.setVerb(verb);
+                learning.setId(new UserVerbId(user.getChatId(), verb.getId()));
                 learningRepository.save(learning);
             }
         }
     }
 
     public Verb getVerbForLearning(User user) {
-        List<Learning> learnings = learningRepository
-                .findByUserAndCountSuccessfulLessThanOrderByCountSuccessfulAsc(user, MAX_COUNT_SUCCESSFUL);
+        List<Learning> learnings = learningRepository.findByUserAndCountSuccessfulLessThanOrderByCountSuccessfulAsc(user, MAX_COUNT_SUCCESSFUL);
         if(learnings.size() == 0)
             return null;
-
         int minCountSuccessful = learnings.get(0).getCountSuccessful();
-        List<Learning> verbsForLearning = new ArrayList<>();
+        List<Learning> learningForLearn = new ArrayList<>();
         for (Learning learning : learnings) {
-            if(learning.getCountSuccessful() == minCountSuccessful) verbsForLearning.add(learning);
+            if(learning.getCountSuccessful() == minCountSuccessful) learningForLearn.add(learning);
             else break;
         }
-        int randomNumber = CommonUtils.getRandomNumber(0, verbsForLearning.size());
-        Learning learning = verbsForLearning.get(randomNumber);
+        int randomNumber = CommonUtils.getRandomNumber(0, learningForLearn.size());
+        Learning learning = learningForLearn.get(randomNumber);
         learning.setState(true);
         learningRepository.save(learning);
         return learning.getVerb();

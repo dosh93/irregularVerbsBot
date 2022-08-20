@@ -27,6 +27,7 @@ import ru.matyuk.irregularVerbsBot.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ru.matyuk.irregularVerbsBot.config.Messages.RIGHT_MESSAGE;
 import static ru.matyuk.irregularVerbsBot.enums.Command.BACK;
 
 @Slf4j
@@ -70,10 +71,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             String messageText = message.getText();
             Command command = Command.fromString(messageText);
-
             long chatId = message.getChatId();
             User user = userController.getUser(chatId);
-
 
             log.info(String.format("Запрос от пользователя chatId = %d message = %s", chatId, messageText));
 
@@ -83,41 +82,42 @@ public class TelegramBot extends TelegramLongPollingBot {
                     case START_LEARN:
                         switch (command){
                             case VIEW_GROUP:
-                                sendMessage(startCommandController.viewGroupVerb(message));
+                                sendMessage(startCommandController.viewGroupVerb(user));
                                 break;
                             case CHOOSE_GROUP:
-                                sendMessage(startCommandController.chooseGroupVerb(message));
+                                sendMessage(startCommandController.chooseGroupVerb(user));
                                 break;
                             case LEARNING:
-                                sendMessage(startCommandController.learning(message));
+                                sendMessage(startCommandController.learning(user));
                                 break;
-                            default: sendMessage(startCommandController.unknownCommand(message));
+                            default: sendMessage(startCommandController.unknownCommand(user));
                         }
                         break;
                     case VIEW_GROUP:
                         if(command.equals(BACK)){
-                            sendMessage(startCommandController.goToMainMenu(message));
+                            sendMessage(startCommandController.goToMainMenu(user));
                             break;
                         }
-                        sendMessage(startCommandController.viewSelectedGroupVerb(message));
+                        sendMessage(startCommandController.viewSelectedGroupVerb(user, messageText));
                         break;
                     case CHOOSE_GROUP:
                         if(command.equals(BACK)){
-                            sendMessage(startCommandController.goToMainMenu(message));
+                            sendMessage(startCommandController.goToMainMenu(user));
                             break;
                         }
-                        sendMessage(startCommandController.startLearning(message));
+                        sendMessage(startCommandController.startLearning(user, messageText));
                         break;
                     case LEARNING_IN_PROCESS:
                         switch (command){
                             case END:
-                                sendMessage(startCommandController.stopLearning(message));
+                                sendMessage(startCommandController.stopLearning(user));
                                 break;
                             default:
-                                ResponseMessage responseMessage = startCommandController.checkAnswer(message);
+                                ResponseMessage responseMessage = startCommandController.checkAnswer(user, messageText);
                                 sendMessage(responseMessage);
-                                if(responseMessage.getMessage().equals("Верно!"))
-                                    sendMessage(startCommandController.learning(message));
+                                if(responseMessage.getMessage().equals(RIGHT_MESSAGE))
+                                    user = userController.getUser(chatId);
+                                    sendMessage(startCommandController.learning(user));
                         }
                 }
             }else {
@@ -125,7 +125,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     case START:
                         sendMessage(startCommandController.startCommand(message));
                         break;
-                    default: sendMessage(startCommandController.unknownCommand(message));
+                    default: sendMessage(startCommandController.unknownCommand(user));
                 }
             }
         }

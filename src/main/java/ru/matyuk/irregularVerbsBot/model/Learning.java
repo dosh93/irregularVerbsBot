@@ -10,16 +10,15 @@ import javax.persistence.*;
 @Data
 public class Learning {
 
-    @Id
-    @GeneratedValue
-    private Long id;
+    @EmbeddedId
+    private UserVerbId id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("userId")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "verb_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("verbId")
     private Verb verb;
 
     @Column(columnDefinition = "int default 0")

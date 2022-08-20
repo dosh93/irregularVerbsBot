@@ -23,12 +23,13 @@ public class Verb {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "verb_group",
+            name = "verb_compilation",
             joinColumns = @JoinColumn(name = "verb_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id"))
-    private List<GroupVerb> groups;
+            inverseJoinColumns = @JoinColumn(name = "compilation_id"))
+    private List<Compilation> compilations;
 
-    @OneToMany(mappedBy = "verb", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "verb",
+            orphanRemoval = true,
             cascade = CascadeType.ALL)
     private List<Learning> learnings;
 

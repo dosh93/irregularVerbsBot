@@ -44,11 +44,7 @@ public class UserController {
         return userRepository.findById(chatId).get();
     }
 
-    public User setState(long chatId, StateUser state){
-        Optional<User> optionalUser = userRepository.findById(chatId);
-        if (optionalUser.isEmpty())
-            return null;
-        User user = optionalUser.get();
+    public User setState(User user, StateUser state){
         user.setState(state);
         userRepository.save(user);
         return user;

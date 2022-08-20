@@ -2,14 +2,11 @@ package ru.matyuk.irregularVerbsBot.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-import ru.matyuk.irregularVerbsBot.model.GroupVerb;
-import ru.matyuk.irregularVerbsBot.model.Verb;
-
-import java.util.List;
+import ru.matyuk.irregularVerbsBot.model.Compilation;
 
 @Repository
-public interface GroupVerbRepository extends CrudRepository<GroupVerb, Long> {
+public interface GroupVerbRepository extends CrudRepository<Compilation, Long> {
 
-    GroupVerb findByName(String name);
+    Compilation findByName(String name);
 
 }

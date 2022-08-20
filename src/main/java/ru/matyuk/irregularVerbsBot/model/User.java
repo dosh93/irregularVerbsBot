@@ -29,7 +29,7 @@ public class User {
     @Enumerated(EnumType.ORDINAL)
     private StateUser state = StateUser.REGISTERED;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "user",orphanRemoval = true,
             cascade = CascadeType.ALL)
     private List<Learning> learnings;
 
