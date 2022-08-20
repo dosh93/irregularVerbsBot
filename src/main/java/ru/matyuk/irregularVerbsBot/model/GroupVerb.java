@@ -3,7 +3,8 @@ package ru.matyuk.irregularVerbsBot.model;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
+
 
 @Entity(name = "groups_verb")
 @Data
@@ -16,5 +17,5 @@ public class GroupVerb {
     private String name;
 
     @ManyToMany(mappedBy = "groups", fetch = FetchType.LAZY)
-    private Set<Verb> verbs;
+    private List<Verb> verbs;
 }

@@ -5,13 +5,16 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import ru.matyuk.irregularVerbsBot.controller.GroupVerbController;
+import ru.matyuk.irregularVerbsBot.enums.Command;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.GroupVerb;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.matyuk.irregularVerbsBot.enums.StateUser.START_LEARN;
+import static ru.matyuk.irregularVerbsBot.enums.Command.BACK;
+import static ru.matyuk.irregularVerbsBot.enums.Command.LEARNING;
+import static ru.matyuk.irregularVerbsBot.enums.StateUser.*;
 
 @Component
 public class Keyboard {
@@ -29,12 +32,12 @@ public class Keyboard {
             case REGISTERED:
             case START_LEARN:
                 row = new KeyboardRow();
-                row.add("Просмотр групп глаголов");
-                row.add("Выбор группы глаголов");
+                row.add(Command.VIEW_GROUP.getName());
+                row.add(Command.CHOOSE_GROUP.getName());
                 keyboardRowList.add(row);
                 if(state == START_LEARN){
                     row = new KeyboardRow();
-                    row.add("Учится");
+                    row.add(LEARNING.getName());
                     keyboardRowList.add(row);
                 }
                 break;
@@ -53,12 +56,12 @@ public class Keyboard {
                 }
                 keyboardRowList.add(row);
                 row = new KeyboardRow();
-                row.add("Назад");
+                row.add(BACK.getName());
                 keyboardRowList.add(row);
                 break;
             case LEARNING_IN_PROCESS:
                 row = new KeyboardRow();
-                row.add("Закончить");
+                row.add(Command.END.getName());
                 keyboardRowList.add(row);
                 break;
 

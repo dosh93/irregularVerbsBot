@@ -7,6 +7,7 @@ import ru.matyuk.irregularVerbsBot.enums.StateUser;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 @Entity(name = "users")
@@ -15,9 +16,6 @@ public class User {
 
     @Id
     private Long chatId;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private Set<Learning> learnings;
 
     private String firstName;
 
@@ -29,6 +27,10 @@ public class User {
 
     @Column(columnDefinition = "int default 0")
     @Enumerated(EnumType.ORDINAL)
-    private StateUser state;
+    private StateUser state = StateUser.REGISTERED;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private List<Learning> learnings;
 
 }

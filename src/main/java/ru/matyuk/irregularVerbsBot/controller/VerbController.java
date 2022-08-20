@@ -16,15 +16,4 @@ public class VerbController {
     @Autowired
     private VerbRepository verbRepository;
 
-    public List<Verb> getVerbs(){
-        return (List<Verb>) verbRepository.findAll();
-    }
-    public Verb getVerb(long id){
-        return verbRepository.findById(id).get();
-    }
-
-    public List<Verb> getVerbsByGroupId(GroupVerb groupVerb){
-        return verbRepository.findVerbsByGroups(groupVerb);
-    }
-
 }

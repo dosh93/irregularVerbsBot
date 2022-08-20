@@ -1,11 +1,9 @@
 package ru.matyuk.irregularVerbsBot.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity(name = "verbs")
 @Data
@@ -28,8 +26,14 @@ public class Verb {
             name = "verb_group",
             joinColumns = @JoinColumn(name = "verb_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id"))
-    private Set<GroupVerb> groups;
+    private List<GroupVerb> groups;
 
-    @OneToMany(mappedBy = "verb", fetch = FetchType.LAZY)
-    private Set<Learning> learnings;
+    @OneToMany(mappedBy = "verb", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private List<Learning> learnings;
+
+    @Override
+    public String toString() {
+        return String.format("%s - %s - %s - %s", firstForm, secondForm, thirdForm, translate);
+    }
 }
