@@ -11,7 +11,7 @@ import ru.matyuk.irregularVerbsBot.controller.LearningController;
 import ru.matyuk.irregularVerbsBot.controller.UserController;
 import ru.matyuk.irregularVerbsBot.controller.VerbController;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
-import ru.matyuk.irregularVerbsBot.model.GroupVerb;
+import ru.matyuk.irregularVerbsBot.model.Compilation;
 import ru.matyuk.irregularVerbsBot.model.Learning;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.model.Verb;
@@ -19,6 +19,8 @@ import ru.matyuk.irregularVerbsBot.model.Verb;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.matyuk.irregularVerbsBot.config.Messages.*;
 
 @Slf4j
 @Component
@@ -41,9 +43,8 @@ public class StartCommandController {
 
     public ResponseMessage startCommand(Message message){
 
-        String answer = "Привет, " + message.getChat().getFirstName() + " :relaxed: Давай учится!";
+        String answer = String.format(HELLO_MESSAGE, message.getChat().getFirstName());
         User user = userController.registerUser(message);
-        log.info(String.format("Ответ пользователю chatId = %d message = %s",  message.getChatId(), answer));
 
         return ResponseMessage.builder()
                 .message(answer)
@@ -52,189 +53,165 @@ public class StartCommandController {
                 .build();
     }
 
-    public ResponseMessage unknownCommand(Message message){
-
-        String answer = "Не знаю такую команду :pensive:";
-        User user = userController.getUser(message.getChatId());
-        log.info(String.format("Ответ пользователю chatId = %d message = %s",  message.getChatId(), answer));
-
+    public ResponseMessage unknownCommand(User user){
         return ResponseMessage.builder()
-                .message(answer)
-                .chatId(message.getChatId())
+                .message(UNKNOWN_MESSAGE)
+                .chatId(user.getChatId())
                 .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState()))
                 .build();
     }
 
-    public ResponseMessage viewGroupVerb(Message message){
-        return createMessageForViewGroup(StateUser.VIEW_GROUP, message);
+    public ResponseMessage viewGroupVerb(User user){
+        return createMessageForViewGroup(StateUser.VIEW_GROUP, user);
 
     }
-    public ResponseMessage chooseGroupVerb(Message message){
-       return createMessageForViewGroup(StateUser.CHOOSE_GROUP, message);
+    public ResponseMessage chooseGroupVerb(User user){
+       return createMessageForViewGroup(StateUser.CHOOSE_GROUP, user);
     }
 
-    public ResponseMessage createMessageForViewGroup(StateUser state, Message message){
-        String answer = "Выбирете группу";
-        User user = userController.setState(message.getChatId(), state);
+    public ResponseMessage createMessageForViewGroup(StateUser state, User user){
+        user = userController.setState(user, state);
         ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
 
-        log.info(String.format("Ответ пользователю chatId = %d message = %s",  message.getChatId(), answer));
-
         return ResponseMessage.builder()
-                .message(answer)
-                .chatId(message.getChatId())
+                .message(CHOOSE_GROUP_MESSAGE)
+                .chatId(user.getChatId())
                 .keyboard(replyKeyboardMarkupByState)
                 .build();
     }
 
 
-    public ResponseMessage viewSelectedGroupVerb(Message message) {
-        String groupName = message.getText();
-        User user = userController.getUser(message.getChatId());
-        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
-        GroupVerb group = groupVerbController.getGroup(groupName);
+    public ResponseMessage viewSelectedGroupVerb(User user, String messageText) {
+        Compilation group = groupVerbController.getGroup(messageText);
 
-        ResponseMessage responseMessage = checkGroup(message, group, replyKeyboardMarkupByState);
+        ResponseMessage responseMessage = checkGroup(user, group);
         if(responseMessage != null) return  responseMessage;
         List<Verb> verbsByGroup = group.getVerbs();
-        responseMessage = checkVerbInGroup(message, verbsByGroup, replyKeyboardMarkupByState);
+        responseMessage = checkVerbInGroup(user, verbsByGroup);
         if(responseMessage != null) return  responseMessage;
 
         StateUser state =  userController.isLearning(user) ? StateUser.START_LEARN : StateUser.REGISTERED;
-        user = userController.setState(message.getChatId(), state);
-        replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
-        StringBuilder answerBuilder = new StringBuilder("Глаголы в группе:\n");
+        user = userController.setState(user, state);
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
+        StringBuilder answerBuilder = new StringBuilder(VERBS_IN_GROUP_MESSAGE).append("\n");
         verbsByGroup.forEach(verb -> answerBuilder.append(verb.toString()).append("\n"));
 
         return ResponseMessage.builder()
                 .message(answerBuilder.toString())
-                .chatId(message.getChatId())
+                .chatId(user.getChatId())
                 .keyboard(replyKeyboardMarkupByState)
                 .build();
     }
 
-    public ResponseMessage goToMainMenu(Message message){
-        String answer = "Главное меню";
-        User user = userController.getUser(message.getChatId());
-        user = userController.setState(message.getChatId(), userController.isLearning(user) ? StateUser.START_LEARN : StateUser.REGISTERED);
+    public ResponseMessage goToMainMenu(User user){
+        user = userController.setState(user, userController.isLearning(user) ? StateUser.START_LEARN : StateUser.REGISTERED);
         ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
         return ResponseMessage.builder()
-                .message(answer)
-                .chatId(message.getChatId())
+                .message(MAIN_MENU_MESSAGE)
+                .chatId(user.getChatId())
                 .keyboard(replyKeyboardMarkupByState)
                 .build();
     }
 
-    public ResponseMessage startLearning(Message message){
-        String groupName = message.getText();
-        User user = userController.getUser(message.getChatId());
-        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
-        GroupVerb group = groupVerbController.getGroup(groupName);
+    public ResponseMessage startLearning(User user, String groupName){
+        Compilation group = groupVerbController.getGroup(groupName);
 
-        ResponseMessage responseMessage = checkGroup(message, group, replyKeyboardMarkupByState);
+        ResponseMessage responseMessage = checkGroup(user, group);
         if(responseMessage != null) return  responseMessage;
         List<Verb> verbsByGroup = group.getVerbs();
-        responseMessage = checkVerbInGroup(message, verbsByGroup, replyKeyboardMarkupByState);
+        responseMessage = checkVerbInGroup(user, verbsByGroup);
         if(responseMessage != null) return  responseMessage;
 
-        String answer = String.format("Выбрана группа для изучения: %s", groupName);
-        user = userController.setState(message.getChatId(), StateUser.START_LEARN);
-        replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
+        String answer = String.format(SELECTED_GROUP_MESSAGE, groupName);
+        user = userController.setState(user, StateUser.START_LEARN);
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
         learningController.addToLearning(user, verbsByGroup);
 
         return ResponseMessage.builder()
                 .message(answer)
-                .chatId(message.getChatId())
+                .chatId(user.getChatId())
                 .keyboard(replyKeyboardMarkupByState)
                 .build();
     }
 
-    private ResponseMessage checkGroup(Message message, GroupVerb group, ReplyKeyboardMarkup replyKeyboardMarkupByState){
+    private ResponseMessage checkGroup(User user, Compilation group){
         if(group == null){
-            String answer = "Нет такой группы";
             return ResponseMessage.builder()
-                    .message(answer)
-                    .chatId(message.getChatId())
-                    .keyboard(replyKeyboardMarkupByState)
+                    .message(NO_GROUP_MESSAGE)
+                    .chatId(user.getChatId())
+                    .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState()))
                     .build();
         }
         return null;
     }
-    private ResponseMessage checkVerbInGroup(Message message, List<Verb> verbs, ReplyKeyboardMarkup replyKeyboardMarkupByState){
+    private ResponseMessage checkVerbInGroup(User user, List<Verb> verbs){
         if(verbs.size() == 0){
-            String answer = "Группа пуста";
             return ResponseMessage.builder()
-                    .message(answer)
-                    .chatId(message.getChatId())
-                    .keyboard(replyKeyboardMarkupByState)
+                    .message(GROUP_IS_EMPTY_MESSAGE)
+                    .chatId(user.getChatId())
+                    .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState()))
                     .build();
         }
         return null;
     }
 
-    public ResponseMessage learning(Message message){
-        String answer = null;
-        User user = userController.getUser(message.getChatId());
+    public ResponseMessage learning(User user){
         ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
 
-
         if(!userController.isLearning(user)){
-            answer = "Нужно выбрать группу для изучения";
             return ResponseMessage.builder()
-                    .message(answer)
-                    .chatId(message.getChatId())
+                    .message(NEED_CHOOSE_GROUP_MESSAGE)
+                    .chatId(user.getChatId())
                     .keyboard(replyKeyboardMarkupByState)
                     .build();
         }
 
         Verb learningVerb = learningController.getVerbForLearning(user);
-        if(user.getState() != StateUser.LEARNING_IN_PROCESS) user = userController.setState(user.getChatId(), StateUser.LEARNING_IN_PROCESS);
+        if(user.getState() != StateUser.LEARNING_IN_PROCESS) user = userController.setState(user, StateUser.LEARNING_IN_PROCESS);
         replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
 
+        String answer;
         if(learningVerb == null)
-            answer = "Поздравляю, вы выучили все слова из группы!\nНажмите \"Закончить\" и выберете новую группу слов";
+            answer = CONGRATULATION_MESSAGE;
         else
-            answer = String.format("Напиши вторую и третью форму через пробел для:\n%s - %s",
-                    learningVerb.getFirstForm(), learningVerb.getTranslate());
+            answer = String.format(WRITE_ANSWER_MESSAGE, learningVerb.getFirstForm(), learningVerb.getTranslate());
         return ResponseMessage.builder()
                 .message(answer)
-                .chatId(message.getChatId())
+                .chatId(user.getChatId())
                 .keyboard(replyKeyboardMarkupByState)
                 .build();
     }
 
-    public ResponseMessage checkAnswer(Message message) {
-        User user = userController.getUser(message.getChatId());
+    public ResponseMessage checkAnswer(User user, String messageText) {
         ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
-        String answer = null;
-        List<String> answerUserList = Arrays.stream(message.getText().split(" ")).collect(Collectors.toList());
-        if(answerUserList.size() != 2) answer = "Неверный формат ответа";
+        List<String> answerUserList = Arrays.stream(messageText.split(" ")).collect(Collectors.toList());
+        String answer;
+
+        if(answerUserList.size() != 2) answer = INVALID_RESPONSE_MESSAGE;
         else {
             Learning learningVerb = learningController.getLearningActive(user);
             if(learningController.isValidAnswerUser(answerUserList, learningVerb)){
-                answer = "Верно!";
+                answer = RIGHT_MESSAGE;
                 learningController.setInactiveAndAddSuccessful(learningVerb);
             }else {
-                answer = "Неверно! Попробую ещё раз";
+                answer = NOT_RIGHT_MESSAGE;
             }
         }
         return ResponseMessage.builder()
                 .message(answer)
-                .chatId(message.getChatId())
+                .chatId(user.getChatId())
                 .keyboard(replyKeyboardMarkupByState)
                 .build();
     }
 
-    public ResponseMessage stopLearning(Message message){
-        User user = userController.getUser(message.getChatId());
-        user = userController.setState(user.getChatId(), StateUser.START_LEARN);
+    public ResponseMessage stopLearning(User user){
+        user = userController.setState(user, StateUser.START_LEARN);
         Learning learningActive = learningController.getLearningActive(user);
         if(learningActive != null) learningController.setInactive(learningActive);
         ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
-        String answer = "Хорошо сегодня потрудились!";
         return ResponseMessage.builder()
-                .message(answer)
-                .chatId(message.getChatId())
+                .message(GOOD_WORK_MESSAGE)
+                .chatId(user.getChatId())
                 .keyboard(replyKeyboardMarkupByState)
                 .build();
     }

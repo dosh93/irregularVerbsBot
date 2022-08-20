@@ -6,9 +6,9 @@ import javax.persistence.*;
 import java.util.List;
 
 
-@Entity(name = "groups_verb")
+@Entity(name = "compilation")
 @Data
-public class GroupVerb {
+public class Compilation {
 
     @Id
     @GeneratedValue
@@ -16,6 +16,6 @@ public class GroupVerb {
 
     private String name;
 
-    @ManyToMany(mappedBy = "groups", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "compilations", fetch = FetchType.LAZY)
     private List<Verb> verbs;
 }
