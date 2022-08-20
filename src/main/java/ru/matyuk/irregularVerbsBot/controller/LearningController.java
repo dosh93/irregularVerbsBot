@@ -1,0 +1,100 @@
+package ru.matyuk.irregularVerbsBot.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.matyuk.irregularVerbsBot.model.Learning;
+import ru.matyuk.irregularVerbsBot.model.User;
+import ru.matyuk.irregularVerbsBot.model.Verb;
+import ru.matyuk.irregularVerbsBot.repository.LearningRepository;
+import ru.matyuk.irregularVerbsBot.utils.CommonUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@Component
+public class LearningController {
+
+    @Autowired
+    private LearningRepository learningRepository;
+
+    @Autowired
+    private VerbController verbController;
+
+    private int MAX_COUNT_SUCCESSFUL = 5;
+
+    public void addToLearning(User user, List<Verb> verbs){
+        Set<Long> idsVerb = learningRepository.findByUser(user)
+                .stream()
+                .map(learning -> learning.getVerb().getId())
+                .collect(Collectors.toSet());
+        for (Verb verb : verbs) {
+            if(!idsVerb.contains(verb.getId())){
+                Learning learning = new Learning();
+                learning.setUser(user);
+                learning.setVerb(verb);
+                learningRepository.save(learning);
+            }
+        }
+    }
+
+    public int getCountLearningByUser(User user){
+        return learningRepository.countByUser(user);
+    }
+
+    public Verb getVerbForLearning(User user) {
+        List<Learning> learnings = learningRepository
+                .findByUserAndCountSuccessfulLessThanOrderByCountSuccessfulAsc(user, MAX_COUNT_SUCCESSFUL);
+        if(learnings.size() == 0)
+            return null;
+
+        int minCountSuccessful = learnings.get(0).getCountSuccessful();
+        List<Learning> verbsForLearning = new ArrayList<>();
+        for (Learning learning : learnings) {
+            if(learning.getCountSuccessful() == minCountSuccessful) verbsForLearning.add(learning);
+            else break;
+        }
+        int randomNumber = CommonUtils.getRandomNumber(0, verbsForLearning.size());
+        Learning learning = verbsForLearning.get(randomNumber);
+        learning.setState(true);
+        learningRepository.save(learning);
+        return learning.getVerb();
+    }
+
+    public Learning getLearningActive(User user) {
+        return learningRepository.findByUserAndState(user, true);
+    }
+
+    public void setInactiveAndAddSuccessful(Learning learningVerb) {
+        learningVerb.setState(false);
+        learningVerb.setCountSuccessful(learningVerb.getCountSuccessful() + 1);
+        learningRepository.save(learningVerb);
+    }
+
+    public void setInactive(Learning learningVerb) {
+        learningVerb.setState(false);
+        learningRepository.save(learningVerb);
+    }
+
+    public boolean isValidAnswerUser(List<String> answerUserList, Learning learningVerb){
+        return checkVerb(learningVerb.getVerb().getSecondForm(), answerUserList.get(0))
+                && checkVerb(learningVerb.getVerb().getThirdForm(), answerUserList.get(1));
+    }
+
+    private boolean checkVerb(String correct, String answer){
+        correct = correct.toLowerCase();
+        answer = answer.toLowerCase();
+        if(correct.contains("/")){
+            Set<String> collect = Arrays.stream(correct.split("/")).collect(Collectors.toSet());
+            if(answer.contains("/")){
+                Set<String> answers = Arrays.stream(answer.split("/")).collect(Collectors.toSet());
+                for (String one: answers) if(!collect.contains(one)) return false;
+            }else return collect.contains(answer);
+
+        }else return correct.equals(answer);
+
+        return true;
+    }
+}
