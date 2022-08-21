@@ -1,0 +1,14 @@
+bot:
+  name: irregular_verbs_learning_bot
+  token: 5426347540:AAFAslxkd7ZqemGiVbz7Qdht4RI7_kM0blQ
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/irregularVerbs
+    username: irregularve_usr
+    password: a2jcyccz4
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
