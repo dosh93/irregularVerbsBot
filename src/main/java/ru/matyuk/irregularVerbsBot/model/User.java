@@ -1,14 +1,12 @@
 package ru.matyuk.irregularVerbsBot.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Set;
 
 @Entity(name = "users")
 @Data
@@ -27,10 +25,16 @@ public class User {
 
     @Column(columnDefinition = "int default 0")
     @Enumerated(EnumType.ORDINAL)
-    private StateUser state = StateUser.REGISTERED;
+    private StateUser state = StateUser.REGISTERED_STATE;
 
     @OneToMany(mappedBy = "user",orphanRemoval = true,
             cascade = CascadeType.REMOVE)
     private List<Learning> learnings;
+
+    @OneToMany(mappedBy = "user",orphanRemoval = true,
+            cascade = CascadeType.REMOVE)
+    private List<Compilation> compilations;
+
+
 
 }

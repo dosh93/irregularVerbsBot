@@ -6,4 +6,6 @@ import ru.matyuk.irregularVerbsBot.model.Verb;
 
 @Repository
 public interface VerbRepository extends CrudRepository<Verb, Long> {
+
+    Verb findByFirstForm(String firstForm);
 }

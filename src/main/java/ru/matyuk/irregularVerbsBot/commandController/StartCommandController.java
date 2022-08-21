@@ -4,20 +4,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import ru.matyuk.irregularVerbsBot.Keyboard;
-import ru.matyuk.irregularVerbsBot.controller.GroupVerbController;
-import ru.matyuk.irregularVerbsBot.controller.LearningController;
-import ru.matyuk.irregularVerbsBot.controller.UserController;
-import ru.matyuk.irregularVerbsBot.controller.VerbController;
+import ru.matyuk.irregularVerbsBot.controller.*;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.Compilation;
 import ru.matyuk.irregularVerbsBot.model.Learning;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.model.Verb;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.matyuk.irregularVerbsBot.config.Messages.*;
@@ -39,6 +36,9 @@ public class StartCommandController {
     private LearningController learningController;
 
     @Autowired
+    private CompilationVerbController compilationVerbController;
+
+    @Autowired
     private Keyboard keyboard;
 
     public ResponseMessage startCommand(Message message){
@@ -49,7 +49,7 @@ public class StartCommandController {
         return ResponseMessage.builder()
                 .message(answer)
                 .chatId(message.getChatId())
-                .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState()))
+                .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState(), message.getChatId()))
                 .build();
     }
 
@@ -57,21 +57,21 @@ public class StartCommandController {
         return ResponseMessage.builder()
                 .message(UNKNOWN_MESSAGE)
                 .chatId(user.getChatId())
-                .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState()))
+                .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId()))
                 .build();
     }
 
     public ResponseMessage viewGroupVerb(User user){
-        return createMessageForViewGroup(StateUser.VIEW_GROUP, user);
+        return createMessageForViewGroup(StateUser.VIEW_GROUP_STATE, user);
 
     }
     public ResponseMessage chooseGroupVerb(User user){
-       return createMessageForViewGroup(StateUser.CHOOSE_GROUP, user);
+       return createMessageForViewGroup(StateUser.CHOOSE_GROUP_STATE, user);
     }
 
     public ResponseMessage createMessageForViewGroup(StateUser state, User user){
         user = userController.setState(user, state);
-        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
 
         return ResponseMessage.builder()
                 .message(CHOOSE_GROUP_MESSAGE)
@@ -86,13 +86,13 @@ public class StartCommandController {
 
         ResponseMessage responseMessage = checkGroup(user, group);
         if(responseMessage != null) return  responseMessage;
-        List<Verb> verbsByGroup = group.getVerbs();
+        List<Verb> verbsByGroup = verbController.getVerbsByGroup(group);
         responseMessage = checkVerbInGroup(user, verbsByGroup);
         if(responseMessage != null) return  responseMessage;
 
-        StateUser state =  userController.isLearning(user) ? StateUser.START_LEARN : StateUser.REGISTERED;
+        StateUser state =  userController.isLearning(user) ? StateUser.START_LEARN_STATE : StateUser.REGISTERED_STATE;
         user = userController.setState(user, state);
-        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
         StringBuilder answerBuilder = new StringBuilder(VERBS_IN_GROUP_MESSAGE).append("\n");
         verbsByGroup.forEach(verb -> answerBuilder.append(verb.toString()).append("\n"));
 
@@ -104,8 +104,8 @@ public class StartCommandController {
     }
 
     public ResponseMessage goToMainMenu(User user){
-        user = userController.setState(user, userController.isLearning(user) ? StateUser.START_LEARN : StateUser.REGISTERED);
-        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
+        user = userController.setState(user, userController.isLearning(user) ? StateUser.START_LEARN_STATE : StateUser.REGISTERED_STATE);
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
         return ResponseMessage.builder()
                 .message(MAIN_MENU_MESSAGE)
                 .chatId(user.getChatId())
@@ -118,13 +118,13 @@ public class StartCommandController {
 
         ResponseMessage responseMessage = checkGroup(user, group);
         if(responseMessage != null) return  responseMessage;
-        List<Verb> verbsByGroup = group.getVerbs();
+        List<Verb> verbsByGroup = verbController.getVerbsByGroup(group);
         responseMessage = checkVerbInGroup(user, verbsByGroup);
         if(responseMessage != null) return  responseMessage;
 
         String answer = String.format(SELECTED_GROUP_MESSAGE, groupName);
-        user = userController.setState(user, StateUser.START_LEARN);
-        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
+        user = userController.setState(user, StateUser.START_LEARN_STATE);
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
         learningController.addToLearning(user, verbsByGroup);
 
         return ResponseMessage.builder()
@@ -139,7 +139,7 @@ public class StartCommandController {
             return ResponseMessage.builder()
                     .message(NO_GROUP_MESSAGE)
                     .chatId(user.getChatId())
-                    .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState()))
+                    .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId()))
                     .build();
         }
         return null;
@@ -149,14 +149,14 @@ public class StartCommandController {
             return ResponseMessage.builder()
                     .message(GROUP_IS_EMPTY_MESSAGE)
                     .chatId(user.getChatId())
-                    .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState()))
+                    .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId()))
                     .build();
         }
         return null;
     }
 
     public ResponseMessage learning(User user){
-        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
 
         if(!userController.isLearning(user)){
             return ResponseMessage.builder()
@@ -167,8 +167,8 @@ public class StartCommandController {
         }
 
         Verb learningVerb = learningController.getVerbForLearning(user);
-        if(user.getState() != StateUser.LEARNING_IN_PROCESS) user = userController.setState(user, StateUser.LEARNING_IN_PROCESS);
-        replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
+        if(user.getState() != StateUser.LEARNING_IN_PROCESS_STATE) user = userController.setState(user, StateUser.LEARNING_IN_PROCESS_STATE);
+        replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
 
         String answer;
         if(learningVerb == null)
@@ -183,7 +183,7 @@ public class StartCommandController {
     }
 
     public ResponseMessage checkAnswer(User user, String messageText) {
-        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
         List<String> answerUserList = Arrays.stream(messageText.split(" ")).collect(Collectors.toList());
         String answer;
 
@@ -206,14 +206,48 @@ public class StartCommandController {
     }
 
     public ResponseMessage stopLearning(User user){
-        user = userController.setState(user, StateUser.START_LEARN);
+        user = userController.setState(user, StateUser.START_LEARN_STATE);
         Learning learningActive = learningController.getLearningActive(user);
         if(learningActive != null) learningController.setInactive(learningActive);
-        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState());
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
         return ResponseMessage.builder()
                 .message(GOOD_WORK_MESSAGE)
                 .chatId(user.getChatId())
                 .keyboard(replyKeyboardMarkupByState)
                 .build();
+    }
+
+    public ResponseMessage startCreateGroup(User user) {
+        user = userController.setState(user, StateUser.CREATE_GROUP_STATE);
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
+        return ResponseMessage.builder()
+                .message(INSTRUCTION_CREATE_GROUP_MESSAGE)
+                .chatId(user.getChatId())
+                .keyboard(replyKeyboardMarkupByState)
+                .build();
+    }
+
+    public ResponseMessage createGroup(User user, String messageText) {
+        Set<String> verbsInfinitive = Arrays.stream(messageText.toLowerCase().split(" ")).collect(Collectors.toSet());
+        HashMap<String, Verb> verbsInfinitiveHashMap = new HashMap<>();
+        for (String verbInfinitive : verbsInfinitive) {
+            verbsInfinitiveHashMap.put(verbInfinitive, verbController.getVerbByFirstForm(verbInfinitive));
+        }
+        Compilation compilation = groupVerbController.createGroup(user);
+        List<Verb> verbs = verbsInfinitiveHashMap.values().stream().filter(Objects::nonNull).collect(Collectors.toList());
+        compilationVerbController.saveVerbsInGroup(compilation, verbs);
+
+        StringBuilder answer = new StringBuilder(RESULT_MESSAGE).append("\n");
+        for (Map.Entry<String, Verb> one : verbsInfinitiveHashMap.entrySet()) {
+            answer.append(one.getValue() == null ? ":red_circle: " : "\uD83D\uDFE2 ").append(one.getKey()).append("\n");
+        }
+
+        InlineKeyboardMarkup inlineKeyboardMarkup = keyboard.getInlineKeyboardMarkupByState(user.getState(), user.getChatId());
+        return ResponseMessage.builder()
+                .message(answer.toString())
+                .chatId(user.getChatId())
+                .keyboard(inlineKeyboardMarkup)
+                .build();
+
     }
 }

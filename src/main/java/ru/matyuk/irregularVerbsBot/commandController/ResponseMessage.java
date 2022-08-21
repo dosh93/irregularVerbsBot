@@ -2,6 +2,7 @@ package ru.matyuk.irregularVerbsBot.commandController;
 
 import lombok.Builder;
 import lombok.Data;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 @Data
@@ -10,6 +11,6 @@ public class ResponseMessage {
 
     private long chatId;
     private String message;
-    private ReplyKeyboardMarkup keyboard;
+    private ReplyKeyboard keyboard;
 
 }
