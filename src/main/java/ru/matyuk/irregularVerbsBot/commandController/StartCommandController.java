@@ -194,7 +194,8 @@ public class StartCommandController {
                 answer = RIGHT_MESSAGE;
                 learningController.setInactiveAndAddSuccessful(learningVerb);
             }else {
-                answer = NOT_RIGHT_MESSAGE;
+                answer = NOT_RIGHT_MESSAGE + "\n" + learningVerb.getVerb().toString();
+                learningController.resetCountSuccessful(learningVerb);
             }
         }
         return ResponseMessage.builder()

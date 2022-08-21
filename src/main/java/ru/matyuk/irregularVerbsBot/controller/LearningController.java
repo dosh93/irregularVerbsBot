@@ -22,7 +22,7 @@ public class LearningController {
     @Autowired
     private VerbController verbController;
 
-    private int MAX_COUNT_SUCCESSFUL = 5;
+    private int MAX_COUNT_SUCCESSFUL = 3;
 
     public void addToLearning(User user, List<Verb> verbs){
         Set<Long> idsVerb = learningRepository.findByUser(user)
@@ -62,12 +62,14 @@ public class LearningController {
     }
 
     public void setInactiveAndAddSuccessful(Learning learningVerb) {
+        System.out.println("---------------------------------------------------------------------------------------");
         learningVerb.setState(false);
         learningVerb.setCountSuccessful(learningVerb.getCountSuccessful() + 1);
         learningRepository.save(learningVerb);
     }
 
     public void setInactive(Learning learningVerb) {
+        System.out.println("---------------------------------------------------------------------------------------");
         learningVerb.setState(false);
         learningRepository.save(learningVerb);
     }
@@ -90,5 +92,10 @@ public class LearningController {
         }else return correct.equals(answer);
 
         return true;
+    }
+
+    public void resetCountSuccessful(Learning learningVerb) {
+        learningVerb.setCountSuccessful(0);
+        learningRepository.save(learningVerb);
     }
 }

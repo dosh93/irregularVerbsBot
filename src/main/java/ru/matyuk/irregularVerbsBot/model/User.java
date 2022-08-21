@@ -30,7 +30,7 @@ public class User {
     private StateUser state = StateUser.REGISTERED;
 
     @OneToMany(mappedBy = "user",orphanRemoval = true,
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.REMOVE)
     private List<Learning> learnings;
 
 }

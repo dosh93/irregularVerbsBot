@@ -30,7 +30,7 @@ public class Verb {
 
     @OneToMany(mappedBy = "verb",
             orphanRemoval = true,
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.REMOVE)
     private List<Learning> learnings;
 
     @Override
