@@ -22,7 +22,7 @@ public final class Messages {
             "которые хотите добавить в группу и отправте сообщение";
 
     public static final String RESULT_MESSAGE = "Результат:";
-
-
+    public static final String SET_GROUP_NAME_MESSAGE = "Введите название группы";
+    public static final String GROUP_DONE_MESSAGE = "Группа '%s' создана";
 
 }

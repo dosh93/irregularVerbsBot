@@ -1,5 +1,6 @@
 package ru.matyuk.irregularVerbsBot.service;
 
+import com.google.gson.Gson;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,10 +8,11 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.matyuk.irregularVerbsBot.commandController.ResponseMessage;
 import ru.matyuk.irregularVerbsBot.commandController.StartCommandController;
@@ -19,13 +21,13 @@ import ru.matyuk.irregularVerbsBot.config.Commands;
 import ru.matyuk.irregularVerbsBot.controller.UserController;
 import ru.matyuk.irregularVerbsBot.controller.VerbController;
 import ru.matyuk.irregularVerbsBot.enums.Command;
+import ru.matyuk.irregularVerbsBot.enums.StateUser;
+import ru.matyuk.irregularVerbsBot.jsonPojo.CallbackQueryPojo;
 import ru.matyuk.irregularVerbsBot.model.User;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static ru.matyuk.irregularVerbsBot.config.Messages.RIGHT_MESSAGE;
 import static ru.matyuk.irregularVerbsBot.enums.Command.BACK;
+import static ru.matyuk.irregularVerbsBot.enums.Command.START;
 
 @Slf4j
 @Component
@@ -61,100 +63,124 @@ public class TelegramBot extends TelegramLongPollingBot {
         return config.getToken();
     }
 
-    @Override
-    public void onUpdateReceived(Update update) {
 
-        Message message = null;
-        String messageText = "";
-        Command command;
-        long chatId;
-        if(update.hasCallbackQuery()){
-            List<String> dataList = Arrays.asList(update.getCallbackQuery().getData().split(":"));
-            command = Command.fromString(dataList.get(0));
-            chatId = Long.parseLong(dataList.get(1));
-        }else {
-            message = update.getMessage();
-            messageText = message.getText();
-            command = Command.fromString(messageText);
-            chatId = message.getChatId();
-        }
+    private void processingCallBackQuery(CallbackQuery callbackQuery){
+
+        long chatId = callbackQuery.getMessage().getChatId();
         User user = userController.getUser(chatId);
+        System.out.println(callbackQuery.getData());
+        CallbackQueryPojo callbackQueryPojo = CallbackQueryPojo.getCallbackQueryPojo(callbackQuery.getData());
 
-        log.info(String.format("Запрос от пользователя chatId = %d message = %s", chatId, messageText));
+        if(callbackQueryPojo ==  null){
+            sendMessage(startCommandController.unknownCommand(user));
+            return;
+        }
 
-        if(user != null){
-            switch (user.getState()){
-                case REGISTERED_STATE:
-                case START_LEARN_STATE:
-                    switch (command){
-                        case VIEW_GROUP:
-                            sendMessage(startCommandController.viewGroupVerb(user));
-                            break;
-                        case CHOOSE_GROUP:
-                            sendMessage(startCommandController.chooseGroupVerb(user));
-                            break;
-                        case LEARNING:
+        Command command = callbackQueryPojo.getCommand();
+
+
+        switch (user.getState()){
+            case CREATE_GROUP_STATE:
+                switch (command){
+                    case SAVE:
+                        sendMessage(startCommandController.saveGroup(user));
+                        break;
+                    case CANCEL:
+                        System.out.println("CANCEL");
+                        break;
+                }
+                break;
+        }
+    }
+
+    public void processingUserNull(Chat chat, Command command){
+        if (command == START) {
+            sendMessage(startCommandController.startCommand(chat));
+        } else {
+            sendMessage(startCommandController.unknownCommandNotUser(chat.getId()));
+        }
+    }
+
+    private void processingMessage(Message message) {
+
+        long chatId = message.getChatId();
+        User user = userController.getUser(chatId);
+        String messageText = message.getText();
+        Command command = Command.fromString(messageText);
+
+        if(user == null){
+            processingUserNull(message.getChat(), command);
+            return;
+        }
+
+        StateUser stateUser = user.getState();
+
+        switch (stateUser){
+            case REGISTERED_STATE:
+            case START_LEARN_STATE:
+                switch (command){
+                    case VIEW_GROUP:
+                        sendMessage(startCommandController.viewGroupVerb(user));
+                        break;
+                    case CHOOSE_GROUP:
+                        sendMessage(startCommandController.chooseGroupVerb(user));
+                        break;
+                    case LEARNING:
+                        sendMessage(startCommandController.learning(user));
+                        break;
+                    case CREATE_GROUP:
+                        sendMessage(startCommandController.startCreateGroup(user));
+                        break;
+                    default: sendMessage(startCommandController.unknownCommand(user));
+                }
+                break;
+            case VIEW_GROUP_STATE:
+                if(command.equals(BACK)){
+                    sendMessage(startCommandController.goToMainMenu(user));
+                    break;
+                }
+                sendMessage(startCommandController.viewSelectedGroupVerb(user, messageText));
+                break;
+            case CHOOSE_GROUP_STATE:
+                if(command.equals(BACK)){
+                    sendMessage(startCommandController.goToMainMenu(user));
+                    break;
+                }
+                sendMessage(startCommandController.startLearning(user, messageText));
+                break;
+            case LEARNING_IN_PROCESS_STATE:
+                switch (command){
+                    case END:
+                        sendMessage(startCommandController.stopLearning(user));
+                        break;
+                    default:
+                        ResponseMessage responseMessage = startCommandController.checkAnswer(user, messageText);
+                        sendMessage(responseMessage);
+                        if(responseMessage.getMessage().equals(RIGHT_MESSAGE)){
+                            user = userController.getUser(chatId);
                             sendMessage(startCommandController.learning(user));
-                            break;
-                        case CREATE_GROUP:
-                            sendMessage(startCommandController.startCreateGroup(user));
-                            break;
-                        default: sendMessage(startCommandController.unknownCommand(user));
-                    }
-                    break;
-                case VIEW_GROUP_STATE:
-                    if(command.equals(BACK)){
-                        sendMessage(startCommandController.goToMainMenu(user));
-                        break;
-                    }
-                    sendMessage(startCommandController.viewSelectedGroupVerb(user, messageText));
-                    break;
-                case CHOOSE_GROUP_STATE:
-                    if(command.equals(BACK)){
-                        sendMessage(startCommandController.goToMainMenu(user));
-                        break;
-                    }
-                    sendMessage(startCommandController.startLearning(user, messageText));
-                    break;
-                case LEARNING_IN_PROCESS_STATE:
-                    switch (command){
-                        case END:
-                            sendMessage(startCommandController.stopLearning(user));
-                            break;
-                        default:
-                            ResponseMessage responseMessage = startCommandController.checkAnswer(user, messageText);
-                            sendMessage(responseMessage);
-                            if(responseMessage.getMessage().equals(RIGHT_MESSAGE)){
-                                user = userController.getUser(chatId);
-                                sendMessage(startCommandController.learning(user));
-                            }
-                    }
-                case CREATE_GROUP_STATE:
-                    if(update.hasCallbackQuery()){
-                        switch (command){
-                            case SAVE:
-                                System.out.println("SSAVE");
-                                break;
-                            case CANCEL:
-                                System.out.println("CANCEL");
-                                break;
                         }
-                    }else {
-                        sendMessage(startCommandController.createGroup(user, messageText));
-                    }
-                    break;
-
-            }
-        }else {
-            switch (command){
-                case START:
-                    sendMessage(startCommandController.startCommand(message));
-                    break;
-                default: sendMessage(startCommandController.unknownCommand(user));
-            }
+                }
+            case CREATE_GROUP_STATE:
+                sendMessage(startCommandController.createGroup(user, messageText));
+                break;
+            case SET_NAME_GROUP_STATE:
+                sendMessage(startCommandController.setNameGroup(user, messageText));
+                break;
+            default:
+                sendMessage(startCommandController.unknownCommand(user));
         }
 
     }
+    @Override
+    public void onUpdateReceived(Update update) {
+        if(update.hasCallbackQuery()){
+            processingCallBackQuery(update.getCallbackQuery());
+        } else if (update.hasMessage() && update.getMessage().hasText()) {
+            processingMessage(update.getMessage());
+        }
+    }
+
 
     private void sendMessage(ResponseMessage responseMessage){
         SendMessage message = new SendMessage();

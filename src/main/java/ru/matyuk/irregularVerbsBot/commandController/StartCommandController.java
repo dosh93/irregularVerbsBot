@@ -1,14 +1,19 @@
 package ru.matyuk.irregularVerbsBot.commandController;
 
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import ru.matyuk.irregularVerbsBot.Keyboard;
 import ru.matyuk.irregularVerbsBot.controller.*;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
+import ru.matyuk.irregularVerbsBot.jsonPojo.CreateGroupPojo;
 import ru.matyuk.irregularVerbsBot.model.Compilation;
 import ru.matyuk.irregularVerbsBot.model.Learning;
 import ru.matyuk.irregularVerbsBot.model.User;
@@ -41,15 +46,19 @@ public class StartCommandController {
     @Autowired
     private Keyboard keyboard;
 
-    public ResponseMessage startCommand(Message message){
+    private final Gson gson = new Gson();;
 
-        String answer = String.format(HELLO_MESSAGE, message.getChat().getFirstName());
-        User user = userController.registerUser(message);
+
+    public ResponseMessage startCommand(Chat chat){
+
+        String answer = String.format(HELLO_MESSAGE, chat.getFirstName());
+        User user = userController.registerUser(chat);
+        long chatId = chat.getId();
 
         return ResponseMessage.builder()
                 .message(answer)
-                .chatId(message.getChatId())
-                .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState(), message.getChatId()))
+                .chatId(chatId)
+                .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState(), chatId))
                 .build();
     }
 
@@ -58,6 +67,14 @@ public class StartCommandController {
                 .message(UNKNOWN_MESSAGE)
                 .chatId(user.getChatId())
                 .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId()))
+                .build();
+    }
+
+    public ResponseMessage unknownCommandNotUser(long chatId){
+        return ResponseMessage.builder()
+                .message(UNKNOWN_MESSAGE)
+                .chatId(chatId)
+                .keyboard(null)
                 .build();
     }
 
@@ -233,21 +250,55 @@ public class StartCommandController {
         for (String verbInfinitive : verbsInfinitive) {
             verbsInfinitiveHashMap.put(verbInfinitive, verbController.getVerbByFirstForm(verbInfinitive));
         }
-        Compilation compilation = groupVerbController.createGroup(user);
-        List<Verb> verbs = verbsInfinitiveHashMap.values().stream().filter(Objects::nonNull).collect(Collectors.toList());
-        compilationVerbController.saveVerbsInGroup(compilation, verbs);
+
+        Long idGroup = groupVerbController.createGroup(user).getId();
+        List<Long> verbIds = verbsInfinitiveHashMap.values().stream()
+                .filter(Objects::nonNull)
+                .map(Verb::getId)
+                .collect(Collectors.toList());
+
+        String createGroupJson = gson.toJson(CreateGroupPojo.builder().idGroup(idGroup).verbIds(verbIds).build());
+        user = userController.setTmp(user, createGroupJson);
 
         StringBuilder answer = new StringBuilder(RESULT_MESSAGE).append("\n");
         for (Map.Entry<String, Verb> one : verbsInfinitiveHashMap.entrySet()) {
-            answer.append(one.getValue() == null ? ":red_circle: " : "\uD83D\uDFE2 ").append(one.getKey()).append("\n");
+            answer.append(one.getValue() == null ? ":cross_mark: " : ":check_mark: ").append(one.getKey()).append("\n");
         }
 
-        InlineKeyboardMarkup inlineKeyboardMarkup = keyboard.getInlineKeyboardMarkupByState(user.getState(), user.getChatId());
+        InlineKeyboardMarkup inlineKeyboardMarkup = keyboard.getInlineKeyboardMarkupByState(
+                user.getState(),
+                user.getChatId(),
+                "-");
         return ResponseMessage.builder()
                 .message(answer.toString())
                 .chatId(user.getChatId())
                 .keyboard(inlineKeyboardMarkup)
                 .build();
 
+    }
+
+    public ResponseMessage saveGroup(User user){
+        CreateGroupPojo createGroupPojo = gson.fromJson(user.getTmp(), CreateGroupPojo.class);
+        compilationVerbController.saveVerbsInGroup(createGroupPojo.getIdGroup(), createGroupPojo.getVerbIds());
+        user = userController.setState(user, StateUser.SET_NAME_GROUP_STATE);
+        return ResponseMessage.builder()
+                .message(SET_GROUP_NAME_MESSAGE)
+                .chatId(user.getChatId())
+                .keyboard(ReplyKeyboardRemove.builder().removeKeyboard(true).build())
+                .build();
+    }
+
+    public ResponseMessage setNameGroup(User user, String messageText) {
+        user = userController.setState(user, userController.isLearning(user) ? StateUser.START_LEARN_STATE : StateUser.REGISTERED_STATE);
+        CreateGroupPojo createGroupPojo = gson.fromJson(user.getTmp(), CreateGroupPojo.class);
+        Compilation compilation = groupVerbController.getGroup(createGroupPojo.getIdGroup());
+        groupVerbController.setName(compilation, messageText);
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
+        String answer = String.format(GROUP_DONE_MESSAGE, messageText);
+        return ResponseMessage.builder()
+                .message(answer)
+                .chatId(user.getChatId())
+                .keyboard(replyKeyboardMarkupByState)
+                .build();
     }
 }

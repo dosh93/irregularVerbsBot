@@ -1,5 +1,6 @@
 package ru.matyuk.irregularVerbsBot;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -9,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import ru.matyuk.irregularVerbsBot.controller.GroupVerbController;
 import ru.matyuk.irregularVerbsBot.enums.Command;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
+import ru.matyuk.irregularVerbsBot.jsonPojo.CallbackQueryPojo;
 import ru.matyuk.irregularVerbsBot.model.Compilation;
 
 import java.util.ArrayList;
@@ -76,18 +78,20 @@ public class Keyboard {
         return replyKeyboardMarkup;
     }
 
-    public InlineKeyboardMarkup getInlineKeyboardMarkupByState(StateUser state, Long chatId){
+    public InlineKeyboardMarkup getInlineKeyboardMarkupByState(StateUser state, Long chatId, String data){
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
         switch (state){
             case CREATE_GROUP_STATE:
-                InlineKeyboardButton cancel = new InlineKeyboardButton();
-                InlineKeyboardButton save = new InlineKeyboardButton();
-                cancel.setText(Command.CANCEL.getName());
-                cancel.setCallbackData(Command.CANCEL.getName() + ":" + chatId);
-                save.setText(SAVE.getName());
-                save.setCallbackData(SAVE.getName() + ":" + chatId);
+                String callbackSave = SAVE.getName() + ":" + data;
+                String callbackCancel = Command.CANCEL.getName() + ":" + data;
+
+                InlineKeyboardButton cancel = createButtonInline(Command.CANCEL.getName(), callbackCancel);
+                InlineKeyboardButton save = createButtonInline(SAVE.getName(), callbackSave);
+
                 List<InlineKeyboardButton> row = new ArrayList<>();
+
                 row.add(cancel);
                 row.add(save);
                 rows.add(row);
@@ -97,4 +101,10 @@ public class Keyboard {
         return inlineKeyboardMarkup;
     }
 
+    private InlineKeyboardButton createButtonInline(String text, String callbackData){
+        InlineKeyboardButton button = new InlineKeyboardButton();
+        button.setText(text);
+        button.setCallbackData(callbackData);
+        return button;
+    }
 }

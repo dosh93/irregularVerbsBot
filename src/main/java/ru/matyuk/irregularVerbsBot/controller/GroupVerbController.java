@@ -5,12 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.matyuk.irregularVerbsBot.model.Compilation;
 import ru.matyuk.irregularVerbsBot.model.User;
-import ru.matyuk.irregularVerbsBot.model.Verb;
 import ru.matyuk.irregularVerbsBot.repository.GroupVerbRepository;
-import ru.matyuk.irregularVerbsBot.repository.VerbRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -43,4 +40,12 @@ public class GroupVerbController {
         return groupVerbRepository.save(compilation);
     }
 
+    public Compilation getGroup(Long compilationId) {
+        return groupVerbRepository.findById(compilationId).get();
+    }
+
+    public Compilation setName(Compilation compilation, String messageText) {
+        compilation.setName(messageText);
+        return groupVerbRepository.save(compilation);
+    }
 }

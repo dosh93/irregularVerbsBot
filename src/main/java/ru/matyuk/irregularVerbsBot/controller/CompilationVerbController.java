@@ -16,7 +16,14 @@ public class CompilationVerbController {
     @Autowired
     private CompilationVerbRepository compilationVerbRepository;
 
-    public void saveVerbsInGroup(Compilation compilation, List<Verb> verbs){
+    @Autowired
+    private VerbController verbController;
+
+    @Autowired GroupVerbController groupVerbController;
+
+    public void saveVerbsInGroup(Long compilationId, List<Long> verbId){
+        List<Verb> verbs = verbController.getVerbsByIds(verbId);
+        Compilation compilation = groupVerbController.getGroup(compilationId);
         for (Verb verb : verbs) {
             CompilationVerbId compilationVerbId = new CompilationVerbId(compilation.getId(), verb.getId());
             CompilationVerb compilationVerb = new CompilationVerb();

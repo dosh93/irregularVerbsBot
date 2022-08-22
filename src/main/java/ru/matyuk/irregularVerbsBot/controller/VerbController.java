@@ -26,4 +26,7 @@ public class VerbController {
         return compilation.getVerbs().stream().map(CompilationVerb::getVerb).collect(Collectors.toList());
     }
 
+    public List<Verb> getVerbsByIds(List<Long> verbsId) {
+        return verbRepository.findByIdIn(verbsId);
+    }
 }
