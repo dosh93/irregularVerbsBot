@@ -2,11 +2,9 @@ package ru.matyuk.irregularVerbsBot.commandController;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.C;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
@@ -300,5 +298,23 @@ public class StartCommandController {
                 .chatId(user.getChatId())
                 .keyboard(replyKeyboardMarkupByState)
                 .build();
+    }
+
+    public ResponseMessage cancelSaveGroup(User user) {
+        user = userController.setState(user, userController.isLearning(user) ? StateUser.START_LEARN_STATE : StateUser.REGISTERED_STATE);
+        CreateGroupPojo createGroupPojo = gson.fromJson(user.getTmp(), CreateGroupPojo.class);
+        groupVerbController.delete(createGroupPojo.getIdGroup());
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
+        return ResponseMessage.builder()
+                .message(DO_NOT_SAVE_GROUP_MESSAGE)
+                .chatId(user.getChatId())
+                .keyboard(replyKeyboardMarkupByState)
+                .build();
+    }
+
+    public void saveMessageIdCreateGroup(Integer messageId, User user) {
+        CreateGroupPojo createGroupPojo = gson.fromJson(user.getTmp(), CreateGroupPojo.class);
+        createGroupPojo.setMessageId(messageId);
+        userController.setTmp(user, gson.toJson(createGroupPojo));
     }
 }

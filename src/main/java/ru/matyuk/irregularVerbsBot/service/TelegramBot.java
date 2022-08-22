@@ -1,6 +1,5 @@
 package ru.matyuk.irregularVerbsBot.service;
 
-import com.google.gson.Gson;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -83,13 +83,23 @@ public class TelegramBot extends TelegramLongPollingBot {
             case CREATE_GROUP_STATE:
                 switch (command){
                     case SAVE:
+                        deleteMessage(userController.getMessageIdCreateGroup(user), chatId);
                         sendMessage(startCommandController.saveGroup(user));
                         break;
                     case CANCEL:
-                        System.out.println("CANCEL");
+                        deleteMessage(userController.getMessageIdCreateGroup(user), chatId);
+                        sendMessage(startCommandController.cancelSaveGroup(user));
                         break;
                 }
                 break;
+        }
+    }
+
+    private void deleteMessage(Integer messageId, long chatId) {
+        try {
+            execute(DeleteMessage.builder().messageId(messageId).chatId(String.valueOf(chatId)).build());
+        } catch (TelegramApiException e) {
+            log.error("Ошибка: " + e.getMessage());
         }
     }
 
@@ -161,8 +171,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                             sendMessage(startCommandController.learning(user));
                         }
                 }
+                break;
             case CREATE_GROUP_STATE:
-                sendMessage(startCommandController.createGroup(user, messageText));
+                startCommandController.saveMessageIdCreateGroup(sendMessage(startCommandController.createGroup(user, messageText)), user);
                 break;
             case SET_NAME_GROUP_STATE:
                 sendMessage(startCommandController.setNameGroup(user, messageText));
@@ -172,6 +183,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
 
     }
+
     @Override
     public void onUpdateReceived(Update update) {
         if(update.hasCallbackQuery()){
@@ -182,16 +194,17 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-    private void sendMessage(ResponseMessage responseMessage){
+    private Integer sendMessage(ResponseMessage responseMessage){
         SendMessage message = new SendMessage();
         message.setChatId(String.valueOf(responseMessage.getChatId()));
         message.setText(EmojiParser.parseToUnicode(responseMessage.getMessage()));
 
         if(responseMessage.getKeyboard() != null) message.setReplyMarkup(responseMessage.getKeyboard());
         try {
-            execute(message);
+            return execute(message).getMessageId();
         }catch (TelegramApiException e){
             log.error("Ошибка: " + e.getMessage());
         }
+        return -1;
     }
 }

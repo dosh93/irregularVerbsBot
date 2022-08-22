@@ -48,4 +48,8 @@ public class GroupVerbController {
         compilation.setName(messageText);
         return groupVerbRepository.save(compilation);
     }
+
+    public void delete(Long idGroup) {
+        groupVerbRepository.deleteById(idGroup);
+    }
 }

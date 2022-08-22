@@ -24,5 +24,6 @@ public final class Messages {
     public static final String RESULT_MESSAGE = "Результат:";
     public static final String SET_GROUP_NAME_MESSAGE = "Введите название группы";
     public static final String GROUP_DONE_MESSAGE = "Группа '%s' создана";
+    public static final String DO_NOT_SAVE_GROUP_MESSAGE = "Группа не сохранена";
 
 }

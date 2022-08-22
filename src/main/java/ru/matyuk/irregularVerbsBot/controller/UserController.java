@@ -1,11 +1,13 @@
 package ru.matyuk.irregularVerbsBot.controller;
 
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
+import ru.matyuk.irregularVerbsBot.jsonPojo.CreateGroupPojo;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.repository.UserRepository;
 
@@ -57,6 +59,11 @@ public class UserController {
     public User setTmp(User user, String tmp){
         user.setTmp(tmp);
         return userRepository.save(user);
+    }
+
+    public Integer getMessageIdCreateGroup(User user){
+        Gson gson = new Gson();
+        return gson.fromJson(user.getTmp(), CreateGroupPojo.class).getMessageId();
     }
 
 }

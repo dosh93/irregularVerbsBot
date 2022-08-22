@@ -11,4 +11,5 @@ public class CreateGroupPojo {
 
     private Long idGroup;
     private List<Long> verbIds;
+    private Integer messageId;
 }
