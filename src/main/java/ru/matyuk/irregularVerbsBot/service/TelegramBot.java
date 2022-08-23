@@ -26,8 +26,7 @@ import ru.matyuk.irregularVerbsBot.jsonPojo.CallbackQueryPojo;
 import ru.matyuk.irregularVerbsBot.model.User;
 
 import static ru.matyuk.irregularVerbsBot.config.Messages.RIGHT_MESSAGE;
-import static ru.matyuk.irregularVerbsBot.enums.Command.BACK;
-import static ru.matyuk.irregularVerbsBot.enums.Command.START;
+import static ru.matyuk.irregularVerbsBot.enums.Command.*;
 
 @Slf4j
 @Component
@@ -92,6 +91,22 @@ public class TelegramBot extends TelegramLongPollingBot {
                         break;
                 }
                 break;
+            case DELETE_GROUP_STATE:
+                switch (command){
+                    case DELETE_GROUP:
+                        deleteMessage(callbackQuery.getMessage().getMessageId(), chatId);
+                        sendMessage(startCommandController.createConfirmDeleteGroup(user, callbackQueryPojo.getData()));
+                        break;
+                    case CONFIRM_DELETE:
+                        deleteMessage(callbackQuery.getMessage().getMessageId(), chatId);
+                        sendMessage(startCommandController.deleteGroup(user, callbackQueryPojo.getData()));
+                        break;
+                    case CANCEL:
+                        deleteMessage(callbackQuery.getMessage().getMessageId(), chatId);
+                        sendMessage(startCommandController.goToMainMenu(user));
+                        break;
+                }
+                break;
         }
     }
 
@@ -141,6 +156,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                     case CREATE_GROUP:
                         sendMessage(startCommandController.startCreateGroup(user));
                         break;
+                    case DELETE_GROUP:
+                        sendMessage(startCommandController.startDeleteGroup(user));
+                        break;
                     default: sendMessage(startCommandController.unknownCommand(user));
                 }
                 break;
@@ -173,7 +191,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
                 break;
             case CREATE_GROUP_STATE:
-                /*startCommandController.saveMessageIdCreateGroup(*/sendMessage(startCommandController.createGroup(user, messageText));
+                sendMessage(startCommandController.createGroup(user, messageText));
                 break;
             case SET_NAME_GROUP_STATE:
                 sendMessage(startCommandController.setNameGroup(user, messageText));

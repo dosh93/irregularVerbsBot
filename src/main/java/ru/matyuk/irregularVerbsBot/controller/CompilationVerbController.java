@@ -33,4 +33,9 @@ public class CompilationVerbController {
             compilationVerbRepository.save(compilationVerb);
         }
     }
+    public void delete(List<CompilationVerb> compilationVerbList){
+        for (CompilationVerb compilationVerb : compilationVerbList) {
+            compilationVerbRepository.delete(compilationVerb);
+        }
+    }
 }

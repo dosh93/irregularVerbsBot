@@ -30,19 +30,20 @@ public class Keyboard {
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setResizeKeyboard(true);
         List<KeyboardRow> keyboardRowList = new ArrayList<>();
-        KeyboardRow row = null;
+        KeyboardRow row;
         switch (state){
-            case REGISTERED_STATE:
             case START_LEARN_STATE:
-                if(state == START_LEARN_STATE){
-                    row = new KeyboardRow();
-                    row.add(LEARNING.getName());
-                    keyboardRowList.add(row);
-                }
+                row = new KeyboardRow();
+                row.add(LEARNING.getName());
+                keyboardRowList.add(row);
+            case REGISTERED_STATE:
                 row = new KeyboardRow();
                 row.add(Command.VIEW_GROUP.getName());
                 row.add(Command.CHOOSE_GROUP.getName());
+                keyboardRowList.add(row);
+                row = new KeyboardRow();
                 row.add(Command.CREATE_GROUP.getName());
+                row.add(Command.DELETE_GROUP.getName());
                 keyboardRowList.add(row);
                 break;
             case VIEW_GROUP_STATE:
@@ -72,6 +73,8 @@ public class Keyboard {
                 row = new KeyboardRow();
                 row.add(Command.CANCEL.getName());
                 keyboardRowList.add(row);
+            case DELETE_GROUP_STATE:
+                break;
 
         }
         replyKeyboardMarkup.setKeyboard(keyboardRowList);
@@ -101,10 +104,49 @@ public class Keyboard {
         return inlineKeyboardMarkup;
     }
 
+    public InlineKeyboardMarkup getInlineButtonsGroups(List<Compilation> groups){
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        int count = 0;
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        for (Compilation group :  groups) {
+            count++;
+            String callbackData = DELETE_GROUP.getName() + ":" + group.getId();
+            row.add(createButtonInline(group.getName(), callbackData));
+            if(count == 2) count = 0;
+            if(count == 0){
+                rows.add(row);
+                row = new ArrayList<>();
+            }
+        }
+        if(row.size() > 0) rows.add(row);
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
     private InlineKeyboardButton createButtonInline(String text, String callbackData){
         InlineKeyboardButton button = new InlineKeyboardButton();
         button.setText(text);
         button.setCallbackData(callbackData);
         return button;
+    }
+
+    public InlineKeyboardMarkup getConfirmDeleteButton(String data) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+
+        String callbackDelete = CONFIRM_DELETE.getName() + ":" + data;
+        String callbackCancel = Command.CANCEL.getName() + ":" + data;
+
+        InlineKeyboardButton cancel = createButtonInline(Command.CANCEL.getName(), callbackCancel);
+        InlineKeyboardButton delete = createButtonInline(CONFIRM_DELETE.getName(), callbackDelete);
+
+        row.add(cancel);
+        row.add(delete);
+        rows.add(row);
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
     }
 }
