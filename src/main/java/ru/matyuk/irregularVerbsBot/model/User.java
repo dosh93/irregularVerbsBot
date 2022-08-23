@@ -41,4 +41,7 @@ public class User {
     @Basic(fetch=LAZY)
     private String tmp;
 
+    @Column(columnDefinition = "int default 3")
+    private int countSuccessful;
+
 }

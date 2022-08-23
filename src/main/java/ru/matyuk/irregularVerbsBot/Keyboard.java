@@ -73,9 +73,6 @@ public class Keyboard {
                 row = new KeyboardRow();
                 row.add(Command.CANCEL.getName());
                 keyboardRowList.add(row);
-            case DELETE_GROUP_STATE:
-                break;
-
         }
         replyKeyboardMarkup.setKeyboard(keyboardRowList);
         return replyKeyboardMarkup;

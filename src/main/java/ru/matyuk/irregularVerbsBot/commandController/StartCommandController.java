@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import ru.matyuk.irregularVerbsBot.Keyboard;
@@ -314,12 +315,21 @@ public class StartCommandController {
     }
 
     public ResponseMessage startDeleteGroup(User user) {
-        user = userController.setState(user, DELETE_GROUP_STATE);
-        InlineKeyboardMarkup inlineButtonsGroups = keyboard.getInlineButtonsGroups(user.getCompilations());
+        String answer;
+        ReplyKeyboard keyboard1;
+        if(user.getCompilations().size() > 0){
+            user = userController.setState(user, DELETE_GROUP_STATE);
+            answer = CHOOSE_GROUP_FOR_DELETE_MESSAGE;
+            keyboard1 = keyboard.getInlineButtonsGroups(user.getCompilations());
+        }else {
+            answer = NO_GROUP_DELETE_MESSAGE;
+            keyboard1 =  keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
+        }
+
         return ResponseMessage.builder()
-                .message(CHOOSE_GROUP_FOR_DELETE_MESSAGE)
+                .message(answer)
                 .chatId(user.getChatId())
-                .keyboard(inlineButtonsGroups)
+                .keyboard(keyboard1)
                 .build();
     }
 
@@ -345,6 +355,14 @@ public class StartCommandController {
                 .message(DELETE_GROUP_DONE_MESSAGE)
                 .chatId(user.getChatId())
                 .keyboard(replyKeyboardMarkupByState)
+                .build();
+    }
+
+    public ResponseMessage deleteKeyboard(User user){
+        return ResponseMessage.builder()
+                .message("-")
+                .chatId(user.getChatId())
+                .keyboard(ReplyKeyboardRemove.builder().removeKeyboard(true).build())
                 .build();
     }
 

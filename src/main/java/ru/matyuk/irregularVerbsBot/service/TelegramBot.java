@@ -157,6 +157,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                         sendMessage(startCommandController.startCreateGroup(user));
                         break;
                     case DELETE_GROUP:
+                        deleteMessage(sendMessage(startCommandController.deleteKeyboard(user)), user.getChatId());;
                         sendMessage(startCommandController.startDeleteGroup(user));
                         break;
                     default: sendMessage(startCommandController.unknownCommand(user));

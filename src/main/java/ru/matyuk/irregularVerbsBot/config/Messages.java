@@ -28,5 +28,6 @@ public final class Messages {
     public static final String ARE_YOU_SURE_DELETE_GROUP_MESSAGE = "Вы уверены что хотитет удалить группу '%s'?";
     public static final String DELETE_GROUP_DONE_MESSAGE = "Группа удалена";
     public static final String CHOOSE_GROUP_FOR_DELETE_MESSAGE = "УДАЛЕНИЕ ГРУППЫ\n\nВыберете группу";
+    public static final String NO_GROUP_DELETE_MESSAGE = "У вас нет групп для удаления";
 
 }
