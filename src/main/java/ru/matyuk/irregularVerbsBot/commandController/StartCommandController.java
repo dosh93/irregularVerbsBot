@@ -21,6 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.matyuk.irregularVerbsBot.config.Messages.*;
+import static ru.matyuk.irregularVerbsBot.enums.StateUser.DELETE_GROUP_STATE;
 
 @Slf4j
 @Component
@@ -307,6 +308,41 @@ public class StartCommandController {
         ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
         return ResponseMessage.builder()
                 .message(DO_NOT_SAVE_GROUP_MESSAGE)
+                .chatId(user.getChatId())
+                .keyboard(replyKeyboardMarkupByState)
+                .build();
+    }
+
+    public ResponseMessage startDeleteGroup(User user) {
+        user = userController.setState(user, DELETE_GROUP_STATE);
+        InlineKeyboardMarkup inlineButtonsGroups = keyboard.getInlineButtonsGroups(user.getCompilations());
+        return ResponseMessage.builder()
+                .message(CHOOSE_GROUP_FOR_DELETE_MESSAGE)
+                .chatId(user.getChatId())
+                .keyboard(inlineButtonsGroups)
+                .build();
+    }
+
+    public ResponseMessage createConfirmDeleteGroup(User user, String data) {
+        InlineKeyboardMarkup inlineButtonsGroups = keyboard.getConfirmDeleteButton(data);
+        Compilation group = groupVerbController.getGroup(Long.parseLong(data));
+        String answer = String.format(ARE_YOU_SURE_DELETE_GROUP_MESSAGE, group.getName());
+        return ResponseMessage.builder()
+                .message(answer)
+                .chatId(user.getChatId())
+                .keyboard(inlineButtonsGroups)
+                .build();
+    }
+
+    public ResponseMessage deleteGroup(User user, String data) {
+        user = userController.setState(user, userController.isLearning(user) ? StateUser.START_LEARN_STATE : StateUser.REGISTERED_STATE);
+        long idGroup = Long.parseLong(data);
+        Compilation group = groupVerbController.getGroup(idGroup);
+        compilationVerbController.delete(group.getVerbs());
+        groupVerbController.delete(idGroup);
+        ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
+        return ResponseMessage.builder()
+                .message(DELETE_GROUP_DONE_MESSAGE)
                 .chatId(user.getChatId())
                 .keyboard(replyKeyboardMarkupByState)
                 .build();

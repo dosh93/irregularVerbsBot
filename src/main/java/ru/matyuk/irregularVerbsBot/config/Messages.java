@@ -25,5 +25,8 @@ public final class Messages {
     public static final String SET_GROUP_NAME_MESSAGE = "Введите название группы";
     public static final String GROUP_DONE_MESSAGE = "Группа '%s' создана";
     public static final String DO_NOT_SAVE_GROUP_MESSAGE = "Группа не сохранена";
+    public static final String ARE_YOU_SURE_DELETE_GROUP_MESSAGE = "Вы уверены что хотитет удалить группу '%s'?";
+    public static final String DELETE_GROUP_DONE_MESSAGE = "Группа удалена";
+    public static final String CHOOSE_GROUP_FOR_DELETE_MESSAGE = "УДАЛЕНИЕ ГРУППЫ\n\nВыберете группу";
 
 }

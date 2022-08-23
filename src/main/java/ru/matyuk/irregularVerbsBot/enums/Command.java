@@ -1,5 +1,6 @@
 package ru.matyuk.irregularVerbsBot.enums;
 
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import lombok.Getter;
 
 import java.util.Map;
@@ -18,7 +19,9 @@ public enum Command {
     CHOOSE_GROUP("Выбор группы глаголов"),
     VIEW_GROUP("Просмотр групп глаголов"),
     CREATE_GROUP("Создать группу глаголов"),
-    UNKNOWN_COMMAND("Не известная команда");
+    UNKNOWN_COMMAND("Не известная команда"),
+    DELETE_GROUP("Удалить группу"),
+    CONFIRM_DELETE("Удалить");
 
     private final String name;
 
