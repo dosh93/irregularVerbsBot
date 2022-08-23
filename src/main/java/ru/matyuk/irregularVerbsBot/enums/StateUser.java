@@ -1,9 +1,13 @@
 package ru.matyuk.irregularVerbsBot.enums;
 
 public enum StateUser {
-    REGISTERED,
-    VIEW_GROUP,
-    CHOOSE_GROUP,
-    START_LEARN,
-    LEARNING_IN_PROCESS;
+    REGISTERED_STATE,
+    VIEW_GROUP_STATE,
+    CHOOSE_GROUP_STATE,
+    START_LEARN_STATE,
+    LEARNING_IN_PROCESS_STATE,
+    CREATE_GROUP_STATE,
+    SET_NAME_GROUP_STATE;
+
+
 }

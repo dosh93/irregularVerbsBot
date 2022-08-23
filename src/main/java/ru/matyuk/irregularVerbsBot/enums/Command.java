@@ -10,11 +10,14 @@ import static java.util.stream.Collectors.toMap;
 @Getter
 public enum Command {
     BACK("Назад"),
+    CANCEL("Отмена"),
+    SAVE("Сохранить"),
     END("Закончить"),
     START("/start"),
     LEARNING("Учится"),
     CHOOSE_GROUP("Выбор группы глаголов"),
     VIEW_GROUP("Просмотр групп глаголов"),
+    CREATE_GROUP("Создать группу глаголов"),
     UNKNOWN_COMMAND("Не известная команда");
 
     private final String name;

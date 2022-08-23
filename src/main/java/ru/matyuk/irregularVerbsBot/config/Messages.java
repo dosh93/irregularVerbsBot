@@ -17,6 +17,13 @@ public final class Messages {
     public static final String RIGHT_MESSAGE = "Верно!";
     public static final String NOT_RIGHT_MESSAGE = "Неверно! Попробую ещё раз";
     public static final String GOOD_WORK_MESSAGE = "Хорошо сегодня потрудились!";
+    public static final String CREATE_GROUP_NAME_MESSAGE = "Введите имя группы";
+    public static final String INSTRUCTION_CREATE_GROUP_MESSAGE = "Введите через пробел все инфинитивы (первая форма), " +
+            "которые хотите добавить в группу и отправте сообщение";
 
+    public static final String RESULT_MESSAGE = "Результат:";
+    public static final String SET_GROUP_NAME_MESSAGE = "Введите название группы";
+    public static final String GROUP_DONE_MESSAGE = "Группа '%s' создана";
+    public static final String DO_NOT_SAVE_GROUP_MESSAGE = "Группа не сохранена";
 
 }

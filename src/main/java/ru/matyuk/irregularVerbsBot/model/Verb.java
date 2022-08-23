@@ -21,16 +21,13 @@ public class Verb {
 
     private String translate;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "verb_compilation",
-            joinColumns = @JoinColumn(name = "verb_id"),
-            inverseJoinColumns = @JoinColumn(name = "compilation_id"))
-    private List<Compilation> compilations;
+    @OneToMany(mappedBy = "verb", fetch = FetchType.LAZY)
+    private List<CompilationVerb> groups;
 
     @OneToMany(mappedBy = "verb",
             orphanRemoval = true,
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.REMOVE,
+            fetch = FetchType.LAZY)
     private List<Learning> learnings;
 
     @Override

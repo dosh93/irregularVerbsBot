@@ -1,10 +1,13 @@
 package ru.matyuk.irregularVerbsBot.controller;
 
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
+import ru.matyuk.irregularVerbsBot.jsonPojo.CreateGroupPojo;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.repository.UserRepository;
 
@@ -18,12 +21,11 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    public User registerUser(Message message) {
+    public User registerUser(Chat chat) {
         User user = new User();
-        Optional<User> optionalUser = userRepository.findById(message.getChatId());
+        var chatId = chat.getId();
+        Optional<User> optionalUser = userRepository.findById(chatId);
         if(optionalUser.isEmpty()) {
-            var chatId = message.getChatId();
-            var chat = message.getChat();
 
             user.setChatId(chatId);
             user.setFirstName(chat.getFirstName());
@@ -54,5 +56,14 @@ public class UserController {
         return user.getLearnings().size() != 0;
     }
 
+    public User setTmp(User user, String tmp){
+        user.setTmp(tmp);
+        return userRepository.save(user);
+    }
+
+    public Integer getMessageIdCreateGroup(User user){
+        Gson gson = new Gson();
+        return gson.fromJson(user.getTmp(), CreateGroupPojo.class).getMessageId();
+    }
 
 }
