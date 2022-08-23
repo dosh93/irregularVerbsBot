@@ -312,9 +312,9 @@ public class StartCommandController {
                 .build();
     }
 
-    public void saveMessageIdCreateGroup(Integer messageId, User user) {
-        CreateGroupPojo createGroupPojo = gson.fromJson(user.getTmp(), CreateGroupPojo.class);
-        createGroupPojo.setMessageId(messageId);
-        userController.setTmp(user, gson.toJson(createGroupPojo));
-    }
+//    public void saveMessageIdCreateGroup(Integer messageId, User user) {
+//        CreateGroupPojo createGroupPojo = gson.fromJson(user.getTmp(), CreateGroupPojo.class);
+//        createGroupPojo.setMessageId(messageId);
+//        userController.setTmp(user, gson.toJson(createGroupPojo));
+//    }
 }

@@ -83,11 +83,11 @@ public class TelegramBot extends TelegramLongPollingBot {
             case CREATE_GROUP_STATE:
                 switch (command){
                     case SAVE:
-                        deleteMessage(userController.getMessageIdCreateGroup(user), chatId);
+                        deleteMessage(callbackQuery.getMessage().getMessageId(), chatId);
                         sendMessage(startCommandController.saveGroup(user));
                         break;
                     case CANCEL:
-                        deleteMessage(userController.getMessageIdCreateGroup(user), chatId);
+                        deleteMessage(callbackQuery.getMessage().getMessageId(), chatId);
                         sendMessage(startCommandController.cancelSaveGroup(user));
                         break;
                 }
@@ -173,7 +173,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 }
                 break;
             case CREATE_GROUP_STATE:
-                startCommandController.saveMessageIdCreateGroup(sendMessage(startCommandController.createGroup(user, messageText)), user);
+                /*startCommandController.saveMessageIdCreateGroup(*/sendMessage(startCommandController.createGroup(user, messageText));
                 break;
             case SET_NAME_GROUP_STATE:
                 sendMessage(startCommandController.setNameGroup(user, messageText));
