@@ -13,7 +13,7 @@ import ru.matyuk.irregularVerbsBot.Keyboard;
 import ru.matyuk.irregularVerbsBot.controller.*;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.jsonPojo.CreateGroupPojo;
-import ru.matyuk.irregularVerbsBot.model.Compilation;
+import ru.matyuk.irregularVerbsBot.model.Group;
 import ru.matyuk.irregularVerbsBot.model.Learning;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.model.Verb;
@@ -32,7 +32,7 @@ public class StartCommandController {
     private UserController userController;
 
     @Autowired
-    private GroupVerbController groupVerbController;
+    private GroupController groupController;
 
     @Autowired
     private VerbController verbController;
@@ -41,7 +41,7 @@ public class StartCommandController {
     private LearningController learningController;
 
     @Autowired
-    private CompilationVerbController compilationVerbController;
+    private GroupVerbController groupVerbController;
 
     @Autowired
     private Keyboard keyboard;
@@ -99,7 +99,7 @@ public class StartCommandController {
 
 
     public ResponseMessage viewSelectedGroupVerb(User user, String messageText) {
-        Compilation group = groupVerbController.getGroup(messageText);
+        Group group = groupController.getGroup(messageText);
 
         ResponseMessage responseMessage = checkGroup(user, group);
         if(responseMessage != null) return  responseMessage;
@@ -131,7 +131,7 @@ public class StartCommandController {
     }
 
     public ResponseMessage startLearning(User user, String groupName){
-        Compilation group = groupVerbController.getGroup(groupName);
+        Group group = groupController.getGroup(groupName);
 
         ResponseMessage responseMessage = checkGroup(user, group);
         if(responseMessage != null) return  responseMessage;
@@ -151,7 +151,7 @@ public class StartCommandController {
                 .build();
     }
 
-    private ResponseMessage checkGroup(User user, Compilation group){
+    private ResponseMessage checkGroup(User user, Group group){
         if(group == null){
             return ResponseMessage.builder()
                     .message(NO_GROUP_MESSAGE)
@@ -251,7 +251,7 @@ public class StartCommandController {
             verbsInfinitiveHashMap.put(verbInfinitive, verbController.getVerbByFirstForm(verbInfinitive));
         }
 
-        Long idGroup = groupVerbController.createGroup(user).getId();
+        Long idGroup = groupController.createGroup(user).getId();
         List<Long> verbIds = verbsInfinitiveHashMap.values().stream()
                 .filter(Objects::nonNull)
                 .map(Verb::getId)
@@ -279,7 +279,7 @@ public class StartCommandController {
 
     public ResponseMessage saveGroup(User user){
         CreateGroupPojo createGroupPojo = gson.fromJson(user.getTmp(), CreateGroupPojo.class);
-        compilationVerbController.saveVerbsInGroup(createGroupPojo.getIdGroup(), createGroupPojo.getVerbIds());
+        groupVerbController.saveVerbsInGroup(createGroupPojo.getIdGroup(), createGroupPojo.getVerbIds());
         user = userController.setState(user, StateUser.SET_NAME_GROUP_STATE);
         return ResponseMessage.builder()
                 .message(SET_GROUP_NAME_MESSAGE)
@@ -291,8 +291,8 @@ public class StartCommandController {
     public ResponseMessage setNameGroup(User user, String messageText) {
         user = userController.setState(user, userController.isLearning(user) ? StateUser.START_LEARN_STATE : StateUser.REGISTERED_STATE);
         CreateGroupPojo createGroupPojo = gson.fromJson(user.getTmp(), CreateGroupPojo.class);
-        Compilation compilation = groupVerbController.getGroup(createGroupPojo.getIdGroup());
-        groupVerbController.setName(compilation, messageText);
+        Group group = groupController.getGroup(createGroupPojo.getIdGroup());
+        groupController.setName(group, messageText);
         ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
         String answer = String.format(GROUP_DONE_MESSAGE, messageText);
         return ResponseMessage.builder()
@@ -305,7 +305,7 @@ public class StartCommandController {
     public ResponseMessage cancelSaveGroup(User user) {
         user = userController.setState(user, userController.isLearning(user) ? StateUser.START_LEARN_STATE : StateUser.REGISTERED_STATE);
         CreateGroupPojo createGroupPojo = gson.fromJson(user.getTmp(), CreateGroupPojo.class);
-        groupVerbController.delete(createGroupPojo.getIdGroup());
+        groupController.delete(createGroupPojo.getIdGroup());
         ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
         return ResponseMessage.builder()
                 .message(DO_NOT_SAVE_GROUP_MESSAGE)
@@ -317,10 +317,10 @@ public class StartCommandController {
     public ResponseMessage startDeleteGroup(User user) {
         String answer;
         ReplyKeyboard keyboard1;
-        if(user.getCompilations().size() > 0){
+        if(user.getGroups().size() > 0){
             user = userController.setState(user, DELETE_GROUP_STATE);
             answer = CHOOSE_GROUP_FOR_DELETE_MESSAGE;
-            keyboard1 = keyboard.getInlineButtonsGroups(user.getCompilations());
+            keyboard1 = keyboard.getInlineButtonsGroups(user.getGroups());
         }else {
             answer = NO_GROUP_DELETE_MESSAGE;
             keyboard1 =  keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
@@ -335,7 +335,7 @@ public class StartCommandController {
 
     public ResponseMessage createConfirmDeleteGroup(User user, String data) {
         InlineKeyboardMarkup inlineButtonsGroups = keyboard.getConfirmDeleteButton(data);
-        Compilation group = groupVerbController.getGroup(Long.parseLong(data));
+        Group group = groupController.getGroup(Long.parseLong(data));
         String answer = String.format(ARE_YOU_SURE_DELETE_GROUP_MESSAGE, group.getName());
         return ResponseMessage.builder()
                 .message(answer)
@@ -347,9 +347,9 @@ public class StartCommandController {
     public ResponseMessage deleteGroup(User user, String data) {
         user = userController.setState(user, userController.isLearning(user) ? StateUser.START_LEARN_STATE : StateUser.REGISTERED_STATE);
         long idGroup = Long.parseLong(data);
-        Compilation group = groupVerbController.getGroup(idGroup);
-        compilationVerbController.delete(group.getVerbs());
-        groupVerbController.delete(idGroup);
+        Group group = groupController.getGroup(idGroup);
+        groupVerbController.delete(group.getVerbs());
+        groupController.delete(idGroup);
         ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
         return ResponseMessage.builder()
                 .message(DELETE_GROUP_DONE_MESSAGE)

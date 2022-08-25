@@ -10,7 +10,7 @@ import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
-@Entity(name = "users")
+@Entity(name = "tg_users")
 @Data
 public class User {
 
@@ -35,7 +35,7 @@ public class User {
 
     @OneToMany(mappedBy = "user",orphanRemoval = true,
             cascade = CascadeType.REMOVE)
-    private List<Compilation> compilations;
+    private List<Group> groups;
 
     @Lob
     @Basic(fetch=LAZY)

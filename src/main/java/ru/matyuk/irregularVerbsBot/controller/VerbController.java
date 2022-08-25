@@ -3,8 +3,8 @@ package ru.matyuk.irregularVerbsBot.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.matyuk.irregularVerbsBot.model.Compilation;
-import ru.matyuk.irregularVerbsBot.model.CompilationVerb;
+import ru.matyuk.irregularVerbsBot.model.Group;
+import ru.matyuk.irregularVerbsBot.model.GroupVerb;
 import ru.matyuk.irregularVerbsBot.model.Verb;
 import ru.matyuk.irregularVerbsBot.repository.VerbRepository;
 
@@ -22,8 +22,8 @@ public class VerbController {
         return verbRepository.findByFirstForm(firstForm);
     }
 
-    public List<Verb> getVerbsByGroup(Compilation compilation){
-        return compilation.getVerbs().stream().map(CompilationVerb::getVerb).collect(Collectors.toList());
+    public List<Verb> getVerbsByGroup(Group compilation){
+        return compilation.getVerbs().stream().map(GroupVerb::getVerb).collect(Collectors.toList());
     }
 
     public List<Verb> getVerbsByIds(List<Long> verbsId) {

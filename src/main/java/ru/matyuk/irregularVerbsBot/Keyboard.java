@@ -1,6 +1,5 @@
 package ru.matyuk.irregularVerbsBot;
 
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -8,25 +7,22 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
-import ru.matyuk.irregularVerbsBot.controller.GroupVerbController;
+import ru.matyuk.irregularVerbsBot.controller.GroupController;
 import ru.matyuk.irregularVerbsBot.enums.Command;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
-import ru.matyuk.irregularVerbsBot.jsonPojo.CallbackQueryPojo;
-import ru.matyuk.irregularVerbsBot.model.Compilation;
+import ru.matyuk.irregularVerbsBot.model.Group;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static ru.matyuk.irregularVerbsBot.enums.Command.*;
-import static ru.matyuk.irregularVerbsBot.enums.StateUser.*;
 
 @Component
 public class Keyboard {
 
     @Autowired
-    private GroupVerbController groupVerbController;
+    private GroupController groupVerbController;
 
     private int lengthRow = 3;
     public ReplyKeyboardMarkup getReplyKeyboardMarkupByState(StateUser state, Long chatId){
@@ -51,10 +47,10 @@ public class Keyboard {
                 break;
             case VIEW_GROUP_STATE:
             case CHOOSE_GROUP_STATE:
-                List<Compilation> groups = groupVerbController.getGroupsWithVerbsByChatId(chatId);
+                List<Group> groups = groupVerbController.getGroupsWithVerbsByChatId(chatId);
                 int offset = 0;
                 row = new KeyboardRow();
-                for (Compilation group: groups) {
+                for (Group group: groups) {
                     if(offset == lengthRow){
                         keyboardRowList.add(row);
                         row = new KeyboardRow();
@@ -104,12 +100,12 @@ public class Keyboard {
         return inlineKeyboardMarkup;
     }
 
-    public InlineKeyboardMarkup getInlineButtonsGroups(List<Compilation> groups){
+    public InlineKeyboardMarkup getInlineButtonsGroups(List<Group> groups){
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         int count = 0;
         List<InlineKeyboardButton> row = new ArrayList<>();
-        for (Compilation group :  groups) {
+        for (Group group :  groups) {
             count++;
             String callbackData = DELETE_GROUP.getName() + ":" + group.getId();
             row.add(createButtonInline(group.getName(), callbackData));

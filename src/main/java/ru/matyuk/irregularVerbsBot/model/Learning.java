@@ -6,7 +6,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 
-@Entity(name = "learnings")
+@Entity(name = "tg_learnings")
 @Data
 public class Learning {
 

@@ -4,17 +4,17 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "tg_group_verb")
 @Data
-public class CompilationVerb {
+public class GroupVerb {
 
     @EmbeddedId
-    private CompilationVerbId id;
+    private GroupVerbId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("compilationId")
-    @JoinColumn(name = "compilation_id")
-    Compilation compilation;
+    @MapsId("groupId")
+    @JoinColumn(name = "group_id")
+    Group group;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("verbId")

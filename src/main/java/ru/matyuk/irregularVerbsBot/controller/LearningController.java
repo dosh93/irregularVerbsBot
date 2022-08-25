@@ -1,6 +1,7 @@
 package ru.matyuk.irregularVerbsBot.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.matyuk.irregularVerbsBot.model.Learning;
 import ru.matyuk.irregularVerbsBot.model.User;
@@ -22,7 +23,8 @@ public class LearningController {
     @Autowired
     private VerbController verbController;
 
-    private int MAX_COUNT_SUCCESSFUL = 3;
+    @Value("${learning.count_successful}")
+    private int MAX_COUNT_SUCCESSFUL;
 
     public void addToLearning(User user, List<Verb> verbs){
         Set<Long> idsVerb = learningRepository.findByUser(user)
@@ -62,14 +64,12 @@ public class LearningController {
     }
 
     public void setInactiveAndAddSuccessful(Learning learningVerb) {
-        System.out.println("---------------------------------------------------------------------------------------");
         learningVerb.setState(false);
         learningVerb.setCountSuccessful(learningVerb.getCountSuccessful() + 1);
         learningRepository.save(learningVerb);
     }
 
     public void setInactive(Learning learningVerb) {
-        System.out.println("---------------------------------------------------------------------------------------");
         learningVerb.setState(false);
         learningRepository.save(learningVerb);
     }

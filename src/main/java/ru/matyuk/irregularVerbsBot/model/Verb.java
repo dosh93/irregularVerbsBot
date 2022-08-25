@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity(name = "verbs")
+@Entity(name = "tg_verbs")
 @Data
 public class Verb {
 
@@ -22,7 +22,7 @@ public class Verb {
     private String translate;
 
     @OneToMany(mappedBy = "verb", fetch = FetchType.LAZY)
-    private List<CompilationVerb> groups;
+    private List<GroupVerb> groups;
 
     @OneToMany(mappedBy = "verb",
             orphanRemoval = true,
