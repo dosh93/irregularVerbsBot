@@ -29,5 +29,6 @@ public final class Messages {
     public static final String DELETE_GROUP_DONE_MESSAGE = "Группа удалена";
     public static final String CHOOSE_GROUP_FOR_DELETE_MESSAGE = "УДАЛЕНИЕ ГРУППЫ\n\nВыберете группу";
     public static final String NO_GROUP_DELETE_MESSAGE = "У вас нет групп для удаления";
+    public static final String DELETE_ALL_DATA_MESSAGE = "Все данные удалены.\nЧто бы заново учить глаголы нажмите в меню на /start";
 
 }

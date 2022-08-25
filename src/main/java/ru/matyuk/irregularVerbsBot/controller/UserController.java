@@ -3,15 +3,21 @@ package ru.matyuk.irregularVerbsBot.controller;
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.jsonPojo.CreateGroupPojo;
+import ru.matyuk.irregularVerbsBot.model.Compilation;
+import ru.matyuk.irregularVerbsBot.model.CompilationVerb;
+import ru.matyuk.irregularVerbsBot.model.Learning;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.repository.UserRepository;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -20,6 +26,19 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private GroupVerbController groupVerbController;
+
+    @Autowired
+    private LearningController learningController;
+
+    @Autowired
+    private CompilationVerbController compilationVerbController;
+
+    @Value("${learning.count_successful}")
+    Integer countSuccessful;
+
 
     public User registerUser(Chat chat) {
         User user = new User();
@@ -31,6 +50,7 @@ public class UserController {
             user.setFirstName(chat.getFirstName());
             user.setLastName(chat.getLastName());
             user.setUserName(chat.getUserName());
+            user.setCountSuccessful(countSuccessful);
             user.setRegisterAt(new Timestamp(System.currentTimeMillis()));
 
             userRepository.save(user);
@@ -61,9 +81,23 @@ public class UserController {
         return userRepository.save(user);
     }
 
-    public Integer getMessageIdCreateGroup(User user){
-        Gson gson = new Gson();
-        return gson.fromJson(user.getTmp(), CreateGroupPojo.class).getMessageId();
-    }
+    public void delete(User user) {
+        List<Learning> learnings = user.getLearnings();
+        List<CompilationVerb> compilationVerbList = new ArrayList<>();
 
+        learningController.delete(learnings);
+
+        user = userRepository.findById(user.getChatId()).get();
+        List<Compilation> compilations = user.getCompilations();
+
+        compilations.forEach(compilation -> compilationVerbList.addAll(compilation.getVerbs()));
+        compilationVerbController.delete(compilationVerbList);
+
+        user = userRepository.findById(user.getChatId()).get();
+        compilations = user.getCompilations();
+        groupVerbController.delete(compilations);
+
+        user = userRepository.findById(user.getChatId()).get();
+        userRepository.delete(user);
+    }
 }

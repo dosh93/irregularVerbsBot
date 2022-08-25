@@ -4,8 +4,11 @@ import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import ru.matyuk.irregularVerbsBot.controller.GroupVerbController;
 import ru.matyuk.irregularVerbsBot.enums.Command;
@@ -145,5 +148,9 @@ public class Keyboard {
 
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
+    }
+
+    public ReplyKeyboard getRemoveKeyboard() {
+       return ReplyKeyboardRemove.builder().removeKeyboard(true).build();
     }
 }

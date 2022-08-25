@@ -201,7 +201,7 @@ public class StartCommandController {
 
     public ResponseMessage checkAnswer(User user, String messageText) {
         ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
-        List<String> answerUserList = Arrays.stream(messageText.split(" ")).collect(Collectors.toList());
+        List<String> answerUserList = Arrays.stream(messageText.trim().replaceAll("[\\s]{2,}", " ").split(" ")).collect(Collectors.toList());
         String answer;
 
         if(answerUserList.size() != 2) answer = INVALID_RESPONSE_MESSAGE;
@@ -362,13 +362,18 @@ public class StartCommandController {
         return ResponseMessage.builder()
                 .message("-")
                 .chatId(user.getChatId())
-                .keyboard(ReplyKeyboardRemove.builder().removeKeyboard(true).build())
+                .keyboard(keyboard.getRemoveKeyboard())
                 .build();
     }
 
-//    public void saveMessageIdCreateGroup(Integer messageId, User user) {
-//        CreateGroupPojo createGroupPojo = gson.fromJson(user.getTmp(), CreateGroupPojo.class);
-//        createGroupPojo.setMessageId(messageId);
-//        userController.setTmp(user, gson.toJson(createGroupPojo));
-//    }
+    public ResponseMessage allDeleteUser(User user) {
+        Long chatId = user.getChatId();
+        userController.delete(user);
+        return ResponseMessage.builder()
+                .message(DELETE_ALL_DATA_MESSAGE)
+                .chatId(chatId)
+                .keyboard(keyboard.getRemoveKeyboard())
+                .build();
+    }
+
 }
