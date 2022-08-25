@@ -126,6 +126,21 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    private boolean processingGeneralCommand(Command command, User user) {
+        switch (command) {
+            case ALL_DELETE:
+                sendMessage(startCommandController.allDeleteUser(user));
+                return true;
+//            case HELP:
+//                sendMessage(startCommandController.getHelp(user));
+//                return true;
+//            case FEEDBACK:
+//                sendMessage(startCommandController.startFeedBack(user));
+//                return true;
+        }
+        return false;
+    }
+
     private void processingMessage(Message message) {
 
         long chatId = message.getChatId();
@@ -139,6 +154,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
 
         StateUser stateUser = user.getState();
+
+        if(processingGeneralCommand(command, user)) return;
 
         switch (stateUser){
             case REGISTERED_STATE:
@@ -157,9 +174,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                         sendMessage(startCommandController.startCreateGroup(user));
                         break;
                     case DELETE_GROUP:
+                        deleteMessage(sendMessage(startCommandController.deleteKeyboard(user)), user.getChatId());;
                         sendMessage(startCommandController.startDeleteGroup(user));
                         break;
-                    default: sendMessage(startCommandController.unknownCommand(user));
                 }
                 break;
             case VIEW_GROUP_STATE:
@@ -201,6 +218,8 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
 
     }
+
+
 
     @Override
     public void onUpdateReceived(Update update) {

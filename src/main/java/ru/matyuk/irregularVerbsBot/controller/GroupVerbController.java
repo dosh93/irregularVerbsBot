@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.matyuk.irregularVerbsBot.model.Compilation;
 import ru.matyuk.irregularVerbsBot.model.User;
+import ru.matyuk.irregularVerbsBot.repository.CompilationVerbRepository;
 import ru.matyuk.irregularVerbsBot.repository.GroupVerbRepository;
 
 import java.util.*;
@@ -15,6 +16,9 @@ public class GroupVerbController {
 
     @Autowired
     private GroupVerbRepository groupVerbRepository;
+
+    @Autowired
+    private CompilationVerbRepository compilationVerbRepository;
 
 
     public List<Compilation> getGroupsWithVerbsByChatId(Long chatId){
@@ -51,5 +55,9 @@ public class GroupVerbController {
 
     public void delete(Long idGroup) {
         groupVerbRepository.deleteById(idGroup);
+    }
+
+    public void delete(List<Compilation> compilations) {
+        compilations.forEach(compilation -> groupVerbRepository.delete(compilation));
     }
 }

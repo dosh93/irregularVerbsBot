@@ -19,7 +19,8 @@ public class CompilationVerbController {
     @Autowired
     private VerbController verbController;
 
-    @Autowired GroupVerbController groupVerbController;
+    @Autowired
+    private GroupVerbController groupVerbController;
 
     public void saveVerbsInGroup(Long compilationId, List<Long> verbId){
         List<Verb> verbs = verbController.getVerbsByIds(verbId);

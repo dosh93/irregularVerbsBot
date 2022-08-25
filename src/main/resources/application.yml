@@ -10,3 +10,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     initialization-mode: always
 
+learning:
+  count_successful: 3
+

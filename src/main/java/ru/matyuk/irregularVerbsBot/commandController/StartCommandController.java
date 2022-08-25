@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import ru.matyuk.irregularVerbsBot.Keyboard;
@@ -200,7 +201,7 @@ public class StartCommandController {
 
     public ResponseMessage checkAnswer(User user, String messageText) {
         ReplyKeyboardMarkup replyKeyboardMarkupByState = keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
-        List<String> answerUserList = Arrays.stream(messageText.split(" ")).collect(Collectors.toList());
+        List<String> answerUserList = Arrays.stream(messageText.trim().replaceAll("[\\s]{2,}", " ").split(" ")).collect(Collectors.toList());
         String answer;
 
         if(answerUserList.size() != 2) answer = INVALID_RESPONSE_MESSAGE;
@@ -314,12 +315,21 @@ public class StartCommandController {
     }
 
     public ResponseMessage startDeleteGroup(User user) {
-        user = userController.setState(user, DELETE_GROUP_STATE);
-        InlineKeyboardMarkup inlineButtonsGroups = keyboard.getInlineButtonsGroups(user.getCompilations());
+        String answer;
+        ReplyKeyboard keyboard1;
+        if(user.getCompilations().size() > 0){
+            user = userController.setState(user, DELETE_GROUP_STATE);
+            answer = CHOOSE_GROUP_FOR_DELETE_MESSAGE;
+            keyboard1 = keyboard.getInlineButtonsGroups(user.getCompilations());
+        }else {
+            answer = NO_GROUP_DELETE_MESSAGE;
+            keyboard1 =  keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId());
+        }
+
         return ResponseMessage.builder()
-                .message(CHOOSE_GROUP_FOR_DELETE_MESSAGE)
+                .message(answer)
                 .chatId(user.getChatId())
-                .keyboard(inlineButtonsGroups)
+                .keyboard(keyboard1)
                 .build();
     }
 
@@ -348,9 +358,22 @@ public class StartCommandController {
                 .build();
     }
 
-//    public void saveMessageIdCreateGroup(Integer messageId, User user) {
-//        CreateGroupPojo createGroupPojo = gson.fromJson(user.getTmp(), CreateGroupPojo.class);
-//        createGroupPojo.setMessageId(messageId);
-//        userController.setTmp(user, gson.toJson(createGroupPojo));
-//    }
+    public ResponseMessage deleteKeyboard(User user){
+        return ResponseMessage.builder()
+                .message("-")
+                .chatId(user.getChatId())
+                .keyboard(keyboard.getRemoveKeyboard())
+                .build();
+    }
+
+    public ResponseMessage allDeleteUser(User user) {
+        Long chatId = user.getChatId();
+        userController.delete(user);
+        return ResponseMessage.builder()
+                .message(DELETE_ALL_DATA_MESSAGE)
+                .chatId(chatId)
+                .keyboard(keyboard.getRemoveKeyboard())
+                .build();
+    }
+
 }

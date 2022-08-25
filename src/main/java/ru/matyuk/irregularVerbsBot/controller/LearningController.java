@@ -98,4 +98,8 @@ public class LearningController {
         learningVerb.setCountSuccessful(0);
         learningRepository.save(learningVerb);
     }
+
+    public void delete(List<Learning> learnings) {
+        learnings.forEach(learning -> learningRepository.delete(learning));
+    }
 }
