@@ -12,13 +12,13 @@ import java.io.Serializable;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-public class CompilationVerbId implements Serializable {
+public class GroupVerbId implements Serializable {
 
-    @Column(name = "compilation_id")
-    private Long compilationId;
+    @Column(name = "group_id")
+    private Long groupId;
 
     @Column(name = "verb_id")
     private Long verbId;
 
-    public CompilationVerbId(){}
+    public GroupVerbId(){}
 }

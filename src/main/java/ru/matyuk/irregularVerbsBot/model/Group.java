@@ -8,9 +8,9 @@ import java.util.List;
 import static org.hibernate.id.PersistentIdentifierGenerator.TABLE;
 
 
-@Entity(name = "compilation")
+@Entity(name = "tg_group")
 @Data
-public class Compilation {
+public class Group {
 
     @Id
     @GeneratedValue(generator = TABLE)
@@ -18,8 +18,8 @@ public class Compilation {
 
     private String name;
 
-    @OneToMany(mappedBy = "compilation", fetch = FetchType.LAZY)
-    private List<CompilationVerb> verbs;
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    private List<GroupVerb> verbs;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;

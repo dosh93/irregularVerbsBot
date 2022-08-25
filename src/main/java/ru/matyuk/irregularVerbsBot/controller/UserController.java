@@ -1,16 +1,13 @@
 package ru.matyuk.irregularVerbsBot.controller;
 
-import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
-import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
-import ru.matyuk.irregularVerbsBot.jsonPojo.CreateGroupPojo;
-import ru.matyuk.irregularVerbsBot.model.Compilation;
-import ru.matyuk.irregularVerbsBot.model.CompilationVerb;
+import ru.matyuk.irregularVerbsBot.model.Group;
+import ru.matyuk.irregularVerbsBot.model.GroupVerb;
 import ru.matyuk.irregularVerbsBot.model.Learning;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.repository.UserRepository;
@@ -28,13 +25,13 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private GroupVerbController groupVerbController;
+    private GroupController groupController;
 
     @Autowired
     private LearningController learningController;
 
     @Autowired
-    private CompilationVerbController compilationVerbController;
+    private GroupVerbController groupVerbController;
 
     @Value("${learning.count_successful}")
     Integer countSuccessful;
@@ -83,19 +80,19 @@ public class UserController {
 
     public void delete(User user) {
         List<Learning> learnings = user.getLearnings();
-        List<CompilationVerb> compilationVerbList = new ArrayList<>();
+        List<GroupVerb> groupVerbList = new ArrayList<>();
 
         learningController.delete(learnings);
 
         user = userRepository.findById(user.getChatId()).get();
-        List<Compilation> compilations = user.getCompilations();
+        List<Group> groups = user.getGroups();
 
-        compilations.forEach(compilation -> compilationVerbList.addAll(compilation.getVerbs()));
-        compilationVerbController.delete(compilationVerbList);
+        groups.forEach(group -> groupVerbList.addAll(group.getVerbs()));
+        groupVerbController.delete(groupVerbList);
 
         user = userRepository.findById(user.getChatId()).get();
-        compilations = user.getCompilations();
-        groupVerbController.delete(compilations);
+        groups = user.getGroups();
+        groupController.delete(groups);
 
         user = userRepository.findById(user.getChatId()).get();
         userRepository.delete(user);
