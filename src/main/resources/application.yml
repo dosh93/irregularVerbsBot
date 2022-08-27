@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-circular-references: true
   jpa:
     hibernate:
       ddl-auto: update
@@ -12,4 +14,5 @@ spring:
 
 learning:
   count_successful: 3
+
 

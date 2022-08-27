@@ -1,4 +1,4 @@
-package ru.matyuk.irregularVerbsBot.model;
+package ru.matyuk.irregularVerbsBot.model.id;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -12,13 +12,13 @@ import java.io.Serializable;
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-public class GroupVerbId implements Serializable {
+public class UserGroupId implements Serializable {
+
+    @Column(name = "user_id")
+    private Long userId;
 
     @Column(name = "group_id")
     private Long groupId;
 
-    @Column(name = "verb_id")
-    private Long verbId;
-
-    public GroupVerbId(){}
+    public UserGroupId(){}
 }

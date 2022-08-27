@@ -6,16 +6,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
-import ru.matyuk.irregularVerbsBot.model.Group;
-import ru.matyuk.irregularVerbsBot.model.GroupVerb;
-import ru.matyuk.irregularVerbsBot.model.Learning;
-import ru.matyuk.irregularVerbsBot.model.User;
+import ru.matyuk.irregularVerbsBot.model.*;
+import ru.matyuk.irregularVerbsBot.model.id.UserGroupId;
+import ru.matyuk.irregularVerbsBot.model.id.UserVerbId;
 import ru.matyuk.irregularVerbsBot.repository.UserRepository;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -36,6 +33,9 @@ public class UserController {
     @Autowired
     private FeedbackController feedbackController;
 
+    @Autowired
+    private UserGroupLearningController userGroupLearningController;
+
     @Value("${learning.count_successful}")
     Integer countSuccessful;
 
@@ -53,7 +53,7 @@ public class UserController {
             user.setCountSuccessful(countSuccessful);
             user.setRegisterAt(new Timestamp(System.currentTimeMillis()));
 
-            userRepository.save(user);
+            user = userRepository.save(user);
             log.info("Сохранен юзер " + user);
         }else user = optionalUser.get();
 
@@ -73,11 +73,38 @@ public class UserController {
     }
 
     public boolean isLearning(User user){
-        return user.getLearnings().size() != 0;
+        return user.getGroupLearnings().size() != 0;
     }
 
     public User setTmp(User user, String tmp){
         user.setTmp(tmp);
+        return userRepository.save(user);
+    }
+
+    public User saveLearning(User user, List<Verb> verbs, Group group){
+        List<Learning> userLearning = user.getLearnings();
+        List<UserGroupLearning> userGroupLearningList = user.getGroupLearnings();
+
+        verbs.forEach(verb -> {
+            UserVerbId userVerbId = new UserVerbId(user.getChatId(), verb.getId());
+            if(learningController.getLearning(userVerbId) == null){
+                Learning learning = new Learning();
+                learning.setUser(user);
+                learning.setVerb(verb);
+                learning.setId(userVerbId);
+                userLearning.add(learning);
+            }
+        });
+
+        UserGroupLearning userGroupLearning = new UserGroupLearning();
+        userGroupLearning.setUser(user);
+        userGroupLearning.setGroup(group);
+        userGroupLearning.setId(new UserGroupId(user.getChatId(), group.getId()));
+
+        userGroupLearningList.add(userGroupLearning);
+
+        user.setLearnings(userLearning);
+        user.setGroupLearnings(userGroupLearningList);
         return userRepository.save(user);
     }
 
@@ -92,6 +119,9 @@ public class UserController {
 
         groups.forEach(group -> groupVerbList.addAll(group.getVerbs()));
         groupVerbController.delete(groupVerbList);
+
+        user = userRepository.findById(user.getChatId()).get();
+        userGroupLearningController.delete(user.getGroupLearnings());
 
         user = userRepository.findById(user.getChatId()).get();
         groups = user.getGroups();

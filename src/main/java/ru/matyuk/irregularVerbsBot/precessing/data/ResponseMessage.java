@@ -1,9 +1,8 @@
-package ru.matyuk.irregularVerbsBot.commandController;
+package ru.matyuk.irregularVerbsBot.precessing.data;
 
 import lombok.Builder;
 import lombok.Data;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 
 @Data
 @Builder

@@ -11,4 +11,5 @@ public interface GroupRepository extends CrudRepository<Group, Long> {
 
     Group findByName(String name);
     List<Group> findByUserChatIdIn(List<Long> ids);
+    List<Group> findByUserChatIdInAndIdNotIn(List<Long> ids, List<Long> notIds);
 }

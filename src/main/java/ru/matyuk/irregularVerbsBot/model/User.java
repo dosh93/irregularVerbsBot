@@ -7,6 +7,7 @@ import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -27,14 +28,18 @@ public class User {
 
     @Column(columnDefinition = "int default 0")
     @Enumerated(EnumType.ORDINAL)
-    private StateUser state = StateUser.REGISTERED_STATE;
+    private StateUser state = StateUser.MAIN_MENU_STATE;
 
     @OneToMany(mappedBy = "user",orphanRemoval = true,
-            cascade = CascadeType.REMOVE)
+            cascade = CascadeType.ALL)
     private List<Learning> learnings;
 
     @OneToMany(mappedBy = "user",orphanRemoval = true,
-            cascade = CascadeType.REMOVE)
+            cascade = CascadeType.ALL)
+    private List<UserGroupLearning> groupLearnings;
+
+    @OneToMany(mappedBy = "user",orphanRemoval = true,
+            cascade = CascadeType.ALL)
     private List<Group> groups;
 
     @Lob

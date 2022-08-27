@@ -22,10 +22,6 @@ public class VerbController {
         return verbRepository.findByFirstForm(firstForm);
     }
 
-    public List<Verb> getVerbsByGroup(Group compilation){
-        return compilation.getVerbs().stream().map(GroupVerb::getVerb).collect(Collectors.toList());
-    }
-
     public List<Verb> getVerbsByIds(List<Long> verbsId) {
         return verbRepository.findByIdIn(verbsId);
     }

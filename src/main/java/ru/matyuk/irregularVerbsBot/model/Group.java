@@ -21,6 +21,9 @@ public class Group {
     @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
     private List<GroupVerb> verbs;
 
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    private List<UserGroupLearning> userLearns;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 }
