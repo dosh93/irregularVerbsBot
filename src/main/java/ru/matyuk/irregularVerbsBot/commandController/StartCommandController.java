@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static ru.matyuk.irregularVerbsBot.config.Messages.*;
 import static ru.matyuk.irregularVerbsBot.enums.StateUser.DELETE_GROUP_STATE;
+import static ru.matyuk.irregularVerbsBot.enums.StateUser.START_CREATE_FEEDBACK;
 
 @Slf4j
 @Component
@@ -42,7 +43,8 @@ public class StartCommandController {
 
     @Autowired
     private GroupVerbController groupVerbController;
-
+    @Autowired
+    private FeedbackController feedbackController;
     @Autowired
     private Keyboard keyboard;
 
@@ -376,4 +378,26 @@ public class StartCommandController {
                 .build();
     }
 
+    public ResponseMessage startFeedBack(User user) {
+        user = userController.setState(user, START_CREATE_FEEDBACK);
+        return ResponseMessage.builder()
+                .message(TYPE_TEXT_FEEDBACK_MESSAGE)
+                .chatId(user.getChatId())
+                .keyboard(keyboard.getCancelInline())
+                .build();
+    }
+
+    public void saveMessageId(Integer sendMessage, User user) {
+        userController.setTmp(user, sendMessage.toString());
+    }
+
+    public ResponseMessage saveFeedback(User user, String messageText) {
+        user = userController.setState(user, userController.isLearning(user) ? StateUser.START_LEARN_STATE : StateUser.REGISTERED_STATE);
+        feedbackController.create(user, messageText);
+        return ResponseMessage.builder()
+                .message(FEEDBACK_CREATED_MESSAGE)
+                .chatId(user.getChatId())
+                .keyboard(keyboard.getReplyKeyboardMarkupByState(user.getState(), user.getChatId()))
+                .build();
+    }
 }

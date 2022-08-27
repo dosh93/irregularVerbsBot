@@ -149,4 +149,16 @@ public class Keyboard {
     public ReplyKeyboard getRemoveKeyboard() {
        return ReplyKeyboardRemove.builder().removeKeyboard(true).build();
     }
+
+    public InlineKeyboardMarkup getCancelInline(){
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        String callbackCancel = Command.CANCEL.getName() + ":" + "-";
+        InlineKeyboardButton cancel = createButtonInline(Command.CANCEL.getName(), callbackCancel);
+        row.add(cancel);
+        rows.add(row);
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
 }

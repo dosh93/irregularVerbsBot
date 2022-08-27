@@ -107,6 +107,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                         break;
                 }
                 break;
+            case START_CREATE_FEEDBACK:
+                if(command == CANCEL){
+                    deleteMessage(callbackQuery.getMessage().getMessageId(), chatId);
+                    sendMessage(startCommandController.goToMainMenu(user));
+                }
+                break;
         }
     }
 
@@ -134,9 +140,10 @@ public class TelegramBot extends TelegramLongPollingBot {
 //            case HELP:
 //                sendMessage(startCommandController.getHelp(user));
 //                return true;
-//            case FEEDBACK:
-//                sendMessage(startCommandController.startFeedBack(user));
-//                return true;
+            case FEEDBACK:
+                deleteMessage(sendMessage(startCommandController.deleteKeyboard(user)), user.getChatId());
+                startCommandController.saveMessageId(sendMessage(startCommandController.startFeedBack(user)), user);
+                return true;
         }
         return false;
     }
@@ -174,7 +181,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                         sendMessage(startCommandController.startCreateGroup(user));
                         break;
                     case DELETE_GROUP:
-                        deleteMessage(sendMessage(startCommandController.deleteKeyboard(user)), user.getChatId());;
+                        deleteMessage(sendMessage(startCommandController.deleteKeyboard(user)), user.getChatId());
                         sendMessage(startCommandController.startDeleteGroup(user));
                         break;
                 }
@@ -212,6 +219,10 @@ public class TelegramBot extends TelegramLongPollingBot {
                 break;
             case SET_NAME_GROUP_STATE:
                 sendMessage(startCommandController.setNameGroup(user, messageText));
+                break;
+            case START_CREATE_FEEDBACK:
+                deleteMessage(Integer.parseInt(user.getTmp()), user.getChatId());
+                sendMessage(startCommandController.saveFeedback(user, messageText));
                 break;
             default:
                 sendMessage(startCommandController.unknownCommand(user));
