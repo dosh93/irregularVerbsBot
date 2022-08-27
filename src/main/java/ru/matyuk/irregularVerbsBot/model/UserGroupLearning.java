@@ -1,16 +1,16 @@
 package ru.matyuk.irregularVerbsBot.model;
 
 import lombok.Data;
-import ru.matyuk.irregularVerbsBot.model.id.GroupVerbId;
+import ru.matyuk.irregularVerbsBot.model.id.UserGroupId;
 
 import javax.persistence.*;
 
-@Entity(name = "tg_group_verb")
+@Entity(name = "tg_users_group_learning")
 @Data
-public class GroupVerb {
+public class UserGroupLearning {
 
     @EmbeddedId
-    private GroupVerbId id;
+    private UserGroupId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("groupId")
@@ -18,7 +18,8 @@ public class GroupVerb {
     Group group;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("verbId")
-    @JoinColumn(name = "verb_id")
-    Verb verb;
+    @MapsId("userId")
+    @JoinColumn(name = "user_id")
+    User user;
+
 }

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.matyuk.irregularVerbsBot.model.Group;
 import ru.matyuk.irregularVerbsBot.model.GroupVerb;
-import ru.matyuk.irregularVerbsBot.model.GroupVerbId;
+import ru.matyuk.irregularVerbsBot.model.id.GroupVerbId;
 import ru.matyuk.irregularVerbsBot.model.Verb;
 import ru.matyuk.irregularVerbsBot.repository.GroupVerbRepository;
 
@@ -38,5 +38,9 @@ public class GroupVerbController {
         for (GroupVerb groupVerb : groupVerbList) {
             groupVerbRepository.delete(groupVerb);
         }
+    }
+
+    public List<GroupVerb> getGroupVerbByIdGroup(Long groupId){
+        return groupVerbRepository.findAllByGroupId(groupId);
     }
 }

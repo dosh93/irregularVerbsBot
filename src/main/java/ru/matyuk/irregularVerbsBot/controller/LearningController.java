@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.matyuk.irregularVerbsBot.model.Learning;
 import ru.matyuk.irregularVerbsBot.model.User;
-import ru.matyuk.irregularVerbsBot.model.UserVerbId;
+import ru.matyuk.irregularVerbsBot.model.id.UserVerbId;
 import ru.matyuk.irregularVerbsBot.model.Verb;
 import ru.matyuk.irregularVerbsBot.repository.LearningRepository;
 import ru.matyuk.irregularVerbsBot.utils.CommonUtils;
@@ -26,21 +26,6 @@ public class LearningController {
     @Value("${learning.count_successful}")
     private int MAX_COUNT_SUCCESSFUL;
 
-    public void addToLearning(User user, List<Verb> verbs){
-        Set<Long> idsVerb = learningRepository.findByUser(user)
-                .stream()
-                .map(learning -> learning.getVerb().getId())
-                .collect(Collectors.toSet());
-        for (Verb verb : verbs) {
-            if(!idsVerb.contains(verb.getId())){
-                Learning learning = new Learning();
-                learning.setUser(user);
-                learning.setVerb(verb);
-                learning.setId(new UserVerbId(user.getChatId(), verb.getId()));
-                learningRepository.save(learning);
-            }
-        }
-    }
 
     public Verb getVerbForLearning(User user) {
         List<Learning> learnings = learningRepository.findByUserAndCountSuccessfulLessThanOrderByCountSuccessfulAsc(user, MAX_COUNT_SUCCESSFUL);
@@ -101,5 +86,10 @@ public class LearningController {
 
     public void delete(List<Learning> learnings) {
         learnings.forEach(learning -> learningRepository.delete(learning));
+    }
+
+    public Learning getLearning(UserVerbId userVerbId) {
+        Optional<Learning> byId = learningRepository.findById(userVerbId);
+        return byId.orElse(null);
     }
 }
