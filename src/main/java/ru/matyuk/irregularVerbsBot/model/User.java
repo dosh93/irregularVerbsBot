@@ -44,4 +44,8 @@ public class User {
     @Column(columnDefinition = "int default 3")
     private int countSuccessful;
 
+    @OneToMany(mappedBy = "user",orphanRemoval = true,
+            cascade = CascadeType.REMOVE)
+    private List<Feedback> feedbacks;
+
 }

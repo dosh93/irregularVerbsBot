@@ -33,6 +33,9 @@ public class UserController {
     @Autowired
     private GroupVerbController groupVerbController;
 
+    @Autowired
+    private FeedbackController feedbackController;
+
     @Value("${learning.count_successful}")
     Integer countSuccessful;
 
@@ -93,6 +96,9 @@ public class UserController {
         user = userRepository.findById(user.getChatId()).get();
         groups = user.getGroups();
         groupController.delete(groups);
+
+        user = userRepository.findById(user.getChatId()).get();
+        feedbackController.markToDelete(user.getFeedbacks());
 
         user = userRepository.findById(user.getChatId()).get();
         userRepository.delete(user);
