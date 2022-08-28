@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import ru.matyuk.irregularVerbsBot.design.Keyboard;
 import ru.matyuk.irregularVerbsBot.design.Messages;
 import ru.matyuk.irregularVerbsBot.controller.*;
+import ru.matyuk.irregularVerbsBot.design.Smiles;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.model.UserGroupLearning;
@@ -72,11 +73,15 @@ public abstract class MainProcessing {
         List<UserGroupLearning> groupLearnings = user.getGroupLearnings();
 
         if(groupLearnings.size() > 0){
-            responseMessage.append("\n").append(Messages.SELECTED_GROUP_MESSAGE);
+            responseMessage.append(Messages.SELECTED_GROUP_MESSAGE);
         }
 
-        groupLearnings.forEach(groupLearning -> responseMessage.append(groupLearning.getGroup().getName()).append("\n"));
-
+        if(groupLearnings.size() > 0){
+            groupLearnings.forEach(groupLearning -> responseMessage.append(Smiles.MINUS).append(" ")
+                    .append(groupLearning.getGroup().getName()).append("\n"));
+        }else {
+            responseMessage.append(NO_SELECTED_GROUP_MESSAGE);
+        }
         ResponseMessage response = ResponseMessage.builder()
                 .message(responseMessage.toString())
                 .chatId(user.getChatId())
