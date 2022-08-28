@@ -10,6 +10,8 @@ import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
 import ru.matyuk.irregularVerbsBot.service.TelegramBot;
 
+import static ru.matyuk.irregularVerbsBot.design.Messages.SETTING_LEARNING_MESSAGE;
+
 @Component
 public class MainMenuProcessing extends MainProcessing{
 
@@ -38,9 +40,11 @@ public class MainMenuProcessing extends MainProcessing{
             case FEEDBACK:
                 feedback(user, messageId);
                 break;
+            case SETTING_LEARNING:
+                settingLearning(user, messageId);
+                break;
         }
     }
-
 
     @Override
     public void processing(String messageText, User user) {

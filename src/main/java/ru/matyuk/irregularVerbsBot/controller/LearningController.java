@@ -3,10 +3,9 @@ package ru.matyuk.irregularVerbsBot.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.matyuk.irregularVerbsBot.model.Learning;
-import ru.matyuk.irregularVerbsBot.model.User;
+import org.springframework.transaction.annotation.Transactional;
+import ru.matyuk.irregularVerbsBot.model.*;
 import ru.matyuk.irregularVerbsBot.model.id.UserVerbId;
-import ru.matyuk.irregularVerbsBot.model.Verb;
 import ru.matyuk.irregularVerbsBot.repository.LearningRepository;
 import ru.matyuk.irregularVerbsBot.utils.CommonUtils;
 
@@ -91,5 +90,10 @@ public class LearningController {
     public Learning getLearning(UserVerbId userVerbId) {
         Optional<Learning> byId = learningRepository.findById(userVerbId);
         return byId.orElse(null);
+    }
+
+    @Transactional
+    public void delete(User user, List<Long> verbIds) {
+        learningRepository.deleteAllByUserChatIdAndVerbIdIn(user.getChatId(), verbIds);
     }
 }

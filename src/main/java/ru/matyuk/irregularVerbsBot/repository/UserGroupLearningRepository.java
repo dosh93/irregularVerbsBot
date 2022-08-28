@@ -5,4 +5,5 @@ import ru.matyuk.irregularVerbsBot.model.UserGroupLearning;
 import ru.matyuk.irregularVerbsBot.model.id.UserGroupId;
 
 public interface UserGroupLearningRepository extends CrudRepository<UserGroupLearning, UserGroupId> {
+    UserGroupLearning findByUserChatIdAndGroupId(Long chatId, Long id);
 }

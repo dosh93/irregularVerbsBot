@@ -9,9 +9,11 @@ import ru.matyuk.irregularVerbsBot.controller.GroupController;
 import ru.matyuk.irregularVerbsBot.controller.UserController;
 import ru.matyuk.irregularVerbsBot.model.Group;
 import ru.matyuk.irregularVerbsBot.model.User;
+import ru.matyuk.irregularVerbsBot.model.UserGroupLearning;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class Keyboard {
@@ -38,6 +40,7 @@ public class Keyboard {
         List<InlineKeyboardButton> row2 = new ArrayList<>();
         List<InlineKeyboardButton> row3 = new ArrayList<>();
         List<InlineKeyboardButton> row4 = new ArrayList<>();
+        List<InlineKeyboardButton> row5 = new ArrayList<>();
 
         if(userController.isLearning(user)){
             List<InlineKeyboardButton> row = new ArrayList<>();
@@ -57,6 +60,9 @@ public class Keyboard {
         InlineKeyboardButton groupChoose = createButtonInline(
                 ButtonInline.CHOOSE_GROUP.getText(),
                 ButtonInline.CHOOSE_GROUP.getCommand().name());
+        InlineKeyboardButton settingLearning = createButtonInline(
+                ButtonInline.SETTING_LEARNING.getText(),
+                ButtonInline.SETTING_LEARNING.getCommand().name());
         InlineKeyboardButton groupSetting = createButtonInline(
                 ButtonInline.SETTING_GROUP.getText(),
                 ButtonInline.SETTING_GROUP.getCommand().name());
@@ -67,13 +73,15 @@ public class Keyboard {
         row1.add(group);
         row2.add(groupView);
         row2.add(groupChoose);
-        row3.add(groupSetting);
-        row4.add(feedback);
+        row3.add(settingLearning);
+        row4.add(groupSetting);
+        row5.add(feedback);
 
         rows.add(row1);
         rows.add(row2);
         rows.add(row3);
         rows.add(row4);
+        rows.add(row5);
 
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
@@ -306,6 +314,56 @@ public class Keyboard {
                 ButtonInline.BACK.getCommand().toString()));
 
         rows.add(row1);
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+    public ReplyKeyboard getSettingLearningButton() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+
+        row1.add(createButtonInline(
+                ButtonInline.RESET_LEARNING_ALL.getText(),
+                ButtonInline.RESET_LEARNING_ALL.getCommand().toString()));
+        row1.add(createButtonInline(
+                ButtonInline.RESET_LEARNING_GROUP.getText(),
+                ButtonInline.RESET_LEARNING_GROUP.getCommand().toString()));
+        row2.add(createButtonInline(
+                ButtonInline.BACK.getText(),
+                ButtonInline.BACK.getCommand().toString()));
+
+        rows.add(row1);
+        rows.add(row2);
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+    public ReplyKeyboard getGroupForReset(User user) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+
+        List<Group> groups = user.getGroupLearnings().stream()
+                .map(UserGroupLearning::getGroup).collect(Collectors.toList());
+
+        int offset = 0;
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        for (Group group: groups) {
+            if(offset == lengthRow){
+                rows.add(row);
+                row = new ArrayList<>();
+            }
+            row.add(createButtonInline(group.getName(), group.getId().toString()));
+            offset++;
+        }
+        rows.add(row);
+        row = new ArrayList<>();
+
+        row.add(createButtonInline(
+                ButtonInline.BACK.getText(),
+                ButtonInline.BACK.getCommand().toString()));
+        rows.add(row);
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
     }

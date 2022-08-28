@@ -24,4 +24,7 @@ public class Smiles {
     public static final String WHITE_CHECK_MARK = "✅";
     public static final String MUSCLE = "\uD83D\uDCAA";
     public static final String CONFETTI = "\uD83C\uDF8A";
+    public static final String JOYSTICK = "\uD83D\uDD79";
+    public static final String RELOAD = "\uD83D\uDD04";
+    public static final String RELOAD_BY_GROUP = "\uD83D\uDD02";
 }
