@@ -3,6 +3,7 @@ package ru.matyuk.irregularVerbsBot.precessing;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import ru.matyuk.irregularVerbsBot.design.Smiles;
 import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.jsonPojo.CreateGroupPojo;
@@ -54,9 +55,10 @@ public class CreateGroupProcessing extends MainProcessing{
                 .idGroup(idGroup).verbIds(verbIds).build());
         user = userController.setTmp(user, createGroupJson);
 
-        StringBuilder responseText = new StringBuilder(RESULT_MESSAGE).append("\n");
+        StringBuilder responseText = new StringBuilder(RESULT_MESSAGE);
         for (Map.Entry<String, Verb> one : verbsInfinitiveHashMap.entrySet()) {
-            responseText.append(one.getValue() == null ? "❌ " : "✔️ ").append(one.getKey()).append("\n");
+            responseText.append(one.getValue() == null ? Smiles.DELETE + " " : Smiles.WHITE_CHECK_MARK + "️ ")
+                    .append(one.getKey()).append("\n");
         }
 
         ReplyKeyboard replyKeyboard = keyboard.getConfirmCreateGroupButton();

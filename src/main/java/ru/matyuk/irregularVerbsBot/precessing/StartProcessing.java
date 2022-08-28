@@ -27,7 +27,7 @@ public class StartProcessing extends MainProcessing{
 
     @Override
     public void processing(String messageText, User user) {
-        String responseText = String.format(HELLO_MESSAGE, user.getFirstName());
+        String responseText = MAIN_MENU_MESSAGE + String.format(HELLO_MESSAGE, user.getFirstName());
         long chatId = user.getChatId();
 
         ResponseMessage response = ResponseMessage.builder()

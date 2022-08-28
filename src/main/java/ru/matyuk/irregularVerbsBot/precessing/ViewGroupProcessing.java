@@ -3,6 +3,7 @@ package ru.matyuk.irregularVerbsBot.precessing;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import ru.matyuk.irregularVerbsBot.design.Smiles;
 import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.design.Messages;
 import ru.matyuk.irregularVerbsBot.model.GroupVerb;
@@ -41,7 +42,7 @@ public class ViewGroupProcessing extends MainProcessing{
 
     private void viewGroup(User user, Integer messageId, String data) {
         ReplyKeyboard replyKeyboard = keyboard.getBackToViewGroupButton();
-        StringBuilder responseMessage = new StringBuilder(Messages.VERBS_IN_GROUP_MESSAGE).append("\n");
+        StringBuilder responseMessage = new StringBuilder(Messages.VERBS_IN_GROUP_MESSAGE);
 
         List<Long> verbIds = groupVerbController.getGroupVerbByIdGroup(Long.parseLong(data)).stream()
                 .map(GroupVerb::getId)
@@ -50,7 +51,7 @@ public class ViewGroupProcessing extends MainProcessing{
 
         List<Verb> verbsByIds = verbController.getVerbsByIds(verbIds);
         for (Verb verb : verbsByIds) {
-            responseMessage.append(verb.toString()).append("\n");
+            responseMessage.append(Smiles.MINUS).append(" ").append(verb.toString()).append("\n");
         }
 
         ResponseMessage response = ResponseMessage.builder()

@@ -166,6 +166,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     public Integer sendMessage(ResponseMessage responseMessage){
         SendMessage message = new SendMessage();
+        message.enableHtml(true);
         message.setChatId(String.valueOf(responseMessage.getChatId()));
         message.setText(EmojiParser.parseToUnicode(responseMessage.getMessage()));
 

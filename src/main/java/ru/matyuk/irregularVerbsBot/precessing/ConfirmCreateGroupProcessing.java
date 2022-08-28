@@ -40,7 +40,7 @@ public class ConfirmCreateGroupProcessing extends MainProcessing{
         user = userController.setState(user, MAIN_MENU_STATE);
         Group group = groupController.getGroup(user.getChatId().toString());
         groupController.setName(group, messageText);
-        String responseText = String.format(GROUP_DONE_MESSAGE, messageText) + "\n\n" + MAIN_MENU_MESSAGE;
+        String responseText = String.format(GROUP_DONE_MESSAGE, messageText) + MAIN_MENU_MESSAGE;
         ReplyKeyboard replyKeyboard = keyboard.getMainMenu(user);
         ResponseMessage response = ResponseMessage.builder()
                 .message(responseText)

@@ -3,6 +3,7 @@ package ru.matyuk.irregularVerbsBot.precessing;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import ru.matyuk.irregularVerbsBot.design.Smiles;
 import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.design.Messages;
 import ru.matyuk.irregularVerbsBot.model.Group;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static ru.matyuk.irregularVerbsBot.design.Messages.CHOOSE_GROUP_FOR_LEARNING_MESSAGE;
+import static ru.matyuk.irregularVerbsBot.design.Messages.NO_SELECTED_GROUP_MESSAGE;
 
 @Component
 public class ChooseGroupProcessing extends MainProcessing {
@@ -30,8 +32,6 @@ public class ChooseGroupProcessing extends MainProcessing {
 
         if(callbackQuery.getData().equals(ButtonCommand.BACK_TO_MAIN.name())){
             back(user, messageId);
-        } else if (callbackQuery.getData().equals(ButtonCommand.BACK_TO_VIEW_GROUP.name())) {
-            chooseGroup(user, messageId);
         } else {
             chooseGroup(user, messageId, callbackQuery.getData());
         }
@@ -52,9 +52,14 @@ public class ChooseGroupProcessing extends MainProcessing {
         ReplyKeyboard replyKeyboard = keyboard.getGroupChoseKeyboard(user);
 
         StringBuilder responseMessage = new StringBuilder(CHOOSE_GROUP_FOR_LEARNING_MESSAGE)
-                .append("\n").append(Messages.SELECTED_GROUP_MESSAGE);
+                .append(Messages.SELECTED_GROUP_MESSAGE);
         List<UserGroupLearning> groupLearnings = user.getGroupLearnings();
-        groupLearnings.forEach(groupLearning -> responseMessage.append(groupLearning.getGroup().getName()).append("\n"));
+        if(groupLearnings.size() > 0){
+            groupLearnings.forEach(groupLearning -> responseMessage.append(Smiles.MINUS).append(" ")
+                    .append(groupLearning.getGroup().getName()).append("\n"));
+        }else {
+            responseMessage.append(NO_SELECTED_GROUP_MESSAGE);
+        }
 
         ResponseMessage response = ResponseMessage.builder()
                 .message(responseMessage.toString())
