@@ -1,4 +1,4 @@
-package ru.matyuk.irregularVerbsBot.precessing;
+package ru.matyuk.irregularVerbsBot.processing;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -7,11 +7,11 @@ import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.jsonPojo.CreateGroupPojo;
 import ru.matyuk.irregularVerbsBot.model.Group;
 import ru.matyuk.irregularVerbsBot.model.User;
-import ru.matyuk.irregularVerbsBot.precessing.data.ResponseMessage;
+import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
 import ru.matyuk.irregularVerbsBot.service.TelegramBot;
 
 import static ru.matyuk.irregularVerbsBot.design.Messages.*;
-import static ru.matyuk.irregularVerbsBot.enums.StateUser.MAIN_MENU_STATE;
+import static ru.matyuk.irregularVerbsBot.enums.StateUser.*;
 
 @Component
 public class ConfirmCreateGroupProcessing extends MainProcessing{
@@ -37,20 +37,12 @@ public class ConfirmCreateGroupProcessing extends MainProcessing{
     }
 
     public void processing(String messageText, User user) {
-        user = userController.setState(user, MAIN_MENU_STATE);
-        Group group = groupController.getGroup(user.getChatId().toString());
-        groupController.setName(group, messageText);
-        String responseText = String.format(GROUP_DONE_MESSAGE, messageText) + MAIN_MENU_MESSAGE;
-        ReplyKeyboard replyKeyboard = keyboard.getMainMenu(user);
-        ResponseMessage response = ResponseMessage.builder()
-                .message(responseText)
-                .chatId(user.getChatId())
-                .keyboard(replyKeyboard).build();
-        telegramBot.deleteMessage(Integer.parseInt(user.getTmp()), user.getChatId());
-        telegramBot.sendMessage(response);
+
     }
 
     private void saveGroup(User user, Integer messageId) {
+        user = userController.setState(user, SET_NAME_GROUP_STATE);
+
         CreateGroupPojo createGroupPojo = gson.fromJson(user.getTmp(), CreateGroupPojo.class);
         groupVerbController.saveVerbsInGroup(createGroupPojo.getIdGroup(), createGroupPojo.getVerbIds());
 

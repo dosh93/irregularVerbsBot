@@ -1,4 +1,4 @@
-package ru.matyuk.irregularVerbsBot.precessing;
+package ru.matyuk.irregularVerbsBot.processing;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -7,7 +7,7 @@ import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.design.Messages;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
-import ru.matyuk.irregularVerbsBot.precessing.data.ResponseMessage;
+import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
 import ru.matyuk.irregularVerbsBot.service.TelegramBot;
 
 @Component

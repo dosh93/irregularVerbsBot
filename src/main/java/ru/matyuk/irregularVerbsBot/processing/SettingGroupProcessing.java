@@ -1,4 +1,4 @@
-package ru.matyuk.irregularVerbsBot.precessing;
+package ru.matyuk.irregularVerbsBot.processing;
 
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -6,24 +6,31 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
-import ru.matyuk.irregularVerbsBot.precessing.data.ResponseMessage;
+import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
 import ru.matyuk.irregularVerbsBot.service.TelegramBot;
 
-import static ru.matyuk.irregularVerbsBot.design.Messages.FEEDBACK_CREATED_MESSAGE;
-import static ru.matyuk.irregularVerbsBot.design.Messages.MAIN_MENU_MESSAGE;
+import static ru.matyuk.irregularVerbsBot.design.Messages.CHOOSE_GROUP_FOR_DELETE_MESSAGE;
+
 
 @Component
-public class CreateFeedbackProcessing extends MainProcessing{
-    public CreateFeedbackProcessing(TelegramBot telegramBot) {
+public class SettingGroupProcessing extends MainProcessing{
+
+    public SettingGroupProcessing(TelegramBot telegramBot) {
         super(telegramBot);
     }
 
     @Override
     public void processing(CallbackQuery callbackQuery, User user) {
-        ButtonCommand command = ButtonCommand.valueOf(callbackQuery.getData());
         Integer messageId = callbackQuery.getMessage().getMessageId();
+        ButtonCommand command = ButtonCommand.valueOf(callbackQuery.getData());
 
         switch (command){
+            case CREATE_GROUP:
+                createGroup(user, messageId);
+                break;
+            case REMOVE_GROUP:
+                removeGroup(user, messageId);
+                break;
             case BACK_TO_MAIN:
                 back(user, messageId);
                 break;
@@ -32,17 +39,21 @@ public class CreateFeedbackProcessing extends MainProcessing{
 
     @Override
     public void processing(String messageText, User user) {
-        user = userController.setState(user, StateUser.MAIN_MENU_STATE);
-        feedbackController.create(user, messageText);
 
-        ReplyKeyboard replyKeyboard = keyboard.getMainMenu(user);
-        String responseText = FEEDBACK_CREATED_MESSAGE + "\n\n" + MAIN_MENU_MESSAGE;
+    }
+
+    private void removeGroup(User user, Integer messageId) {
+        user = userController.setState(user, StateUser.DELETE_GROUP_STATE);
+
+        ReplyKeyboard replyKeyboard = keyboard.getGroupKeyboardForDelete(user);
 
         ResponseMessage response = ResponseMessage.builder()
-                .message(responseText)
+                .message(CHOOSE_GROUP_FOR_DELETE_MESSAGE)
                 .chatId(user.getChatId())
                 .keyboard(replyKeyboard).build();
-        telegramBot.deleteMessage(Integer.parseInt(user.getTmp()), user.getChatId());
+
+        telegramBot.deleteMessage(messageId, user.getChatId());
         telegramBot.sendMessage(response);
     }
+
 }

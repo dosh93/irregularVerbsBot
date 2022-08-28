@@ -1,4 +1,4 @@
-package ru.matyuk.irregularVerbsBot.precessing.data;
+package ru.matyuk.irregularVerbsBot.processing.data;
 
 import lombok.Builder;
 import lombok.Data;

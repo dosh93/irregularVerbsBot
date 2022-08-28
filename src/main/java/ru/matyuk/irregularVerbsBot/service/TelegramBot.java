@@ -13,13 +13,12 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import ru.matyuk.irregularVerbsBot.precessing.*;
+import ru.matyuk.irregularVerbsBot.processing.*;
 import ru.matyuk.irregularVerbsBot.config.BotConfig;
 import ru.matyuk.irregularVerbsBot.config.InitMainCommands;
 import ru.matyuk.irregularVerbsBot.controller.UserController;
-import ru.matyuk.irregularVerbsBot.controller.VerbController;
 import ru.matyuk.irregularVerbsBot.model.User;
-import ru.matyuk.irregularVerbsBot.precessing.data.ResponseMessage;
+import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
 
 import static ru.matyuk.irregularVerbsBot.enums.MainCommands.ALL_DELETE;
 import static ru.matyuk.irregularVerbsBot.enums.MainCommands.START;
@@ -63,6 +62,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Autowired
     private CreateFeedbackProcessing createFeedbackProcessing;
+
+    @Autowired
+    private SetNameGroupProcessing setNameGroupProcessing;
 
 
     final BotConfig config;
@@ -112,19 +114,22 @@ public class TelegramBot extends TelegramLongPollingBot {
         switch (user.getState()){
             case CREATE_GROUP_STATE:
                 createGroupProcessing.processing(messageText, user);
-                return;
-            case CONFIRM_VERBS_IN_GROUP_STATE:
-                confirmCreateGroupProcessing.processing(messageText, user);
-                return;
+                break;
+            case SET_NAME_GROUP_STATE:
+                setNameGroupProcessing.processing(messageText, user);
+                break;
             case LEARNING_STATE:
                 learningProcessing.processing(messageText, user);
-                return;
+                break;
             case CREATE_FEEDBACK_STATE:
                 deleteMessage(message.getMessageId(), user.getChatId());
                 createFeedbackProcessing.processing(messageText, user);
-                return;
+                break;
+            case MAIN_MENU_STATE:
+                startProcessing.processing(messageText, user);
+                break;
         }
-        startProcessing.processing(messageText, user);
+
     }
 
     private void processingCallBackQuery(CallbackQuery callbackQuery) {
