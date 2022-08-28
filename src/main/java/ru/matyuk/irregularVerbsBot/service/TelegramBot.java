@@ -66,6 +66,12 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Autowired
     private SetNameGroupProcessing setNameGroupProcessing;
 
+    @Autowired
+    private SettingLearningProcessing settingLearningProcessing;
+
+    @Autowired
+    private ChooseGroupResetProcessing chooseGroupResetProcessing;
+
 
     final BotConfig config;
 
@@ -164,6 +170,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                 break;
             case ALL_DELETE_STATE:
                 allDeleteProcessing.processing(callbackQuery, user);
+                break;
+            case SETTING_LEARNING_STATE:
+                settingLearningProcessing.processing(callbackQuery, user);
+                break;
+            case CHOOSE_GROUP_RESET_STATE:
+                chooseGroupResetProcessing.processing(callbackQuery, user);
                 break;
         }
     }

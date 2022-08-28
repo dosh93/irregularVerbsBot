@@ -90,4 +90,5 @@ public class GroupController {
     public void delete(String name) {
         groupRepository.delete(getGroup(name));
     }
+
 }

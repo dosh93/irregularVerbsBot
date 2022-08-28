@@ -13,4 +13,6 @@ public interface LearningRepository extends CrudRepository<Learning, UserVerbId>
 
     List<Learning> findByUserAndCountSuccessfulLessThanOrderByCountSuccessfulAsc(User user, int countSuccessful);
     Learning findByUserAndState(User user, boolean state);
+
+    void deleteAllByUserChatIdAndVerbIdIn(Long chatId, List<Long> verbIds);
 }

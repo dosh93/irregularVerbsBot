@@ -42,6 +42,9 @@ public abstract class MainProcessing {
     @Autowired
     protected FeedbackController feedbackController;
 
+    @Autowired
+    protected UserGroupLearningController userGroupLearningController;
+
     protected Gson gson = new Gson();
 
     public MainProcessing(@Lazy TelegramBot telegramBot) {
@@ -128,5 +131,18 @@ public abstract class MainProcessing {
 
         telegramBot.deleteMessage(messageId, user.getChatId());
         userController.setTmp(user, telegramBot.sendMessage(response).toString());
+    }
+
+    protected void settingLearning(User user, Integer messageId) {
+        user = userController.setState(user, StateUser.SETTING_LEARNING_STATE);
+        ReplyKeyboard replyKeyboard = keyboard.getSettingLearningButton();
+
+        ResponseMessage response = ResponseMessage.builder()
+                .message(SETTING_LEARNING_MESSAGE)
+                .chatId(user.getChatId())
+                .keyboard(replyKeyboard).build();
+
+        telegramBot.deleteMessage(messageId, user.getChatId());
+        telegramBot.sendMessage(response);
     }
 }
