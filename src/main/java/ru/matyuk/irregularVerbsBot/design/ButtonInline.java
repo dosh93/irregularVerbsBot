@@ -10,7 +10,7 @@ public enum ButtonInline {
     VIEW_GROUP(Smiles.BOOK + " Посмотреть", ButtonCommand.VIEW_GROUP),
     CHOOSE_GROUP(Smiles.PUSH_PIN + " Выбрать", ButtonCommand.CHOOSE_GROUP),
     SETTING_GROUP(Smiles.SETTING + " Настройка групп", ButtonCommand.SETTING_GROUP),
-    LEARNING(Smiles.BRAIN + " Учить глаголы", ButtonCommand.LEARNING),
+    LEARNING(Smiles.BRAIN + " Учить", ButtonCommand.LEARNING),
     BACK(Smiles.BACK + " Назад", ButtonCommand.BACK_TO_MAIN),
     START_LEARN(Smiles.START + " Начать", ButtonCommand.START_LEARN),
     CREATE_GROUP( Smiles.PENCIL + " Создать", ButtonCommand.CREATE_GROUP),

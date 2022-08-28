@@ -4,13 +4,13 @@ public final class Messages {
 
     public static final String HELLO_MESSAGE = "Привет, %s :relaxed: Давай учится! " + Smiles.BRAIN;
     public static final String CHOOSE_GROUP_FOR_VIEW_MESSAGE = "<b>Просмотр групп " + Smiles.BOOK +"</b>\n\n" +
-     "Выбирете группу что бы посмотреть какие глаголы есть в группе " + Smiles.POINT_DOWN;
+     "Выбирете группу чтобы посмотреть какие глаголы есть в группе " + Smiles.POINT_DOWN;
     public static final String CHOOSE_GROUP_FOR_LEARNING_MESSAGE = "<b>Выбор группы</b> " + Smiles.PUSH_PIN + "\n\n";
     public static final String VERBS_IN_GROUP_MESSAGE = "<b>Глаголы в группе:</b> " + Smiles.POINT_DOWN + "\n\n";
     public static final String MAIN_MENU_MESSAGE = "<b>Главное меню</b> " + Smiles.HOUSE + "\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.LEARNING.getText() + "' что бы начать учить глаголы (кнопка доступна если выбрана хоть одна групп)\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.VIEW_GROUP.getText() + "' что бы посмотреть группы глаголов\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.CHOOSE_GROUP.getText() + "' что бы выбрать группы глаголов для изучения\n\n" +
+            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.LEARNING.getText() + "' чтобы начать учить глаголы (кнопка доступна если выбрана хоть одна групп)\n\n" +
+            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.VIEW_GROUP.getText() + "' чтобы посмотреть группы глаголов\n\n" +
+            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.CHOOSE_GROUP.getText() + "' чтобы выбрать группы глаголов для изучения\n\n" +
             Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.SETTING_GROUP.getText() + "' там вы сможете создать свою группу глаголов или удалить свои группы\n\n" +
             Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.FEEDBACK.getText() + "' если у вас есть вопросы\\пожелания\n\n" ;
     public static final String SELECTED_GROUP_MESSAGE = "<b>Выбраны группы для изучения:</b>\n\n";
@@ -40,13 +40,13 @@ public final class Messages {
     public static final String CHOOSE_GROUP_FOR_DELETE_MESSAGE = "<b>Удаление группы</b> " + Smiles.DELETE + "\n\n" +
             "Выберете группу для удаления " + Smiles.POINT_DOWN;
     public static final String DELETE_ALL_DATA_MESSAGE = "<b>Все данные удалены</b>" + Smiles.DELETE + "\n\n" +
-            "Что бы начать заново учить глаголы нажмите в меню на /start" + Smiles.POINT_RIGHT;
+            "Чтобы начать заново учить глаголы нажмите в меню на /start" + Smiles.POINT_RIGHT;
     public static final String TYPE_TEXT_FEEDBACK_MESSAGE = "<b>Обратная связь</b> " + Smiles.MESSAGE + "\n\n" +
             "Напишите свой вопрос/предложение";
     public static final String FEEDBACK_CREATED_MESSAGE = "Ваше обращение принято " + Smiles.WHITE_CHECK_MARK;
     public static final String SETTING_GROUP_MESSAGE = "<b>Настройка групп</b> " + Smiles.SETTING + "\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.CREATE_GROUP.getText() + "' что бы создать группу со своим набором глаголов\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.REMOVE_GROUP.getText() + "' что бы удалить группу";
+            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.CREATE_GROUP.getText() + "' чтобы создать группу со своим набором глаголов\n\n" +
+            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.REMOVE_GROUP.getText() + "' чтобы удалить группу";
 
     public static final String INSTRUCTION_LEARN_MESSAGE = "<b>Учимся</b> " +Smiles.BRAIN + "\n\n" +
             "Тут вам будет показывать инфинитив и перевод.\n" +
