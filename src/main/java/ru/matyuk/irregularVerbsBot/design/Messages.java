@@ -9,10 +9,10 @@ public final class Messages {
     public static final String VERBS_IN_GROUP_MESSAGE = "<b>Глаголы в группе:</b> " + Smiles.POINT_DOWN + "\n\n";
     public static final String MAIN_MENU_MESSAGE = "<b>Главное меню</b> " + Smiles.HOUSE + "\n\n" +
             Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.LEARNING.getText() + "' чтобы начать учить глаголы (кнопка доступна, если выбрана хоть одна группа)\n\n" +
-            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.VIEW_GROUP.getText() + "' чтобы посмотреть группы глаголов\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.VIEW_GROUP.getText() + "' чтобы ознакомиться с группами глаголов\n\n" +
             Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.CHOOSE_GROUP.getText() + "' чтобы выбрать группы глаголов для изучения\n\n" +
             Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.SETTING_LEARNING.getText() + "' чтобы сбросить прогресс обучения\n\n" +
-            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.SETTING_GROUP.getText() + "' чтобы создать свою группу глаголов или удалить\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.SETTING_GROUP.getText() + "' чтобы создать группу глаголов или удалить группу\n\n" +
             Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.FEEDBACK.getText() + "' если у тебя есть вопросы\\пожелания\n\n" ;
     public static final String SELECTED_GROUP_MESSAGE = "<b>Список групп на изучения:</b>\n";
     public static final String NO_SELECTED_GROUP_MESSAGE = "<b>Не выбрано ни одной группы</b>";
@@ -57,7 +57,7 @@ public final class Messages {
             "<b>Правильный ответ:</b>\n" +
             "was been\nwas/were been\nwere been";
     public static final String SETTING_LEARNING_MESSAGE = "<b>Управление обучением</b> " + Smiles.JOYSTICK + "\n\n" +
-            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.RESET_LEARNING_ALL.getText() + "' чтобы сбросить <b>полностью</b> весь прогресс обучения\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.RESET_LEARNING_ALL.getText() + "' чтобы сбросить весь прогресс обучения\n\n" +
             Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.RESET_LEARNING_GROUP.getText() + "' чтобы сбросить прогресс обучения по группе";
 
     public static final String RESET_LEARNING_ALL_MESSAGE = "Твой прогресс сброшен " + Smiles.RELOAD;
