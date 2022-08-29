@@ -38,3 +38,8 @@ tasks.named("jar") {
 springBoot {
 	mainClass = 'ru.matyuk.irregularVerbsBot.IrregularVerbsBotApplication'
 }
+
+tasks.withType(Test) {
+	scanForTestClasses = false
+	include "**/*Test.class" //
+}
