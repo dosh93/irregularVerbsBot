@@ -13,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.processing.*;
 import ru.matyuk.irregularVerbsBot.config.BotConfig;
 import ru.matyuk.irregularVerbsBot.config.InitMainCommands;
@@ -98,9 +99,17 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if(update.hasCallbackQuery()){
-            processingCallBackQuery(update.getCallbackQuery());
+            Runnable processCallback = () -> {
+                processingCallBackQuery(update.getCallbackQuery());
+            };
+            Thread thread = new Thread(processCallback);
+            thread.start();
         } else if (update.hasMessage() && update.getMessage().hasText()) {
-            processingMessage(update.getMessage());
+            Runnable processMessage = () -> {
+                processingMessage(update.getMessage());
+            };
+            Thread thread = new Thread(processMessage);
+            thread.start();
         }
     }
 
@@ -139,6 +148,10 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void processingCallBackQuery(CallbackQuery callbackQuery) {
+        if(callbackQuery.getData().equals(ButtonCommand.NONE.name())){
+            return;
+        }
+
         User user = userController.getUser(callbackQuery.getMessage().getChatId());
         switch (user.getState()){
             case MAIN_MENU_STATE:

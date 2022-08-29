@@ -14,7 +14,7 @@ public final class Messages {
             Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.SETTING_LEARNING.getText() + "' чтобы сбросить прогресс обучения\n\n" +
             Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.SETTING_GROUP.getText() + "' чтобы создать группу глаголов или удалить группу\n\n" +
             Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.FEEDBACK.getText() + "' если у тебя есть вопросы\\пожелания\n\n" ;
-    public static final String SELECTED_GROUP_MESSAGE = "<b>Список групп на изучения:</b>\n";
+    public static final String SELECTED_GROUP_MESSAGE = "<b>Список групп на изучении:</b>\n";
     public static final String NO_SELECTED_GROUP_MESSAGE = "<b>Не выбрано ни одной группы</b>";
     public static final String CONGRATULATION_MESSAGE = "<b>Поздравляю</b>, ты выучил все слова в группе! " + Smiles.CONFETTI + "\n\n" +
             "\nНажми " + ButtonInline.END_LEARNING.getText() + " и выбери новую группу глаголов";
