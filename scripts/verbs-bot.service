@@ -1,0 +1,18 @@
+[Unit]
+Description=Irregular verbs bot telegram
+After=syslog.target network.target
+
+[Service]
+SuccessExitStatus=143
+
+
+User=root
+Group=root
+
+
+Type=simple
+
+ExecStart=java -jar /APP/irregularVerbsBot.jar --spring.profiles.active=prod
+
+[Install]
+WantedBy=multi-user.target
