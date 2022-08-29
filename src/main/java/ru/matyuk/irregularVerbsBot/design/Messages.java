@@ -4,66 +4,65 @@ public final class Messages {
 
     public static final String HELLO_MESSAGE = "Привет, %s :relaxed: Давай учится! " + Smiles.BRAIN;
     public static final String CHOOSE_GROUP_FOR_VIEW_MESSAGE = "<b>Просмотр групп " + Smiles.BOOK +"</b>\n\n" +
-     "Выбирете группу чтобы посмотреть какие глаголы есть в группе " + Smiles.POINT_DOWN;
+     "Выбери группу чтобы ознакомиться со списком глаголов " + Smiles.POINT_DOWN;
     public static final String CHOOSE_GROUP_FOR_LEARNING_MESSAGE = "<b>Выбор группы</b> " + Smiles.PUSH_PIN + "\n\n";
     public static final String VERBS_IN_GROUP_MESSAGE = "<b>Глаголы в группе:</b> " + Smiles.POINT_DOWN + "\n\n";
     public static final String MAIN_MENU_MESSAGE = "<b>Главное меню</b> " + Smiles.HOUSE + "\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.LEARNING.getText() + "' чтобы начать учить глаголы (кнопка доступна если выбрана хоть одна групп)\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.VIEW_GROUP.getText() + "' чтобы посмотреть группы глаголов\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.CHOOSE_GROUP.getText() + "' чтобы выбрать группы глаголов для изучения\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.SETTING_LEARNING.getText() + "' чтобы удалить группу из обучения или обнулить результат выученных глаголов\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.SETTING_GROUP.getText() + "' там вы сможете создать свою группу глаголов или удалить свои группы\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.FEEDBACK.getText() + "' если у вас есть вопросы\\пожелания\n\n" ;
-    public static final String SELECTED_GROUP_MESSAGE = "<b>Выбраны группы для изучения:</b>\n\n";
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.LEARNING.getText() + "' чтобы начать учить глаголы (кнопка доступна, если выбрана хоть одна группа)\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.VIEW_GROUP.getText() + "' чтобы посмотреть группы глаголов\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.CHOOSE_GROUP.getText() + "' чтобы выбрать группы глаголов для изучения\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.SETTING_LEARNING.getText() + "' чтобы сбросить прогресс обучения\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.SETTING_GROUP.getText() + "' чтобы создать свою группу глаголов или удалить\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.FEEDBACK.getText() + "' если у тебя есть вопросы\\пожелания\n\n" ;
+    public static final String SELECTED_GROUP_MESSAGE = "<b>Список групп на изучения:</b>\n";
     public static final String NO_SELECTED_GROUP_MESSAGE = "<b>Не выбрано ни одной группы</b>";
-    public static final String CONGRATULATION_MESSAGE = "<b>Поздравляю</b>, вы выучили все слова из группы! " + Smiles.CONFETTI + "\n\n" +
-            "\nНажмите " + ButtonInline.END_LEARNING.getText() + " и выберете новую группу слов";
+    public static final String CONGRATULATION_MESSAGE = "<b>Поздравляю</b>, ты выучил все слова в группе! " + Smiles.CONFETTI + "\n\n" +
+            "\nНажми " + ButtonInline.END_LEARNING.getText() + " и выбери новую группу глаголов";
     public static final String WRITE_ANSWER_MESSAGE =  "<b>Учимся</b> " +Smiles.BRAIN + "\n\n" +
             "Напиши <b>вторую и третью форму через пробел</b>:\n\n%s - %s";
     public static final String INVALID_RESPONSE_MESSAGE = "Неверный формат ответа " + Smiles.DELETE;
     public static final String RIGHT_MESSAGE = "Верно! " + Smiles.WHITE_CHECK_MARK;
     public static final String NOT_RIGHT_MESSAGE = "Неверно! " + Smiles.DELETE + "\nПравильный ответ:";
-    public static final String GOOD_WORK_MESSAGE = "Хорошо сегодня потрудились! " + Smiles.MUSCLE;
+    public static final String GOOD_WORK_MESSAGE = "Отличная работа! " + Smiles.MUSCLE;
     public static final String INSTRUCTION_CREATE_GROUP_MESSAGE = "<b>Создание группы</b> " + Smiles.PENCIL + "\n\n" +
-            "Введите через <b>пробел</b> все <b>инфинитивы (первая форма)</b>, " +
-            "которые хотите добавить в группу и отправте сообщение";
+            "Введи через <b>пробел</b> все <b>инфинитивы</b>, " +
+            "которые хочешь добавить в группу";
 
     public static final String RESULT_MESSAGE = "<b>Создание группы</b> " + Smiles.PENCIL + "\n\n" +
             "Результат:\n";
     public static final String SET_GROUP_NAME_MESSAGE = "<b>Создание группы</b> " + Smiles.PENCIL + "\n\n" +
-            "Введите название группы " + Smiles.POINT_DOWN;
+            "Введи название группы " + Smiles.POINT_DOWN;
     public static final String GROUP_DONE_MESSAGE = "Группа <b>'%s'</b> создана " + Smiles.WHITE_CHECK_MARK + "\n\n";
     public static final String ARE_YOU_SURE_DELETE_ALL_DATA_MESSAGE = "<b>Удаление данных</b> " + Smiles.SIGN_STOP + "\n\n" +
-            "После того как вы нажмете '" + ButtonInline.ALL_DELETE.getText() + "' то удалится <b>ваш пользователь</b>, " +
-            "<b>все созданные группы</b> и <b>сбросится весь прогресс по обучению</b>.\n\n" +
-            "Вы уверены что хотите удалить все данные о себе?";
+            "После того как ты нажмешь '" + ButtonInline.ALL_DELETE.getText() + "' то удалится <b>твой профиль</b>, " +
+            "<b>все созданные группы</b> и <b>сбросится весь прогресс</b>.\n\n" +
+            "Ты уверен что хочешь удалить все данные?";
     public static final String DELETE_GROUP_DONE_MESSAGE = "Группа удалена " + Smiles.DELETE;
     public static final String CHOOSE_GROUP_FOR_DELETE_MESSAGE = "<b>Удаление группы</b> " + Smiles.DELETE + "\n\n" +
-            "Выберете группу для удаления " + Smiles.POINT_DOWN;
+            "Выбери группу для удаления " + Smiles.POINT_DOWN;
     public static final String DELETE_ALL_DATA_MESSAGE = "<b>Все данные удалены</b>" + Smiles.DELETE + "\n\n" +
-            "Чтобы начать заново учить глаголы нажмите в меню на /start" + Smiles.POINT_RIGHT;
+            "Чтобы начать заново учить глаголы нажми в меню на /start" + Smiles.POINT_RIGHT;
     public static final String TYPE_TEXT_FEEDBACK_MESSAGE = "<b>Обратная связь</b> " + Smiles.MESSAGE + "\n\n" +
-            "Напишите свой вопрос/предложение";
-    public static final String FEEDBACK_CREATED_MESSAGE = "Ваше обращение принято " + Smiles.WHITE_CHECK_MARK;
+            "Напиши свой вопрос/предложение";
+    public static final String FEEDBACK_CREATED_MESSAGE = "Спасибо за обратную связь " + Smiles.WHITE_CHECK_MARK;
     public static final String SETTING_GROUP_MESSAGE = "<b>Настройка групп</b> " + Smiles.SETTING + "\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.CREATE_GROUP.getText() + "' чтобы создать группу со своим набором глаголов\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.REMOVE_GROUP.getText() + "' чтобы удалить группу";
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.CREATE_GROUP.getText() + "' чтобы создать группу со своим набором глаголов\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.REMOVE_GROUP.getText() + "' чтобы удалить группу";
 
     public static final String INSTRUCTION_LEARN_MESSAGE = "<b>Учимся</b> " + Smiles.BRAIN + "\n\n" +
-            "Тут вам будет показывать инфинитив и перевод.\n" +
-            "Вам надо будет написать <b>вторую и третью форму через пробел</b>\n" +
-            "Если у какой-то формы более двух форм можно написать <b>две формы через / или просто написать одну из них</b>\n" +
+            "Бот предлагает инфинитив, а тебе нужно написать вторую и третью форму через пробел.\n" +
+            "Некоторые формы глаголов имеют два варианта написания в этом случае вводим один из вариантов или оба через /.\n\n" +
             "<b>Например:</b>\n" +
             "be - быть/находиться\n" +
-            "<b>Правильным ответом будет считать:</b>\n" +
+            "<b>Правильный ответ:</b>\n" +
             "was been\nwas/were been\nwere been";
     public static final String SETTING_LEARNING_MESSAGE = "<b>Управление обучением</b> " + Smiles.JOYSTICK + "\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.RESET_LEARNING_ALL.getText() + "' чтобы сбросить <b>полностью</b> весь прогресс обучения\n\n" +
-            Smiles.RADIO_BUTTON + "Нажмите '" + ButtonInline.RESET_LEARNING_GROUP.getText() + "' чтобы сбросить прогресс обучения по группе";
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.RESET_LEARNING_ALL.getText() + "' чтобы сбросить <b>полностью</b> весь прогресс обучения\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.RESET_LEARNING_GROUP.getText() + "' чтобы сбросить прогресс обучения по группе";
 
-    public static final String RESET_LEARNING_ALL_MESSAGE = "Ваш прогресс сброшен " + Smiles.RELOAD;
+    public static final String RESET_LEARNING_ALL_MESSAGE = "Твой прогресс сброшен " + Smiles.RELOAD;
     public static final String RESET_LEARNING_FRO_GROUP_MESSAGE =  "<b>Управление обучением</b> " + Smiles.JOYSTICK + "\n\n" +
-            "Выберете группу по которой сбросить прогресс обучения " + Smiles.POINT_DOWN;
+            "Выбери группу для сброса прогресса " + Smiles.POINT_DOWN;
 
     public static final String RESET_GROUP_DONE_MESSAGE = "Прогресс по группе '%s' сброшен " + Smiles.RELOAD_BY_GROUP;
 
