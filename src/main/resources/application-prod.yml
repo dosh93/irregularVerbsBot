@@ -3,6 +3,8 @@ bot:
   token: 5426347540:AAFAslxkd7ZqemGiVbz7Qdht4RI7_kM0blQ
 
 spring:
+  main:
+    allow-circular-references: true
   datasource:
     url: jdbc:mysql://localhost:3306/irregularVerbs
     username: irregularve_usr
