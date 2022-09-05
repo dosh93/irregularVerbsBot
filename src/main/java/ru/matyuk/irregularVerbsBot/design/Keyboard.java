@@ -93,18 +93,8 @@ public class Keyboard {
 
         List<Group> groups = user.getGroups();
 
-        int offset = 0;
+        generateRowsGroups(groups, rows);
         List<InlineKeyboardButton> row = new ArrayList<>();
-        for (Group group: groups) {
-            if(offset == lengthRow){
-                rows.add(row);
-                row = new ArrayList<>();
-            }
-            row.add(createButtonInline(group.getName(), group.getId().toString()));
-            offset++;
-        }
-        rows.add(row);
-        row = new ArrayList<>();
 
         row.add(createButtonInline(
                 ButtonInline.BACK_TO_SETTING_GROUP.getText(),
@@ -223,18 +213,8 @@ public class Keyboard {
 
         List<Group> groups = groupVerbController.getGroupNotLearning(user);
 
-        int offset = 0;
+        generateRowsGroups(groups, rows);
         List<InlineKeyboardButton> row = new ArrayList<>();
-        for (Group group: groups) {
-            if(offset == lengthRow){
-                rows.add(row);
-                row = new ArrayList<>();
-            }
-            row.add(createButtonInline(group.getName(), group.getId().toString()));
-            offset++;
-        }
-        rows.add(row);
-        row = new ArrayList<>();
 
         row.add(createButtonInline(
                 ButtonInline.BACK.getText(),
@@ -250,18 +230,8 @@ public class Keyboard {
 
         List<Group> groups = groupVerbController.getGroupsWithVerbsByChatId(user.getChatId());
 
-        int offset = 0;
+        generateRowsGroups(groups, rows);
         List<InlineKeyboardButton> row = new ArrayList<>();
-        for (Group group: groups) {
-            if(offset == lengthRow){
-                rows.add(row);
-                row = new ArrayList<>();
-            }
-            row.add(createButtonInline(group.getName(), group.getId().toString()));
-            offset++;
-        }
-        rows.add(row);
-        row = new ArrayList<>();
 
         row.add(createButtonInline(
                 ButtonInline.BACK.getText(),
@@ -347,18 +317,9 @@ public class Keyboard {
         List<Group> groups = user.getGroupLearnings().stream()
                 .map(UserGroupLearning::getGroup).collect(Collectors.toList());
 
-        int offset = 0;
-        List<InlineKeyboardButton> row = new ArrayList<>();
-        for (Group group: groups) {
-            if(offset == lengthRow){
-                rows.add(row);
-                row = new ArrayList<>();
-            }
-            row.add(createButtonInline(group.getName(), group.getId().toString()));
-            offset++;
-        }
-        rows.add(row);
-        row = new ArrayList<>();
+        generateRowsGroups(groups, rows);
+
+        List<InlineKeyboardButton>  row = new ArrayList<>();
 
         row.add(createButtonInline(
                 ButtonInline.BACK.getText(),
@@ -366,5 +327,20 @@ public class Keyboard {
         rows.add(row);
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
+    }
+
+    private void generateRowsGroups(List<Group> groups, List<List<InlineKeyboardButton>> rows){
+        int offset = 0;
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        for (Group group: groups) {
+            if(offset == lengthRow){
+                rows.add(row);
+                offset = 0;
+                row = new ArrayList<>();
+            }
+            row.add(createButtonInline(group.getName(), group.getId().toString()));
+            offset++;
+        }
+        rows.add(row);
     }
 }

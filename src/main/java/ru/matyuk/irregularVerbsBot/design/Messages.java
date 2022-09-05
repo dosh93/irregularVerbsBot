@@ -2,7 +2,7 @@ package ru.matyuk.irregularVerbsBot.design;
 
 public final class Messages {
 
-    public static final String HELLO_MESSAGE = "Привет, %s :relaxed: Давай учится! " + Smiles.BRAIN;
+    public static final String HELLO_MESSAGE = "Привет, %s :relaxed: Давай учиться! " + Smiles.BRAIN;
     public static final String CHOOSE_GROUP_FOR_VIEW_MESSAGE = "<b>Просмотр групп " + Smiles.BOOK +"</b>\n\n" +
      "Выбери группу чтобы ознакомиться со списком глаголов " + Smiles.POINT_DOWN;
     public static final String CHOOSE_GROUP_FOR_LEARNING_MESSAGE = "<b>Выбор группы</b> " + Smiles.PUSH_PIN + "\n\n";
@@ -47,18 +47,18 @@ public final class Messages {
     public static final String FEEDBACK_CREATED_MESSAGE = "Спасибо за обратную связь " + Smiles.WHITE_CHECK_MARK;
     public static final String SETTING_GROUP_MESSAGE = "<b>Настройка групп</b> " + Smiles.SETTING + "\n\n" +
             Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.CREATE_GROUP.getText() + "' чтобы создать группу со своим набором глаголов\n\n" +
-            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.REMOVE_GROUP.getText() + "' чтобы удалить группу";
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.REMOVE_GROUP.getText() + "' чтобы удалить группу\n\n";
 
     public static final String INSTRUCTION_LEARN_MESSAGE = "<b>Учимся</b> " + Smiles.BRAIN + "\n\n" +
             "Бот предлагает инфинитив, а тебе нужно написать вторую и третью форму через пробел.\n" +
             "Некоторые формы глаголов имеют два варианта написания в этом случае вводим один из вариантов или оба через /.\n\n" +
             "<b>Например:</b>\n" +
-            "be - быть/находиться\n" +
+            "get - получить\n" +
             "<b>Правильный ответ:</b>\n" +
-            "was been\nwas/were been\nwere been";
+            "got got\ngot got/gotten\ngot gotten";
     public static final String SETTING_LEARNING_MESSAGE = "<b>Управление обучением</b> " + Smiles.JOYSTICK + "\n\n" +
             Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.RESET_LEARNING_ALL.getText() + "' чтобы сбросить весь прогресс обучения\n\n" +
-            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.RESET_LEARNING_GROUP.getText() + "' чтобы сбросить прогресс обучения по группе";
+            Smiles.RADIO_BUTTON + "Нажми '" + ButtonInline.RESET_LEARNING_GROUP.getText() + "' чтобы сбросить прогресс обучения по группе\n\n";
 
     public static final String RESET_LEARNING_ALL_MESSAGE = "Твой прогресс сброшен " + Smiles.RELOAD;
     public static final String RESET_LEARNING_FRO_GROUP_MESSAGE =  "<b>Управление обучением</b> " + Smiles.JOYSTICK + "\n\n" +

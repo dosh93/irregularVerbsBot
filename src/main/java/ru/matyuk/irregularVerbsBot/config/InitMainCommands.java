@@ -11,7 +11,7 @@ public class InitMainCommands {
     public static List<BotCommand> getCommands(){
         List<BotCommand> listCommand = new ArrayList<>();
         listCommand.add(new BotCommand(MainCommands.START.getName(), "Начать учить"));
-        listCommand.add(new BotCommand(MainCommands.ALL_DELETE.getName(), "Начать всё сначало"));
+        listCommand.add(new BotCommand(MainCommands.ALL_DELETE.getName(), "Начать всё сначала"));
         return listCommand;
     }
 }
