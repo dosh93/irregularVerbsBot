@@ -3,55 +3,52 @@ package ru.matyuk.irregularVerbsBot.processing;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import ru.matyuk.irregularVerbsBot.controller.*;
+import ru.matyuk.irregularVerbsBot.design.Keyboard;
 import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
-import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
-import ru.matyuk.irregularVerbsBot.service.TelegramBot;
+import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
 import static ru.matyuk.irregularVerbsBot.design.Messages.*;
 
 @Component
-public class SettingLearningProcessing extends MainProcessing{
-    public SettingLearningProcessing(TelegramBot telegramBot) {
-        super(telegramBot);
+public class SettingLearningProcessing extends MainProcessing {
+
+    public SettingLearningProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController) {
+        super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController);
     }
 
     @Override
-    public void processing(CallbackQuery callbackQuery, User user) {
+    public Response processing(CallbackQuery callbackQuery, User user) {
         ButtonCommand command = ButtonCommand.valueOf(callbackQuery.getData());
         Integer messageId = callbackQuery.getMessage().getMessageId();
 
         switch (command){
             case RESET_LEARNING_ALL:
-                resetLearningAll(user, messageId);
-                break;
+                return resetLearningAll(user, messageId);
             case RESET_LEARNING_GROUP:
-                resetLearningGroup(user, messageId);
-                break;
+                return resetLearningGroup(user, messageId);
             case BACK_TO_MAIN:
-                back(user, messageId);
-                break;
+                return back(user, messageId);
         }
-
+        return null;
     }
 
-    private void resetLearningGroup(User user, Integer messageId) {
+    private Response resetLearningGroup(User user, Integer messageId) {
         user = userController.setState(user, StateUser.CHOOSE_GROUP_RESET_STATE);
 
-        String responseMessage = RESET_LEARNING_FRO_GROUP_MESSAGE;
         ReplyKeyboard replyKeyboard = keyboard.getGroupForReset(user);
 
-        ResponseMessage response = ResponseMessage.builder()
-                .message(responseMessage)
-                .chatId(user.getChatId())
-                .keyboard(replyKeyboard).build();
-
-        telegramBot.deleteMessage(messageId, user.getChatId());
-        telegramBot.sendMessage(response);
+        return Response.builder()
+                .isSaveSentMessageId(false)
+                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .responseMessage(getResponseMessage(RESET_LEARNING_FRO_GROUP_MESSAGE, user.getChatId(), replyKeyboard))
+                .user(user)
+                .build();
     }
 
-    private void resetLearningAll(User user, Integer messageId) {
+    private Response resetLearningAll(User user, Integer messageId) {
         user = userController.setState(user, StateUser.MAIN_MENU_STATE);
 
         learningController.delete(user.getLearnings());
@@ -62,17 +59,16 @@ public class SettingLearningProcessing extends MainProcessing{
         String responseMessage = MAIN_MENU_MESSAGE + RESET_LEARNING_ALL_MESSAGE;
         ReplyKeyboard replyKeyboard = keyboard.getMainMenu(user);
 
-        ResponseMessage response = ResponseMessage.builder()
-                .message(responseMessage)
-                .chatId(user.getChatId())
-                .keyboard(replyKeyboard).build();
-
-        telegramBot.deleteMessage(messageId, user.getChatId());
-        telegramBot.sendMessage(response);
+        return Response.builder()
+                .isSaveSentMessageId(false)
+                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .responseMessage(getResponseMessage(responseMessage, user.getChatId(), replyKeyboard))
+                .user(user)
+                .build();
     }
 
     @Override
-    public void processing(String messageText, User user) {
-
+    public Response processing(String messageText, User user) {
+        return null;
     }
 }

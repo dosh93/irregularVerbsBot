@@ -3,57 +3,55 @@ package ru.matyuk.irregularVerbsBot.processing;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import ru.matyuk.irregularVerbsBot.controller.*;
+import ru.matyuk.irregularVerbsBot.design.Keyboard;
 import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
-import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
-import ru.matyuk.irregularVerbsBot.service.TelegramBot;
+import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
 import static ru.matyuk.irregularVerbsBot.design.Messages.CHOOSE_GROUP_FOR_DELETE_MESSAGE;
 
 
 @Component
-public class SettingGroupProcessing extends MainProcessing{
+public class SettingGroupProcessing extends MainProcessing {
 
-    public SettingGroupProcessing(TelegramBot telegramBot) {
-        super(telegramBot);
+    public SettingGroupProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController) {
+        super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController);
     }
 
     @Override
-    public void processing(CallbackQuery callbackQuery, User user) {
+    public Response processing(CallbackQuery callbackQuery, User user) {
         Integer messageId = callbackQuery.getMessage().getMessageId();
         ButtonCommand command = ButtonCommand.valueOf(callbackQuery.getData());
 
         switch (command){
             case CREATE_GROUP:
-                createGroup(user, messageId);
-                break;
+                return createGroup(user, messageId);
             case REMOVE_GROUP:
-                removeGroup(user, messageId);
-                break;
+                return removeGroup(user, messageId);
             case BACK_TO_MAIN:
-                back(user, messageId);
-                break;
+                return back(user, messageId);
         }
+        return null;
     }
 
     @Override
-    public void processing(String messageText, User user) {
-
+    public Response processing(String messageText, User user) {
+        return null;
     }
 
-    private void removeGroup(User user, Integer messageId) {
+    private Response removeGroup(User user, Integer messageId) {
         user = userController.setState(user, StateUser.DELETE_GROUP_STATE);
 
         ReplyKeyboard replyKeyboard = keyboard.getGroupKeyboardForDelete(user);
 
-        ResponseMessage response = ResponseMessage.builder()
-                .message(CHOOSE_GROUP_FOR_DELETE_MESSAGE)
-                .chatId(user.getChatId())
-                .keyboard(replyKeyboard).build();
-
-        telegramBot.deleteMessage(messageId, user.getChatId());
-        telegramBot.sendMessage(response);
+        return Response.builder()
+                .isSaveSentMessageId(false)
+                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .responseMessage(getResponseMessage(CHOOSE_GROUP_FOR_DELETE_MESSAGE, user.getChatId(), replyKeyboard))
+                .user(user)
+                .build();
     }
 
 }

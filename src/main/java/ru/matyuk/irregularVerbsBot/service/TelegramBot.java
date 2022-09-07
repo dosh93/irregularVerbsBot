@@ -19,6 +19,7 @@ import ru.matyuk.irregularVerbsBot.config.BotConfig;
 import ru.matyuk.irregularVerbsBot.config.InitMainCommands;
 import ru.matyuk.irregularVerbsBot.controller.UserController;
 import ru.matyuk.irregularVerbsBot.model.User;
+import ru.matyuk.irregularVerbsBot.processing.data.Response;
 import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
 
 import static ru.matyuk.irregularVerbsBot.enums.MainCommands.ALL_DELETE;
@@ -122,26 +123,26 @@ public class TelegramBot extends TelegramLongPollingBot {
             user = userController.getUser(message.getChatId());
         } else if (message.getText().equals(ALL_DELETE.getName())) {
             deleteMessage(message.getMessageId(), user.getChatId());
-            allDeleteProcessing.processing(messageText, user);
+            processingResponse(allDeleteProcessing.processing(messageText, user));
             return;
         }
 
         switch (user.getState()){
             case CREATE_GROUP_STATE:
-                createGroupProcessing.processing(messageText, user);
+                processingResponse(createGroupProcessing.processing(messageText, user));
                 break;
             case SET_NAME_GROUP_STATE:
-                setNameGroupProcessing.processing(messageText, user);
+                processingResponse(setNameGroupProcessing.processing(messageText, user));
                 break;
             case LEARNING_STATE:
-                learningProcessing.processing(messageText, user);
+                processingResponse(learningProcessing.processing(messageText, user));
                 break;
             case CREATE_FEEDBACK_STATE:
                 deleteMessage(message.getMessageId(), user.getChatId());
-                createFeedbackProcessing.processing(messageText, user);
+                processingResponse(createFeedbackProcessing.processing(messageText, user));
                 break;
             case MAIN_MENU_STATE:
-                startProcessing.processing(messageText, user);
+                processingResponse(startProcessing.processing(messageText, user));
                 break;
         }
 
@@ -155,44 +156,59 @@ public class TelegramBot extends TelegramLongPollingBot {
         User user = userController.getUser(callbackQuery.getMessage().getChatId());
         switch (user.getState()){
             case MAIN_MENU_STATE:
-                mainMenuProcessing.processing(callbackQuery, user);
+                processingResponse(mainMenuProcessing.processing(callbackQuery, user));
                 break;
             case VIEW_GROUP_STATE:
-                viewGroupProcessing.processing(callbackQuery, user);
+                processingResponse(viewGroupProcessing.processing(callbackQuery, user));
                 break;
             case CHOOSE_GROUP_STATE:
-                chooseGroupProcessing.processing(callbackQuery, user);
+                processingResponse(chooseGroupProcessing.processing(callbackQuery, user));
                 break;
             case SETTING_GROUP_STATE:
-                settingGroupProcessing.processing(callbackQuery, user);
+                processingResponse(settingGroupProcessing.processing(callbackQuery, user));
                 break;
             case CREATE_GROUP_STATE:
-                createGroupProcessing.processing(callbackQuery, user);
+                processingResponse(createGroupProcessing.processing(callbackQuery, user));
                 break;
             case CONFIRM_VERBS_IN_GROUP_STATE:
-                confirmCreateGroupProcessing.processing(callbackQuery, user);
+                processingResponse(confirmCreateGroupProcessing.processing(callbackQuery, user));
                 break;
             case DELETE_GROUP_STATE:
-                deleteGroupProcessing.processing(callbackQuery, user);
+                processingResponse(deleteGroupProcessing.processing(callbackQuery, user));
                 break;
             case LEARNING_STATE:
-                learningProcessing.processing(callbackQuery, user);
+                processingResponse(learningProcessing.processing(callbackQuery, user));
                 break;
             case CREATE_FEEDBACK_STATE:
-                createFeedbackProcessing.processing(callbackQuery, user);
+                processingResponse(createFeedbackProcessing.processing(callbackQuery, user));
                 break;
             case ALL_DELETE_STATE:
-                allDeleteProcessing.processing(callbackQuery, user);
+                processingResponse(allDeleteProcessing.processing(callbackQuery, user));
                 break;
             case SETTING_LEARNING_STATE:
-                settingLearningProcessing.processing(callbackQuery, user);
+                processingResponse(settingLearningProcessing.processing(callbackQuery, user));
                 break;
             case CHOOSE_GROUP_RESET_STATE:
-                chooseGroupResetProcessing.processing(callbackQuery, user);
+                processingResponse(chooseGroupResetProcessing.processing(callbackQuery, user));
                 break;
         }
     }
 
+
+    private void processingResponse(Response response){
+        if(response == null) return;
+
+        if(response.getDeleteMessage() != null){
+            deleteMessage(response.getDeleteMessage());
+        }
+
+        if (response.getResponseMessage() != null){
+            int messageId = sendMessage(response.getResponseMessage());
+            if(response.isSaveSentMessageId()){
+                userController.setTmp(response.getUser(), String.valueOf(messageId));
+            }
+        }
+    }
 
     public Integer sendMessage(ResponseMessage responseMessage){
         SendMessage message = new SendMessage();
@@ -212,6 +228,14 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void deleteMessage(Integer messageId, long chatId) {
         try {
             execute(DeleteMessage.builder().messageId(messageId).chatId(String.valueOf(chatId)).build());
+        } catch (TelegramApiException e) {
+            log.error("Ошибка: " + e.getMessage());
+        }
+    }
+
+    public void deleteMessage(DeleteMessage deleteMessage) {
+        try {
+            execute(deleteMessage);
         } catch (TelegramApiException e) {
             log.error("Ошибка: " + e.getMessage());
         }

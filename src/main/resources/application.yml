@@ -1,6 +1,4 @@
 spring:
-  main:
-    allow-circular-references: true
   jpa:
     hibernate:
       ddl-auto: update

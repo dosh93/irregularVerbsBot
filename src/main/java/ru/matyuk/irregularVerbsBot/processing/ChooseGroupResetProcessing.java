@@ -1,43 +1,42 @@
 package ru.matyuk.irregularVerbsBot.processing;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import ru.matyuk.irregularVerbsBot.controller.*;
+import ru.matyuk.irregularVerbsBot.design.Keyboard;
 import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.*;
-import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
-import ru.matyuk.irregularVerbsBot.service.TelegramBot;
+import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static ru.matyuk.irregularVerbsBot.design.Messages.RESET_GROUP_DONE_MESSAGE;
 import static ru.matyuk.irregularVerbsBot.design.Messages.SETTING_LEARNING_MESSAGE;
 
 @Component
-public class ChooseGroupResetProcessing extends MainProcessing{
-    public ChooseGroupResetProcessing(TelegramBot telegramBot) {
-        super(telegramBot);
+public class ChooseGroupResetProcessing extends MainProcessing {
+
+    public ChooseGroupResetProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController) {
+        super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController);
     }
 
     @Override
-    public void processing(CallbackQuery callbackQuery, User user) {
+    public Response processing(CallbackQuery callbackQuery, User user) {
         Integer messageId = callbackQuery.getMessage().getMessageId();
 
         if(callbackQuery.getData().equals(ButtonCommand.BACK_TO_SETTING_LEARNING.name())){
-            settingLearning(user, messageId);
+            return settingLearning(user, messageId);
         } else {
-            chooseGroupReset(user, messageId, callbackQuery.getData());
+            return chooseGroupReset(user, messageId, callbackQuery.getData());
         }
     }
 
-    private void chooseGroupReset(User user, Integer messageId, String data) {
+    private Response chooseGroupReset(User user, Integer messageId, String data) {
         user = userController.setState(user, StateUser.SETTING_LEARNING_STATE);
 
         Group groupNeedReset = groupController.getGroup(Long.parseLong(data));
@@ -51,13 +50,12 @@ public class ChooseGroupResetProcessing extends MainProcessing{
 
         ReplyKeyboard replyKeyboard = keyboard.getSettingLearningButton();
 
-        ResponseMessage response = ResponseMessage.builder()
-                .message(responseMessage)
-                .chatId(user.getChatId())
-                .keyboard(replyKeyboard).build();
-
-        telegramBot.deleteMessage(messageId, user.getChatId());
-        telegramBot.sendMessage(response);
+        return Response.builder()
+                .isSaveSentMessageId(false)
+                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .responseMessage(getResponseMessage(responseMessage, user.getChatId(), replyKeyboard))
+                .user(user)
+                .build();
     }
 
     private List<Long> getVerbIdsNeedDelete(User user, Group groupNeedReset){
@@ -78,7 +76,7 @@ public class ChooseGroupResetProcessing extends MainProcessing{
     }
 
     @Override
-    public void processing(String messageText, User user) {
-
+    public Response processing(String messageText, User user) {
+        return null;
     }
 }

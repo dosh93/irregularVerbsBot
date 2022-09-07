@@ -16,15 +16,7 @@ public class GroupVerbController {
     @Autowired
     private GroupVerbRepository groupVerbRepository;
 
-    @Autowired
-    private VerbController verbController;
-
-    @Autowired
-    private GroupController groupController;
-
-    public void saveVerbsInGroup(Long groupId, List<Long> verbId){
-        List<Verb> verbs = verbController.getVerbsByIds(verbId);
-        Group group = groupController.getGroup(groupId);
+    public void saveVerbsInGroup(Group group, List<Verb> verbs){
         for (Verb verb : verbs) {
             GroupVerbId groupVerbId = new GroupVerbId(group.getId(), verb.getId());
             GroupVerb groupVerb = new GroupVerb();

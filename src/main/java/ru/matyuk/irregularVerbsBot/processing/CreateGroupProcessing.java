@@ -3,14 +3,15 @@ package ru.matyuk.irregularVerbsBot.processing;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import ru.matyuk.irregularVerbsBot.controller.*;
+import ru.matyuk.irregularVerbsBot.design.Keyboard;
 import ru.matyuk.irregularVerbsBot.design.Smiles;
 import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.jsonPojo.CreateGroupPojo;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.model.Verb;
-import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
-import ru.matyuk.irregularVerbsBot.service.TelegramBot;
+import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,22 +22,25 @@ import java.util.stream.Collectors;
 import static ru.matyuk.irregularVerbsBot.design.Messages.RESULT_MESSAGE;
 
 @Component
-public class CreateGroupProcessing extends MainProcessing{
+public class CreateGroupProcessing extends MainProcessing {
 
-    public CreateGroupProcessing(TelegramBot telegramBot) {
-        super(telegramBot);
+    public CreateGroupProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController) {
+        super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController);
     }
 
     @Override
-    public void processing(CallbackQuery callbackQuery, User user) {
+    public Response processing(CallbackQuery callbackQuery, User user) {
         Integer messageId = callbackQuery.getMessage().getMessageId();
 
         if(callbackQuery.getData().equals(ButtonCommand.BACK_TO_SETTING_GROUP.name())){
-            settingGroup(user, messageId);
+            return settingGroup(user, messageId);
         }
+
+        return null;
     }
 
-    public void processing(String messageText, User user) {
+    @Override
+    public Response processing(String messageText, User user) {
         user = userController.setState(user, StateUser.CONFIRM_VERBS_IN_GROUP_STATE);
         String[] verbsStr = messageText.split(" ");
         HashMap<String, Verb> verbsInfinitiveHashMap = new HashMap<>();
@@ -63,13 +67,12 @@ public class CreateGroupProcessing extends MainProcessing{
 
         ReplyKeyboard replyKeyboard = keyboard.getConfirmCreateGroupButton();
 
-        ResponseMessage response = ResponseMessage.builder()
-                .message(responseText.toString())
-                .chatId(user.getChatId())
-                .keyboard(replyKeyboard).build();
-
-        telegramBot.deleteMessage(oldMessage, user.getChatId());
-        telegramBot.sendMessage(response);
+        return Response.builder()
+                .isSaveSentMessageId(false)
+                .deleteMessage(getDeleteMessage(oldMessage, user.getChatId()))
+                .responseMessage(getResponseMessage(responseText.toString(), user.getChatId(), replyKeyboard))
+                .user(user)
+                .build();
     }
 
 }

@@ -3,79 +3,70 @@ package ru.matyuk.irregularVerbsBot.processing;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import ru.matyuk.irregularVerbsBot.controller.*;
+import ru.matyuk.irregularVerbsBot.design.Keyboard;
 import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.design.Messages;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
-import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
-import ru.matyuk.irregularVerbsBot.service.TelegramBot;
+import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
-import static ru.matyuk.irregularVerbsBot.design.Messages.SETTING_LEARNING_MESSAGE;
 
 @Component
-public class MainMenuProcessing extends MainProcessing{
+public class MainMenuProcessing extends MainProcessing {
 
-
-    public MainMenuProcessing(TelegramBot telegramBot) {
-        super(telegramBot);
+    public MainMenuProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController) {
+        super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController);
     }
 
-    public void processing(CallbackQuery callbackQuery, User user) {
+    public Response processing(CallbackQuery callbackQuery, User user) {
         ButtonCommand command = ButtonCommand.valueOf(callbackQuery.getData());
         Integer messageId = callbackQuery.getMessage().getMessageId();
 
         switch (command){
             case LEARNING:
-                learning(user, messageId);
-                break;
+                return learning(user, messageId);
             case SETTING_GROUP:
-                settingGroup(user, messageId);
-                break;
+                return settingGroup(user, messageId);
             case CHOOSE_GROUP:
-                chooseGroup(user, messageId);
-                break;
+                return chooseGroup(user, messageId);
             case VIEW_GROUP:
-                viewGroup(user, messageId);
-                break;
+                return viewGroup(user, messageId);
             case FEEDBACK:
-                feedback(user, messageId);
-                break;
+                return feedback(user, messageId);
             case SETTING_LEARNING:
-                settingLearning(user, messageId);
-                break;
+                return settingLearning(user, messageId);
         }
+        return null;
     }
 
     @Override
-    public void processing(String messageText, User user) {
-
+    public Response processing(String messageText, User user) {
+        return null;
     }
 
-    private void learning(User user, Integer messageId) {
+    private Response learning(User user, Integer messageId) {
         user = userController.setState(user, StateUser.LEARNING_STATE);
         ReplyKeyboard replyKeyboard = keyboard.getStartLearningButton();
 
-        ResponseMessage response = ResponseMessage.builder()
-                .message(Messages.INSTRUCTION_LEARN_MESSAGE)
-                .chatId(user.getChatId())
-                .keyboard(replyKeyboard).build();
-
-        telegramBot.deleteMessage(messageId, user.getChatId());
-        telegramBot.sendMessage(response);
+        return Response.builder()
+                .isSaveSentMessageId(false)
+                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .responseMessage(getResponseMessage(Messages.INSTRUCTION_LEARN_MESSAGE, user.getChatId(), replyKeyboard))
+                .user(user)
+                .build();
     }
 
-    private void feedback(User user, Integer messageId) {
+    private Response feedback(User user, Integer messageId) {
         user = userController.setState(user, StateUser.CREATE_FEEDBACK_STATE);
 
         ReplyKeyboard replyKeyboard = keyboard.getFeedbackButtons();
 
-        ResponseMessage response = ResponseMessage.builder()
-                .message(Messages.TYPE_TEXT_FEEDBACK_MESSAGE)
-                .chatId(user.getChatId())
-                .keyboard(replyKeyboard).build();
-
-        telegramBot.deleteMessage(messageId, user.getChatId());
-        userController.setTmp(user, telegramBot.sendMessage(response).toString());
-
+        return Response.builder()
+                .isSaveSentMessageId(true)
+                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .responseMessage(getResponseMessage(Messages.TYPE_TEXT_FEEDBACK_MESSAGE, user.getChatId(), replyKeyboard))
+                .user(user)
+                .build();
     }
 }

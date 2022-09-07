@@ -1,5 +1,6 @@
 package ru.matyuk.irregularVerbsBot.config;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -14,6 +15,7 @@ import ru.matyuk.irregularVerbsBot.service.TelegramBot;
 @Component
 public class BotInit {
 
+    @Getter
     @Autowired
     TelegramBot bot;
 

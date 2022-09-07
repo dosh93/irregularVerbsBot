@@ -3,46 +3,48 @@ package ru.matyuk.irregularVerbsBot.processing;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
+import ru.matyuk.irregularVerbsBot.controller.*;
+import ru.matyuk.irregularVerbsBot.design.Keyboard;
 import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
-import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
-import ru.matyuk.irregularVerbsBot.service.TelegramBot;
+import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
 import static ru.matyuk.irregularVerbsBot.design.Messages.FEEDBACK_CREATED_MESSAGE;
 import static ru.matyuk.irregularVerbsBot.design.Messages.MAIN_MENU_MESSAGE;
 
 @Component
-public class CreateFeedbackProcessing extends MainProcessing{
-    public CreateFeedbackProcessing(TelegramBot telegramBot) {
-        super(telegramBot);
+public class CreateFeedbackProcessing extends MainProcessing {
+
+    public CreateFeedbackProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController) {
+        super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController);
     }
 
     @Override
-    public void processing(CallbackQuery callbackQuery, User user) {
+    public Response processing(CallbackQuery callbackQuery, User user) {
         ButtonCommand command = ButtonCommand.valueOf(callbackQuery.getData());
         Integer messageId = callbackQuery.getMessage().getMessageId();
 
         switch (command){
             case BACK_TO_MAIN:
-                back(user, messageId);
-                break;
+                return back(user, messageId);
         }
+        return null;
     }
 
     @Override
-    public void processing(String messageText, User user) {
+    public Response processing(String messageText, User user) {
         user = userController.setState(user, StateUser.MAIN_MENU_STATE);
         feedbackController.create(user, messageText);
 
         ReplyKeyboard replyKeyboard = keyboard.getMainMenu(user);
-        String responseText = FEEDBACK_CREATED_MESSAGE + "\n\n" + MAIN_MENU_MESSAGE;
+        String responseText = MAIN_MENU_MESSAGE + "\n\n" + FEEDBACK_CREATED_MESSAGE;
 
-        ResponseMessage response = ResponseMessage.builder()
-                .message(responseText)
-                .chatId(user.getChatId())
-                .keyboard(replyKeyboard).build();
-        telegramBot.deleteMessage(Integer.parseInt(user.getTmp()), user.getChatId());
-        telegramBot.sendMessage(response);
+        return Response.builder()
+                .isSaveSentMessageId(false)
+                .deleteMessage(getDeleteMessage(Integer.parseInt(user.getTmp()), user.getChatId()))
+                .responseMessage(getResponseMessage(responseText, user.getChatId(), replyKeyboard))
+                .user(user)
+                .build();
     }
 }
