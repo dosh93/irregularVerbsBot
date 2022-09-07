@@ -6,34 +6,36 @@ import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 @Getter
 public enum ButtonInline {
 
-    GROUP(Smiles.CARD_FILE_BOX +" Группы", ButtonCommand.NONE),
-    VIEW_GROUP(Smiles.BOOK + " Посмотреть", ButtonCommand.VIEW_GROUP),
-    CHOOSE_GROUP(Smiles.PUSH_PIN + " Выбрать", ButtonCommand.CHOOSE_GROUP),
-    SETTING_GROUP(Smiles.SETTING + " Настройка групп", ButtonCommand.SETTING_GROUP),
-    LEARNING(Smiles.BRAIN + " Учить", ButtonCommand.LEARNING),
-    BACK(Smiles.BACK + " Назад", ButtonCommand.BACK_TO_MAIN),
-    START_LEARN(Smiles.START + " Начать", ButtonCommand.START_LEARN),
-    CREATE_GROUP( Smiles.PENCIL + " Создать", ButtonCommand.CREATE_GROUP),
-    REMOVE_GROUP( Smiles.DELETE + " Удалить", ButtonCommand.REMOVE_GROUP),
-    BACK_TO_VIEW_GROUP( Smiles.BACK + " Назад", ButtonCommand.BACK_TO_VIEW_GROUP),
-    BACK_TO_SETTING_GROUP( Smiles.BACK + " Назад", ButtonCommand.BACK_TO_SETTING_GROUP),
-    BACK_TO_SETTING_LEARNING( Smiles.BACK + " Назад", ButtonCommand.BACK_TO_SETTING_LEARNING),
-    CANCEL_CONFIRM(Smiles.STOP + " Отмена", ButtonCommand.CANCEL_CONFIRM),
-    SAVE_GROUP( Smiles.SAVE + " Сохранить", ButtonCommand.SAVE_GROUP),
-    END_LEARNING(Smiles.END + " Закончить", ButtonCommand.END_LEARNING),
-    ALL_DELETE( Smiles.DELETE + " Удалить все данные!", ButtonCommand.ALL_DELETE),
-    FEEDBACK( Smiles.MESSAGE + " Обратная связь", ButtonCommand.FEEDBACK),
-    SETTING_LEARNING( Smiles.JOYSTICK + " Управление обучением", ButtonCommand.SETTING_LEARNING),
-    RESET_LEARNING_ALL( Smiles.RELOAD + " Сбросить всё", ButtonCommand.RESET_LEARNING_ALL),
-    RESET_LEARNING_GROUP( Smiles.RELOAD_BY_GROUP + " Сбросить по группе", ButtonCommand.RESET_LEARNING_GROUP);
+    GROUP(Smiles.CARD_FILE_BOX +" Группы", ButtonCommand.NONE, Smiles.CARD_FILE_BOX),
+    VIEW_GROUP(Smiles.BOOK + " Посмотреть", ButtonCommand.VIEW_GROUP, Smiles.BOOK),
+    CHOOSE_GROUP(Smiles.PUSH_PIN + " Выбрать", ButtonCommand.CHOOSE_GROUP, Smiles.PUSH_PIN),
+    SETTING_GROUP(Smiles.SETTING + " Настройка групп", ButtonCommand.SETTING_GROUP, Smiles.SETTING),
+    LEARNING(Smiles.BRAIN + " Учить", ButtonCommand.LEARNING, Smiles.BRAIN),
+    BACK(Smiles.BACK + " Назад", ButtonCommand.BACK_TO_MAIN, Smiles.BACK),
+    START_LEARN(Smiles.START + " Начать", ButtonCommand.START_LEARN, Smiles.START),
+    CREATE_GROUP( Smiles.PENCIL + " Создать", ButtonCommand.CREATE_GROUP, Smiles.PENCIL),
+    REMOVE_GROUP( Smiles.DELETE + " Удалить", ButtonCommand.REMOVE_GROUP, Smiles.DELETE),
+    BACK_TO_VIEW_GROUP( Smiles.BACK + " Назад", ButtonCommand.BACK_TO_VIEW_GROUP, Smiles.BACK),
+    BACK_TO_SETTING_GROUP( Smiles.BACK + " Назад", ButtonCommand.BACK_TO_SETTING_GROUP, Smiles.BACK),
+    BACK_TO_SETTING_LEARNING( Smiles.BACK + " Назад", ButtonCommand.BACK_TO_SETTING_LEARNING, Smiles.BACK),
+    CANCEL_CONFIRM(Smiles.STOP + " Отмена", ButtonCommand.CANCEL_CONFIRM, Smiles.STOP),
+    SAVE_GROUP( Smiles.SAVE + " Сохранить", ButtonCommand.SAVE_GROUP, Smiles.SAVE),
+    END_LEARNING(Smiles.END + " Закончить", ButtonCommand.END_LEARNING, Smiles.END),
+    ALL_DELETE( Smiles.DELETE + " Удалить все данные!", ButtonCommand.ALL_DELETE, Smiles.DELETE),
+    FEEDBACK( Smiles.MESSAGE + " Обратная связь", ButtonCommand.FEEDBACK, Smiles.MESSAGE),
+    SETTING_LEARNING( Smiles.JOYSTICK + " Управление обучением", ButtonCommand.SETTING_LEARNING, Smiles.JOYSTICK),
+    RESET_LEARNING_ALL( Smiles.RELOAD + " Сбросить всё", ButtonCommand.RESET_LEARNING_ALL, Smiles.RELOAD),
+    RESET_LEARNING_GROUP( Smiles.RELOAD_BY_GROUP + " Сбросить по группе", ButtonCommand.RESET_LEARNING_GROUP, Smiles.RELOAD_BY_GROUP);
 
 
 
     private String text;
     private ButtonCommand command;
+    private String smile;
 
-    ButtonInline(String text, ButtonCommand command) {
+    ButtonInline(String text, ButtonCommand command, String smile) {
         this.text = text;
         this.command = command;
+        this.smile = smile;
     }
 }

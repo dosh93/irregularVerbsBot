@@ -293,19 +293,21 @@ public class Keyboard {
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row1 = new ArrayList<>();
         List<InlineKeyboardButton> row2 = new ArrayList<>();
+        List<InlineKeyboardButton> row3 = new ArrayList<>();
 
         row1.add(createButtonInline(
                 ButtonInline.RESET_LEARNING_ALL.getText(),
                 ButtonInline.RESET_LEARNING_ALL.getCommand().toString()));
-        row1.add(createButtonInline(
+        row2.add(createButtonInline(
                 ButtonInline.RESET_LEARNING_GROUP.getText(),
                 ButtonInline.RESET_LEARNING_GROUP.getCommand().toString()));
-        row2.add(createButtonInline(
+        row3.add(createButtonInline(
                 ButtonInline.BACK.getText(),
                 ButtonInline.BACK.getCommand().toString()));
 
         rows.add(row1);
         rows.add(row2);
+        rows.add(row3);
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
     }
