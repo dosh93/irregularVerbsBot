@@ -322,8 +322,8 @@ public class Keyboard {
         List<InlineKeyboardButton>  row = new ArrayList<>();
 
         row.add(createButtonInline(
-                ButtonInline.BACK.getText(),
-                ButtonInline.BACK.getCommand().toString()));
+                ButtonInline.BACK_TO_SETTING_LEARNING.getText(),
+                ButtonInline.BACK_TO_SETTING_LEARNING.getCommand().toString()));
         rows.add(row);
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
