@@ -1,6 +1,7 @@
 package ru.matyuk.irregularVerbsBot.processing;
 
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import ru.matyuk.irregularVerbsBot.controller.*;
@@ -10,6 +11,7 @@ import ru.matyuk.irregularVerbsBot.design.Messages;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
+
 
 
 @Component
@@ -36,6 +38,8 @@ public class MainMenuProcessing extends MainProcessing {
                 return feedback(user, messageId);
             case SETTING_LEARNING:
                 return settingLearning(user, messageId);
+            case SETTING_MAIN:
+                return settingMain(user, messageId);
         }
         return null;
     }
@@ -69,4 +73,5 @@ public class MainMenuProcessing extends MainProcessing {
                 .user(user)
                 .build();
     }
+
 }

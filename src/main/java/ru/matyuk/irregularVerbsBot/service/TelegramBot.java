@@ -74,6 +74,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Autowired
     private ChooseGroupResetProcessing chooseGroupResetProcessing;
 
+    @Autowired
+    private SettingMainProcessing settingMainProcessing;
+
 
     final BotConfig config;
 
@@ -132,6 +135,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 processingResponse(createGroupProcessing.processing(messageText, user));
                 break;
             case SET_NAME_GROUP_STATE:
+                deleteMessage(message.getMessageId(), user.getChatId());
                 processingResponse(setNameGroupProcessing.processing(messageText, user));
                 break;
             case LEARNING_STATE:
@@ -142,8 +146,12 @@ public class TelegramBot extends TelegramLongPollingBot {
                 processingResponse(createFeedbackProcessing.processing(messageText, user));
                 break;
             case MAIN_MENU_STATE:
+                deleteMessage(message.getMessageId(), user.getChatId());
+                deleteMessage(message.getMessageId() - 1, user.getChatId());
                 processingResponse(startProcessing.processing(messageText, user));
                 break;
+            default:
+                deleteMessage(message.getMessageId(), user.getChatId());
         }
 
     }
@@ -191,6 +199,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             case CHOOSE_GROUP_RESET_STATE:
                 processingResponse(chooseGroupResetProcessing.processing(callbackQuery, user));
                 break;
+            case SETTING_MAIN_STATE:
+                processingResponse(settingMainProcessing.processing(callbackQuery, user));
         }
     }
 

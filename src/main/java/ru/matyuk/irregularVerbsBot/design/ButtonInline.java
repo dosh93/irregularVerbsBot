@@ -25,7 +25,9 @@ public enum ButtonInline {
     FEEDBACK( Smiles.MESSAGE + " Обратная связь", ButtonCommand.FEEDBACK, Smiles.MESSAGE),
     SETTING_LEARNING( Smiles.JOYSTICK + " Управление обучением", ButtonCommand.SETTING_LEARNING, Smiles.JOYSTICK),
     RESET_LEARNING_ALL( Smiles.RELOAD + " Сбросить всё", ButtonCommand.RESET_LEARNING_ALL, Smiles.RELOAD),
-    RESET_LEARNING_GROUP( Smiles.RELOAD_BY_GROUP + " Сбросить по группе", ButtonCommand.RESET_LEARNING_GROUP, Smiles.RELOAD_BY_GROUP);
+    RESET_LEARNING_GROUP( Smiles.RELOAD_BY_GROUP + " Сбросить по группе", ButtonCommand.RESET_LEARNING_GROUP, Smiles.RELOAD_BY_GROUP),
+    SETTING_MAIN( Smiles.SETTING + " Настройки", ButtonCommand.SETTING_MAIN, Smiles.SETTING),
+    BACK_TO_SETTING_MAIN( Smiles.BACK + " Назад", ButtonCommand.BACK_TO_SETTING_MAIN, Smiles.BACK);
 
 
 

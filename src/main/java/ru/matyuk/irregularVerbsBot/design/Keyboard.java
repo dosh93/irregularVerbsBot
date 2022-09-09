@@ -39,8 +39,8 @@ public class Keyboard {
         List<InlineKeyboardButton> row1 = new ArrayList<>();
         List<InlineKeyboardButton> row2 = new ArrayList<>();
         List<InlineKeyboardButton> row3 = new ArrayList<>();
-        List<InlineKeyboardButton> row4 = new ArrayList<>();
         List<InlineKeyboardButton> row5 = new ArrayList<>();
+        List<InlineKeyboardButton> row6 = new ArrayList<>();
 
         if(userController.isLearning(user)){
             List<InlineKeyboardButton> row = new ArrayList<>();
@@ -63,9 +63,9 @@ public class Keyboard {
         InlineKeyboardButton settingLearning = createButtonInline(
                 ButtonInline.SETTING_LEARNING.getText(),
                 ButtonInline.SETTING_LEARNING.getCommand().name());
-        InlineKeyboardButton groupSetting = createButtonInline(
-                ButtonInline.SETTING_GROUP.getText(),
-                ButtonInline.SETTING_GROUP.getCommand().name());
+        InlineKeyboardButton settingMain = createButtonInline(
+                ButtonInline.SETTING_MAIN.getText(),
+                ButtonInline.SETTING_MAIN.getCommand().name());
         InlineKeyboardButton feedback = createButtonInline(
                 ButtonInline.FEEDBACK.getText(),
                 ButtonInline.FEEDBACK.getCommand().name());
@@ -74,14 +74,15 @@ public class Keyboard {
         row2.add(groupView);
         row2.add(groupChoose);
         row3.add(settingLearning);
-        row4.add(groupSetting);
-        row5.add(feedback);
+
+        row5.add(settingMain);
+        row6.add(feedback);
 
         rows.add(row1);
         rows.add(row2);
         rows.add(row3);
-        rows.add(row4);
         rows.add(row5);
+        rows.add(row6);
 
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
@@ -142,8 +143,8 @@ public class Keyboard {
                 ButtonInline.REMOVE_GROUP.getText(),
                 ButtonInline.REMOVE_GROUP.getCommand().name());
         InlineKeyboardButton back = createButtonInline(
-                ButtonInline.BACK.getText(),
-                ButtonInline.BACK.getCommand().name());
+                ButtonInline.BACK_TO_SETTING_MAIN.getText(),
+                ButtonInline.BACK_TO_SETTING_MAIN.getCommand().name());
 
         row1.add(createGroup);
         row1.add(removeGroup);
@@ -344,5 +345,24 @@ public class Keyboard {
             offset++;
         }
         rows.add(row);
+    }
+
+    public ReplyKeyboard getSettingMain() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+
+        row1.add(createButtonInline(
+                ButtonInline.SETTING_GROUP.getText(),
+                ButtonInline.SETTING_GROUP.getCommand().name()));
+        row2.add(createButtonInline(
+                ButtonInline.BACK.getText(),
+                ButtonInline.BACK.getCommand().toString()));
+
+        rows.add(row1);
+        rows.add(row2);
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
     }
 }

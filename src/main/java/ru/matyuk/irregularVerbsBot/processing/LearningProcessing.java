@@ -104,7 +104,7 @@ public class LearningProcessing extends MainProcessing {
         user = userController.setState(user, StateUser.MAIN_MENU_STATE);
 
         ReplyKeyboard replyKeyboard = keyboard.getMainMenu(user);
-        String responseText = GOOD_WORK_MESSAGE + "\n\n" + MAIN_MENU_MESSAGE;
+        String responseText = MAIN_MENU_MESSAGE + GOOD_WORK_MESSAGE;
 
         return Response.builder()
                 .isSaveSentMessageId(false)

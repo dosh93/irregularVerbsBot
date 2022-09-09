@@ -30,8 +30,8 @@ public class SettingGroupProcessing extends MainProcessing {
                 return createGroup(user, messageId);
             case REMOVE_GROUP:
                 return removeGroup(user, messageId);
-            case BACK_TO_MAIN:
-                return back(user, messageId);
+            case BACK_TO_SETTING_MAIN:
+                return settingMain(user, messageId);
         }
         return null;
     }

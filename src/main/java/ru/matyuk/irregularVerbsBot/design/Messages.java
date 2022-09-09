@@ -66,6 +66,6 @@ public final class Messages {
 
     public static final String RESET_GROUP_DONE_MESSAGE = "Прогресс по группе '%s' сброшен " + Smiles.RELOAD_BY_GROUP;
 
-
+    public static final String SETTING_MAIN_MESSAGE = "<b>Настройки</b> " + Smiles.SETTING;
 
 }

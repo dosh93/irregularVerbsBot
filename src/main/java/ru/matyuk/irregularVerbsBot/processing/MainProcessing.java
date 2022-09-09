@@ -142,6 +142,18 @@ public abstract class MainProcessing {
                 .build();
     }
 
+    protected Response settingMain(User user, Integer messageId) {
+        user = userController.setState(user, StateUser.SETTING_MAIN_STATE);
+
+        ReplyKeyboard replyKeyboard = keyboard.getSettingMain();
+
+        return Response.builder()
+                .isSaveSentMessageId(false)
+                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .responseMessage(getResponseMessage(SETTING_MAIN_MESSAGE, user.getChatId(), replyKeyboard))
+                .build();
+    }
+
     protected DeleteMessage getDeleteMessage(Integer messageId, Long chatId){
         return DeleteMessage.builder()
                 .messageId(messageId)
