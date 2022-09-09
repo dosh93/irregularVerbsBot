@@ -53,7 +53,16 @@ public class LearningProcessing extends MainProcessing {
             Learning learningVerb = learningController.getLearningActive(user);
             if(learningVerb != null){
                 if(learningController.isValidAnswerUser(verbsAnswer, learningVerb)){
-                    responseText.append(RIGHT_MESSAGE).append("\n\n");
+                    responseText.append(RIGHT_MESSAGE).append("\n");
+
+                    if(learningVerb.getVerb().getSecondForm().split("/").length > 1
+                            || learningVerb.getVerb().getThirdForm().split("/").length > 1){
+                        responseText.append(MORE_VARIANT_VERB_MESSAGE)
+                                .append("\n")
+                                .append(learningVerb.getVerb().getThreeForm())
+                                .append("\n\n");
+                    }
+
                     learningController.setInactiveAndAddSuccessful(learningVerb);
                 }else {
                     responseText.append(NOT_RIGHT_MESSAGE).append("\n")

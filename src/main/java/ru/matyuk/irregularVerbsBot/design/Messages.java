@@ -68,4 +68,6 @@ public final class Messages {
 
     public static final String SETTING_MAIN_MESSAGE = "<b>Настройки</b> " + Smiles.SETTING;
 
+    public static final String MORE_VARIANT_VERB_MESSAGE = "Есть еще вариант написания глагола:";
+
 }

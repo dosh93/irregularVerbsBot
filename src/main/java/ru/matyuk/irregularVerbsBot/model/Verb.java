@@ -34,4 +34,9 @@ public class Verb {
     public String toString() {
         return String.format("%s - %s - %s - %s", firstForm, secondForm, thirdForm, translate);
     }
+
+    public String getThreeForm(){
+        return String.format("%s - %s - %s", firstForm, secondForm, thirdForm);
+    }
+
 }
