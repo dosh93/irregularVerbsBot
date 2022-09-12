@@ -22,6 +22,7 @@ import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -73,9 +74,9 @@ public class LearningProcessing extends MainProcessing {
                 if(learningController.isValidAnswerUser(verbsAnswer, learningVerb)){
                     if(learningVerb.getVerb().getAudio() != null && user.isViewAudio()){
                         try {
-                            file = ResourceUtils.getFile("classpath:" + learningVerb.getVerb().getAudio());
+                            file = resourceLoader.getResource("classpath:" + learningVerb.getVerb().getAudio()).getFile();
                             nameAudio = learningVerb.getVerb().getFirstForm();
-                        } catch (FileNotFoundException e) {
+                        } catch (IOException e) {
                             log.error("Файл не найден " + e.getMessage());
                         }
                     }
