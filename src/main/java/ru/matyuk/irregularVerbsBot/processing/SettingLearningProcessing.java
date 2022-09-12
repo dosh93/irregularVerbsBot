@@ -10,6 +10,9 @@ import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static ru.matyuk.irregularVerbsBot.design.Messages.*;
 
 @Component
@@ -42,7 +45,7 @@ public class SettingLearningProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(RESET_LEARNING_FRO_GROUP_MESSAGE, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();
@@ -61,7 +64,7 @@ public class SettingLearningProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(responseMessage, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();

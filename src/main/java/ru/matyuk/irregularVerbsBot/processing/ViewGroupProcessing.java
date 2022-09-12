@@ -14,6 +14,7 @@ import ru.matyuk.irregularVerbsBot.model.Verb;
 import ru.matyuk.irregularVerbsBot.model.id.GroupVerbId;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,7 @@ public class ViewGroupProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(responseMessage.toString(), user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();

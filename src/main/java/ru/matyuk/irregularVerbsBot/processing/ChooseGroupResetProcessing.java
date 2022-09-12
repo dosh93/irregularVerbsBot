@@ -10,6 +10,7 @@ import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.*;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class ChooseGroupResetProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(responseMessage, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();

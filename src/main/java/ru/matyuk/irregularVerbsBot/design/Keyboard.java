@@ -347,11 +347,12 @@ public class Keyboard {
         rows.add(row);
     }
 
-    public ReplyKeyboard getSettingMain() {
+    public ReplyKeyboard getSettingMain(User user) {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row1 = new ArrayList<>();
         List<InlineKeyboardButton> row2 = new ArrayList<>();
+        List<InlineKeyboardButton> row4 = new ArrayList<>();
         List<InlineKeyboardButton> row3 = new ArrayList<>();
 
         row1.add(createButtonInline(
@@ -360,13 +361,24 @@ public class Keyboard {
         row2.add(createButtonInline(
                 ButtonInline.SET_COUNT_SUCCESSFUL.getText(),
                 ButtonInline.SET_COUNT_SUCCESSFUL.getCommand().name()));
-        row3.add(createButtonInline(
+        if (user.isViewAudio()) {
+            row3.add(createButtonInline(
+                    ButtonInline.OFF_AUDIO.getText(),
+                    ButtonInline.OFF_AUDIO.getCommand().name()));
+        } else {
+            row3.add(createButtonInline(
+                    ButtonInline.ON_AUDIO.getText(),
+                    ButtonInline.ON_AUDIO.getCommand().name()));
+        }
+
+        row4.add(createButtonInline(
                 ButtonInline.BACK.getText(),
                 ButtonInline.BACK.getCommand().toString()));
 
         rows.add(row1);
         rows.add(row2);
         rows.add(row3);
+        rows.add(row4);
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
     }

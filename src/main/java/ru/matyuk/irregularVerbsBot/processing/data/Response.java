@@ -5,12 +5,15 @@ import lombok.Data;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import ru.matyuk.irregularVerbsBot.model.User;
 
+import java.util.List;
+
 @Builder
 @Data
 public class Response {
 
     private User user;
     private ResponseMessage responseMessage;
-    private DeleteMessage deleteMessage;
+    private List<DeleteMessage> deleteMessage;
     private boolean isSaveSentMessageId;
+
 }

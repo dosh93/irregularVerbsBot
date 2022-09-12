@@ -28,7 +28,9 @@ public enum ButtonInline {
     RESET_LEARNING_GROUP( Smiles.RELOAD_BY_GROUP + " Сбросить по группе", ButtonCommand.RESET_LEARNING_GROUP, Smiles.RELOAD_BY_GROUP),
     SETTING_MAIN( Smiles.SETTING + " Настройки", ButtonCommand.SETTING_MAIN, Smiles.SETTING),
     BACK_TO_SETTING_MAIN( Smiles.BACK + " Назад", ButtonCommand.BACK_TO_SETTING_MAIN, Smiles.BACK),
-    SET_COUNT_SUCCESSFUL( Smiles.KEY + " Установить значение", ButtonCommand.SET_COUNT_SUCCESSFUL, Smiles.KEY);
+    SET_COUNT_SUCCESSFUL( Smiles.KEY + " Установить значение", ButtonCommand.SET_COUNT_SUCCESSFUL, Smiles.KEY),
+    ON_AUDIO(Smiles.SOUND + " Включить аудио", ButtonCommand.SWITCH_AUDIO, Smiles.SOUND),
+    OFF_AUDIO(Smiles.MUTE + " Выключить аудио", ButtonCommand.SWITCH_AUDIO, Smiles.MUTE);
 
 
 

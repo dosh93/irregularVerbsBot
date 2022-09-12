@@ -9,6 +9,9 @@ import ru.matyuk.irregularVerbsBot.model.Group;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static ru.matyuk.irregularVerbsBot.design.Messages.GROUP_DONE_MESSAGE;
 import static ru.matyuk.irregularVerbsBot.design.Messages.MAIN_MENU_MESSAGE;
 import static ru.matyuk.irregularVerbsBot.enums.StateUser.MAIN_MENU_STATE;
@@ -35,7 +38,7 @@ public class SetNameGroupProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(Integer.parseInt(user.getTmp()), user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(Integer.parseInt(user.getTmp()), user.getChatId()))))
                 .responseMessage(getResponseMessage(responseText, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();

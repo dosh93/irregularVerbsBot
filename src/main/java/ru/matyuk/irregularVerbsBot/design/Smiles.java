@@ -29,4 +29,6 @@ public class Smiles {
     public static final String RELOAD_BY_GROUP = "\uD83D\uDD02";
     public static final String SAW = "\uD83E\uDE9A";
     public static final String KEY = "\uD83D\uDD11";
+    public static final String MUTE = "\uD83D\uDD07";
+    public static final String SOUND = "\uD83D\uDD08";
 }

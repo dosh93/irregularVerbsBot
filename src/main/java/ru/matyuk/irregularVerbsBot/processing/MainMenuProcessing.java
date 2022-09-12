@@ -1,7 +1,6 @@
 package ru.matyuk.irregularVerbsBot.processing;
 
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import ru.matyuk.irregularVerbsBot.controller.*;
@@ -12,6 +11,8 @@ import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Component
@@ -55,7 +56,7 @@ public class MainMenuProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(Messages.INSTRUCTION_LEARN_MESSAGE, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();
@@ -68,7 +69,7 @@ public class MainMenuProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(true)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(Messages.TYPE_TEXT_FEEDBACK_MESSAGE, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();

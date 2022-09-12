@@ -11,6 +11,9 @@ import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class SettingMainProcessing extends MainProcessing {
 
@@ -30,8 +33,15 @@ public class SettingMainProcessing extends MainProcessing {
                 return settingGroup(user, messageId);
             case SET_COUNT_SUCCESSFUL:
                 return startSetCountSuccessful(user, messageId);
+            case SWITCH_AUDIO:
+                return switchAudio(user, messageId);
         }
         return null;
+    }
+
+    private Response switchAudio(User user, Integer messageId) {
+        user = userController.switchAudio(user);
+        return settingMain(user, messageId);
     }
 
     private Response startSetCountSuccessful(User user, Integer messageId) {
@@ -41,7 +51,7 @@ public class SettingMainProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(true)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(Messages.TYPE_NUMERICAL_MESSAGE, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();

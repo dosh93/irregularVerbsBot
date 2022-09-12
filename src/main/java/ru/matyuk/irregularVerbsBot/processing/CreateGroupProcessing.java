@@ -13,10 +13,7 @@ import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.model.Verb;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.matyuk.irregularVerbsBot.design.Messages.RESULT_MESSAGE;
@@ -69,7 +66,7 @@ public class CreateGroupProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(oldMessage, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(oldMessage, user.getChatId()))))
                 .responseMessage(getResponseMessage(responseText.toString(), user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();
