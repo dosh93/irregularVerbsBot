@@ -12,7 +12,7 @@ public final class Messages {
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.VIEW_GROUP.getSmile() + " чтобы ознакомиться с группами глаголов\n\n" +
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.CHOOSE_GROUP.getSmile() + " чтобы выбрать группы глаголов для изучения\n\n" +
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.SETTING_LEARNING.getSmile() + " чтобы сбросить прогресс обучения\n\n" +
-            Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.SETTING_GROUP.getSmile() + " чтобы создать/удалить группу глаголов, настроить обучение\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.SETTING_MAIN.getSmile() + " чтобы создать/удалить группу глаголов, настроить обучение\n\n" +
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.FEEDBACK.getSmile() + " если у тебя есть вопросы\\пожелания\n\n" ;
     public static final String SELECTED_GROUP_MESSAGE = "<b>Список групп на изучении:</b>\n";
     public static final String NO_SELECTED_GROUP_MESSAGE = "<b>Не выбрано ни одной группы</b>";
