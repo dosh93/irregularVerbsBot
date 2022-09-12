@@ -78,7 +78,7 @@ public class LearningProcessing extends MainProcessing {
                             file = ResourceUtils.getFile("classpath:" + learningVerb.getVerb().getAudio());
                             nameAudio = learningVerb.getVerb().getFirstForm();
                         } catch (FileNotFoundException e) {
-                            log.error("Файл не найден " + e.getMessage());
+                            log.error("Файл не найден " + file.getAbsolutePath() + e.getMessage());
                         }
                     }
                     responseText.append(RIGHT_MESSAGE).append("\n").append(getAdvice(learningVerb, verbsAnswer));
