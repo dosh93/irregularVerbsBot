@@ -2,12 +2,15 @@ package ru.matyuk.irregularVerbsBot.processing;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ResourceUtils;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -24,9 +27,11 @@ import ru.matyuk.irregularVerbsBot.processing.data.Response;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static ru.matyuk.irregularVerbsBot.design.Messages.*;
 import static ru.matyuk.irregularVerbsBot.utils.CommonUtils.getDeleteAudio;
@@ -75,7 +80,17 @@ public class LearningProcessing extends MainProcessing {
                 if(learningController.isValidAnswerUser(verbsAnswer, learningVerb)){
                     if(learningVerb.getVerb().getAudio() != null && user.isViewAudio()){
                         try {
-                            file = resourceLoader.getResource("classpath:" + learningVerb.getVerb().getAudio()).getFile();
+                            ClassPathResource classPathResource = new ClassPathResource(learningVerb.getVerb().getAudio());
+
+                            InputStream inputStream = classPathResource.getInputStream();
+                            File tmpAudioFile = File.createTempFile(String.valueOf(UUID.randomUUID()), ".aac");
+                            try {
+                                FileUtils.copyInputStreamToFile(inputStream, tmpAudioFile);
+                            } finally {
+                                IOUtils.close(inputStream);
+                            }
+
+                            file = tmpAudioFile;
                             nameAudio = learningVerb.getVerb().getFirstForm();
                         } catch (IOException e) {
                             log.error("Файл не найден " + e.getMessage());
