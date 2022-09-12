@@ -2,7 +2,6 @@ package ru.matyuk.irregularVerbsBot.service;
 
 import com.vdurmont.emoji.EmojiParser;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
@@ -29,65 +28,51 @@ import static ru.matyuk.irregularVerbsBot.enums.MainCommands.START;
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
-    @Autowired
-    private UserController userController;
-
-    @Autowired
-    private StartProcessing startProcessing;
-
-    @Autowired
-    private MainMenuProcessing mainMenuProcessing;
-
-    @Autowired
-    private ViewGroupProcessing viewGroupProcessing;
-
-    @Autowired
-    private ChooseGroupProcessing chooseGroupProcessing;
-
-    @Autowired
-    private SettingGroupProcessing settingGroupProcessing;
-
-    @Autowired
-    private CreateGroupProcessing createGroupProcessing;
-
-    @Autowired
-    private ConfirmCreateGroupProcessing confirmCreateGroupProcessing;
-
-    @Autowired
-    private DeleteGroupProcessing deleteGroupProcessing;
-
-    @Autowired
-    private LearningProcessing learningProcessing;
-
-    @Autowired
-    private AllDeleteProcessing allDeleteProcessing;
-
-    @Autowired
-    private CreateFeedbackProcessing createFeedbackProcessing;
-
-    @Autowired
-    private SetNameGroupProcessing setNameGroupProcessing;
-
-    @Autowired
-    private SettingLearningProcessing settingLearningProcessing;
-
-    @Autowired
-    private ChooseGroupResetProcessing chooseGroupResetProcessing;
-
-    @Autowired
-    private SettingMainProcessing settingMainProcessing;
-
+    private final UserController userController;
+    private final StartProcessing startProcessing;
+    private final MainMenuProcessing mainMenuProcessing;
+    private final ViewGroupProcessing viewGroupProcessing;
+    private final ChooseGroupProcessing chooseGroupProcessing;
+    private final SettingGroupProcessing settingGroupProcessing;
+    private final CreateGroupProcessing createGroupProcessing;
+    private final ConfirmCreateGroupProcessing confirmCreateGroupProcessing;
+    private final DeleteGroupProcessing deleteGroupProcessing;
+    private final LearningProcessing learningProcessing;
+    private final AllDeleteProcessing allDeleteProcessing;
+    private final CreateFeedbackProcessing createFeedbackProcessing;
+    private final SetNameGroupProcessing setNameGroupProcessing;
+    private final SettingLearningProcessing settingLearningProcessing;
+    private final ChooseGroupResetProcessing chooseGroupResetProcessing;
+    private final SettingMainProcessing settingMainProcessing;
+    private final SetCountSuccessfulProcessing setCountSuccessfulProcessing;
 
     final BotConfig config;
 
-    public TelegramBot(BotConfig config)
+    public TelegramBot(BotConfig config, UserController userController, StartProcessing startProcessing, SetNameGroupProcessing setNameGroupProcessing, MainMenuProcessing mainMenuProcessing, ViewGroupProcessing viewGroupProcessing, ChooseGroupResetProcessing chooseGroupResetProcessing, ChooseGroupProcessing chooseGroupProcessing, SettingGroupProcessing settingGroupProcessing, CreateGroupProcessing createGroupProcessing, ConfirmCreateGroupProcessing confirmCreateGroupProcessing, SettingLearningProcessing settingLearningProcessing, SettingMainProcessing settingMainProcessing, DeleteGroupProcessing deleteGroupProcessing, LearningProcessing learningProcessing, AllDeleteProcessing allDeleteProcessing, CreateFeedbackProcessing createFeedbackProcessing, SetCountSuccessfulProcessing setCountSuccessfulProcessing)
     {
         this.config = config;
+        this.setCountSuccessfulProcessing = setCountSuccessfulProcessing;
         try {
             this.execute(new SetMyCommands(InitMainCommands.getCommands(), new BotCommandScopeDefault(), null));
         }catch (TelegramApiException e){
             log.error("Ошибка создания меню " + e.getMessage());
         }
+        this.userController = userController;
+        this.startProcessing = startProcessing;
+        this.setNameGroupProcessing = setNameGroupProcessing;
+        this.mainMenuProcessing = mainMenuProcessing;
+        this.viewGroupProcessing = viewGroupProcessing;
+        this.chooseGroupResetProcessing = chooseGroupResetProcessing;
+        this.chooseGroupProcessing = chooseGroupProcessing;
+        this.settingGroupProcessing = settingGroupProcessing;
+        this.createGroupProcessing = createGroupProcessing;
+        this.confirmCreateGroupProcessing = confirmCreateGroupProcessing;
+        this.settingLearningProcessing = settingLearningProcessing;
+        this.settingMainProcessing = settingMainProcessing;
+        this.deleteGroupProcessing = deleteGroupProcessing;
+        this.learningProcessing = learningProcessing;
+        this.allDeleteProcessing = allDeleteProcessing;
+        this.createFeedbackProcessing = createFeedbackProcessing;
     }
 
     @Override
@@ -150,6 +135,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 deleteMessage(message.getMessageId() - 1, user.getChatId());
                 processingResponse(startProcessing.processing(messageText, user));
                 break;
+            case SET_COUNT_SUCCESSFUL_STATE:
+                processingResponse(setCountSuccessfulProcessing.processing(messageText, user));
+                break;
             default:
                 deleteMessage(message.getMessageId(), user.getChatId());
         }
@@ -201,6 +189,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 break;
             case SETTING_MAIN_STATE:
                 processingResponse(settingMainProcessing.processing(callbackQuery, user));
+            case SET_COUNT_SUCCESSFUL_STATE:
+                processingResponse(setCountSuccessfulProcessing.processing(callbackQuery, user));
+                break;
         }
     }
 

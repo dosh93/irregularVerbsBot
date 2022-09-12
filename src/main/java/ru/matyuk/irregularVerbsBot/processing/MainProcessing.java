@@ -147,10 +147,12 @@ public abstract class MainProcessing {
 
         ReplyKeyboard replyKeyboard = keyboard.getSettingMain();
 
+        String response = String.format(SETTING_MAIN_MESSAGE_FORMAT, user.getCountSuccessful());
+
         return Response.builder()
                 .isSaveSentMessageId(false)
                 .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
-                .responseMessage(getResponseMessage(SETTING_MAIN_MESSAGE, user.getChatId(), replyKeyboard))
+                .responseMessage(getResponseMessage(response, user.getChatId(), replyKeyboard))
                 .build();
     }
 

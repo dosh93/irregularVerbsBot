@@ -352,16 +352,38 @@ public class Keyboard {
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         List<InlineKeyboardButton> row1 = new ArrayList<>();
         List<InlineKeyboardButton> row2 = new ArrayList<>();
+        List<InlineKeyboardButton> row3 = new ArrayList<>();
 
         row1.add(createButtonInline(
                 ButtonInline.SETTING_GROUP.getText(),
                 ButtonInline.SETTING_GROUP.getCommand().name()));
         row2.add(createButtonInline(
+                ButtonInline.SET_COUNT_SUCCESSFUL.getText(),
+                ButtonInline.SET_COUNT_SUCCESSFUL.getCommand().name()));
+        row3.add(createButtonInline(
                 ButtonInline.BACK.getText(),
                 ButtonInline.BACK.getCommand().toString()));
 
         rows.add(row1);
         rows.add(row2);
+        rows.add(row3);
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+    public ReplyKeyboard getSetCountSuccessful() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+
+        InlineKeyboardButton back = createButtonInline(
+                ButtonInline.BACK_TO_SETTING_MAIN.getText(),
+                ButtonInline.BACK_TO_SETTING_MAIN.getCommand().name());
+
+        row1.add(back);
+
+        rows.add(row1);
+
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;
     }

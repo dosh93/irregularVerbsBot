@@ -53,16 +53,7 @@ public class LearningProcessing extends MainProcessing {
             Learning learningVerb = learningController.getLearningActive(user);
             if(learningVerb != null){
                 if(learningController.isValidAnswerUser(verbsAnswer, learningVerb)){
-                    responseText.append(RIGHT_MESSAGE).append("\n");
-
-                    if(learningVerb.getVerb().getSecondForm().split("/").length > 1
-                            || learningVerb.getVerb().getThirdForm().split("/").length > 1){
-                        responseText.append(MORE_VARIANT_VERB_MESSAGE)
-                                .append("\n")
-                                .append(learningVerb.getVerb().getThreeForm())
-                                .append("\n\n");
-                    }
-
+                    responseText.append(RIGHT_MESSAGE).append("\n").append(getAdvice(learningVerb, verbsAnswer));
                     learningController.setInactiveAndAddSuccessful(learningVerb);
                 }else {
                     responseText.append(NOT_RIGHT_MESSAGE).append("\n")
@@ -84,6 +75,41 @@ public class LearningProcessing extends MainProcessing {
                 .responseMessage(getResponseMessage(responseText.toString(), user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();
+    }
+
+    private String getAdvice(Learning learningVerb, List<String> verbsAnswer) {
+        StringBuilder result = new StringBuilder();
+        Verb verb = learningVerb.getVerb();
+        result.append(MORE_VARIANT_VERB_MESSAGE).append("\n")
+                .append(verb.getFirstForm()).append(" - ");
+        String secondFormAnswer = verbsAnswer.get(0);
+        String thirdFormAnswer = verbsAnswer.get(1);
+        if (verb.getSecondForm().split("/").length > 1) {
+            if (secondFormAnswer.split("/").length > 1) result.append(verb.getSecondForm()).append(" - ");
+            else {
+                String[] split = verb.getSecondForm().split("/");
+                for (String str : split) {
+                    if (!str.equals(secondFormAnswer)){
+                        result.append(str).append(" - ");
+                        break;
+                    }
+                }
+            }
+        } else result.append(verb.getSecondForm()).append(" - ");
+
+        if (verb.getThirdForm().split("/").length > 1) {
+            if (thirdFormAnswer.split("/").length > 1) result.append(verb.getThirdForm());
+            else {
+                String[] split = verb.getThirdForm().split("/");
+                for (String str : split) {
+                    if (!str.equals(thirdFormAnswer)){
+                        result.append(str);
+                        break;
+                    }
+                }
+            }
+        } else result.append(verb.getThirdForm());
+        return result.append("\n\n").toString();
     }
 
     private Response learning(User user, Integer messageId) {

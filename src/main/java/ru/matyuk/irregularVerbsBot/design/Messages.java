@@ -12,7 +12,7 @@ public final class Messages {
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.VIEW_GROUP.getSmile() + " чтобы ознакомиться с группами глаголов\n\n" +
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.CHOOSE_GROUP.getSmile() + " чтобы выбрать группы глаголов для изучения\n\n" +
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.SETTING_LEARNING.getSmile() + " чтобы сбросить прогресс обучения\n\n" +
-            Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.SETTING_GROUP.getSmile() + " чтобы создать группу глаголов или удалить группу\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.SETTING_GROUP.getSmile() + " чтобы создать/удалить группу глаголов, настроить обучение\n\n" +
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.FEEDBACK.getSmile() + " если у тебя есть вопросы\\пожелания\n\n" ;
     public static final String SELECTED_GROUP_MESSAGE = "<b>Список групп на изучении:</b>\n";
     public static final String NO_SELECTED_GROUP_MESSAGE = "<b>Не выбрано ни одной группы</b>";
@@ -66,8 +66,12 @@ public final class Messages {
 
     public static final String RESET_GROUP_DONE_MESSAGE = "Прогресс по группе '%s' сброшен " + Smiles.RELOAD_BY_GROUP;
 
-    public static final String SETTING_MAIN_MESSAGE = "<b>Настройки</b> " + Smiles.SETTING;
+    public static final String SETTING_MAIN_MESSAGE_FORMAT = "<b>Настройки</b> " + Smiles.SETTING + "\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.SETTING_GROUP.getSmile() + " чтобы создать/удалить группу глаголов\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.SET_COUNT_SUCCESSFUL.getSmile() + " чтобы настроить количество правильных ответов (подряд). Сейчас установлено: %s\n\n";
 
     public static final String MORE_VARIANT_VERB_MESSAGE = "Есть еще вариант написания глагола:";
+    public static final String TYPE_NUMERICAL_MESSAGE = "Введи число больше 0:";
+    public static final String SET_DONE_COUNT_SUCCESSFUL_MESSAGE = Smiles.WHITE_CHECK_MARK + "Значение установлено";
 
 }

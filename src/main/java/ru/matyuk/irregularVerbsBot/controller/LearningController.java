@@ -16,18 +16,14 @@ import java.util.stream.Collectors;
 @Component
 public class LearningController {
 
-    @Autowired
-    private LearningRepository learningRepository;
+    private final LearningRepository learningRepository;
 
-    @Autowired
-    private VerbController verbController;
-
-    @Value("${learning.count_successful}")
-    private int MAX_COUNT_SUCCESSFUL;
-
+    public LearningController(LearningRepository learningRepository) {
+        this.learningRepository = learningRepository;
+    }
 
     public Verb getVerbForLearning(User user) {
-        List<Learning> learnings = learningRepository.findByUserAndCountSuccessfulLessThanOrderByCountSuccessfulAsc(user, MAX_COUNT_SUCCESSFUL);
+        List<Learning> learnings = learningRepository.findByUserAndCountSuccessfulLessThanOrderByCountSuccessfulAsc(user, user.getCountSuccessful());
         if(learnings.size() == 0)
             return null;
         int minCountSuccessful = learnings.get(0).getCountSuccessful();
