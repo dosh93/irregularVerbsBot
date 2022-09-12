@@ -1,6 +1,14 @@
 package ru.matyuk.irregularVerbsBot.processing;
 
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.ResourceUtils;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import ru.matyuk.irregularVerbsBot.controller.*;
@@ -12,14 +20,23 @@ import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.model.Verb;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static ru.matyuk.irregularVerbsBot.design.Messages.*;
+import static ru.matyuk.irregularVerbsBot.utils.CommonUtils.getDeleteAudio;
 
 @Component
+@Slf4j
 public class LearningProcessing extends MainProcessing {
 
+    @Value("")
+    private Resource res;
+    @Autowired
+    ResourceLoader resourceLoader;
     public LearningProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController) {
         super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController);
     }
@@ -46,13 +63,24 @@ public class LearningProcessing extends MainProcessing {
         ReplyKeyboard replyKeyboard;
         List<String> verbsAnswer = Arrays.asList(messageText.split(" "));
         StringBuilder responseText = new StringBuilder();
+        File file = null;
+        String nameAudio = null;
         if(verbsAnswer.size() != 2){
             replyKeyboard = null;
             responseText.append(INVALID_RESPONSE_MESSAGE);
         }else {
             Learning learningVerb = learningController.getLearningActive(user);
+
             if(learningVerb != null){
                 if(learningController.isValidAnswerUser(verbsAnswer, learningVerb)){
+                    if(learningVerb.getVerb().getAudio() != null && user.isViewAudio()){
+                        try {
+                            file = ResourceUtils.getFile("classpath:" + learningVerb.getVerb().getAudio());
+                            nameAudio = learningVerb.getVerb().getFirstForm();
+                        } catch (FileNotFoundException e) {
+                            log.error("Файл не найден " + e.getMessage());
+                        }
+                    }
                     responseText.append(RIGHT_MESSAGE).append("\n").append(getAdvice(learningVerb, verbsAnswer));
                     learningController.setInactiveAndAddSuccessful(learningVerb);
                 }else {
@@ -72,7 +100,7 @@ public class LearningProcessing extends MainProcessing {
         return Response.builder()
                 .isSaveSentMessageId(false)
                 .deleteMessage(null)
-                .responseMessage(getResponseMessage(responseText.toString(), user.getChatId(), replyKeyboard))
+                .responseMessage(getResponseMessage(responseText.toString(), user.getChatId(), replyKeyboard, file, nameAudio))
                 .user(user)
                 .build();
     }
@@ -117,7 +145,7 @@ public class LearningProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(newLearningVerb(user), user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();
@@ -141,9 +169,13 @@ public class LearningProcessing extends MainProcessing {
         ReplyKeyboard replyKeyboard = keyboard.getMainMenu(user);
         String responseText = MAIN_MENU_MESSAGE + GOOD_WORK_MESSAGE;
 
+        List<DeleteMessage> deleteMessages = new ArrayList<>();
+        deleteMessages.add(getDeleteMessage(messageId, user.getChatId()));
+        deleteMessages.add(getDeleteAudio(user));
+
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(deleteMessages)
                 .responseMessage(getResponseMessage(responseText, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();

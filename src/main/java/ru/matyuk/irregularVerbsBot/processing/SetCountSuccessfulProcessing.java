@@ -10,6 +10,9 @@ import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static ru.matyuk.irregularVerbsBot.design.Messages.*;
 
 @Component
@@ -45,14 +48,14 @@ public class SetCountSuccessfulProcessing extends MainProcessing{
                 user = userController.setCountSuccessful(count, user);
                 user = userController.setState(user, StateUser.SETTING_MAIN_STATE);
 
-                ReplyKeyboard replyKeyboard = keyboard.getSettingMain();
+                ReplyKeyboard replyKeyboard = keyboard.getSettingMain(user);
 
                 String response = String.format(SETTING_MAIN_MESSAGE_FORMAT, user.getCountSuccessful()) +
                         SET_DONE_COUNT_SUCCESSFUL_MESSAGE;
 
                 return Response.builder()
                         .isSaveSentMessageId(false)
-                        .deleteMessage(getDeleteMessage(Integer.parseInt(user.getTmp()), user.getChatId()))
+                        .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(Integer.parseInt(user.getTmp()), user.getChatId()))))
                         .responseMessage(getResponseMessage(response, user.getChatId(), replyKeyboard))
                         .build();
             }

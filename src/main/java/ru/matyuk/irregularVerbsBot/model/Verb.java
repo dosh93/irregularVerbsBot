@@ -30,6 +30,8 @@ public class Verb {
             fetch = FetchType.LAZY)
     private List<Learning> learnings;
 
+    private String audio;
+
     @Override
     public String toString() {
         return String.format("%s - %s - %s - %s", firstForm, secondForm, thirdForm, translate);

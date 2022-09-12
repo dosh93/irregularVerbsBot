@@ -68,7 +68,8 @@ public final class Messages {
 
     public static final String SETTING_MAIN_MESSAGE_FORMAT = "<b>Настройки</b> " + Smiles.SETTING + "\n\n" +
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.SETTING_GROUP.getSmile() + " чтобы создать/удалить группу глаголов\n\n" +
-            Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.SET_COUNT_SUCCESSFUL.getSmile() + " чтобы настроить количество правильных ответов (подряд). Сейчас установлено: %s\n\n";
+            Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.SET_COUNT_SUCCESSFUL.getSmile() + " чтобы настроить количество правильных ответов (подряд). Сейчас установлено: %s\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.ON_AUDIO.getSmile() + "/" + ButtonInline.OFF_AUDIO.getSmile() + " чтобы включить/выключить отправку аудио к глаголам\n\n";
 
     public static final String MORE_VARIANT_VERB_MESSAGE = "Есть еще вариант написания глагола:";
     public static final String TYPE_NUMERICAL_MESSAGE = "Введи число больше 0:";

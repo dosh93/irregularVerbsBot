@@ -136,4 +136,9 @@ public class UserController {
         user.setCountSuccessful(count);
         return userRepository.save(user);
     }
+
+    public User switchAudio(User user) {
+        user.setViewAudio(!user.isViewAudio());
+        return userRepository.save(user);
+    }
 }

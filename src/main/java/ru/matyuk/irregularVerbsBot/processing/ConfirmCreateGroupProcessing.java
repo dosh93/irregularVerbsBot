@@ -11,6 +11,7 @@ import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.model.Verb;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static ru.matyuk.irregularVerbsBot.design.Messages.*;
@@ -53,7 +54,7 @@ public class ConfirmCreateGroupProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(true)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(SET_GROUP_NAME_MESSAGE, user.getChatId(), null))
                 .user(user)
                 .build();

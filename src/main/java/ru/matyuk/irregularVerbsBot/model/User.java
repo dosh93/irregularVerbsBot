@@ -53,4 +53,6 @@ public class User {
             cascade = CascadeType.REMOVE)
     private List<Feedback> feedbacks;
 
+    @Column(columnDefinition = "bit(1) default 1")
+    private boolean isViewAudio;
 }

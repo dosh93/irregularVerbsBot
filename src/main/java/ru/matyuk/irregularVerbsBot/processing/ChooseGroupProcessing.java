@@ -63,7 +63,7 @@ public class ChooseGroupProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(responseMessage.toString(), user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();

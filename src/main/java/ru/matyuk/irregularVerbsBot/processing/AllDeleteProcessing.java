@@ -10,6 +10,9 @@ import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static ru.matyuk.irregularVerbsBot.design.Messages.ARE_YOU_SURE_DELETE_ALL_DATA_MESSAGE;
 import static ru.matyuk.irregularVerbsBot.design.Messages.DELETE_ALL_DATA_MESSAGE;
 
@@ -52,7 +55,7 @@ public class AllDeleteProcessing extends MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(DELETE_ALL_DATA_MESSAGE, user.getChatId(), null))
                 .user(user)
                 .build();

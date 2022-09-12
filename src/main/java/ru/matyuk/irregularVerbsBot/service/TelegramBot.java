@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
+import org.telegram.telegrambots.meta.api.methods.send.SendAudio;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.commands.scope.BotCommandScopeDefault;
@@ -23,6 +25,7 @@ import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
 
 import static ru.matyuk.irregularVerbsBot.enums.MainCommands.ALL_DELETE;
 import static ru.matyuk.irregularVerbsBot.enums.MainCommands.START;
+import static ru.matyuk.irregularVerbsBot.utils.CommonUtils.getDeleteAudio;
 
 @Slf4j
 @Component
@@ -200,15 +203,37 @@ public class TelegramBot extends TelegramLongPollingBot {
         if(response == null) return;
 
         if(response.getDeleteMessage() != null){
-            deleteMessage(response.getDeleteMessage());
+            response.getDeleteMessage().forEach(this::deleteMessage);
         }
 
         if (response.getResponseMessage() != null){
+            if(response.getResponseMessage().getAudio() != null){
+                DeleteMessage deleteAudio = getDeleteAudio(response.getUser());
+                if(deleteAudio != null) deleteMessage(deleteAudio);
+
+                int messageId = sendAudio(response.getResponseMessage());
+                userController.setTmp(response.getUser(), "audioId:" + messageId);
+            }
+
             int messageId = sendMessage(response.getResponseMessage());
             if(response.isSaveSentMessageId()){
                 userController.setTmp(response.getUser(), String.valueOf(messageId));
             }
         }
+    }
+
+    public Integer sendAudio(ResponseMessage responseMessage){
+        SendAudio sendAudio = new SendAudio();
+        InputFile inputFile = new InputFile();
+        inputFile.setMedia(responseMessage.getAudio(), responseMessage.getAudioName());
+        sendAudio.setAudio(inputFile);
+        sendAudio.setChatId(String.valueOf(responseMessage.getChatId()));
+        try {
+            return execute(sendAudio).getMessageId();
+        } catch (TelegramApiException e) {
+            log.error("Ошибка: " + e.getMessage());
+        }
+        return -1;
     }
 
     public Integer sendMessage(ResponseMessage responseMessage){

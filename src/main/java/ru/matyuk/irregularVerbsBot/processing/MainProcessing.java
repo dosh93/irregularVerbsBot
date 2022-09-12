@@ -15,6 +15,8 @@ import ru.matyuk.irregularVerbsBot.model.UserGroupLearning;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import static ru.matyuk.irregularVerbsBot.design.Messages.*;
@@ -62,7 +64,7 @@ public abstract class MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(Messages.MAIN_MENU_MESSAGE, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();
@@ -88,7 +90,7 @@ public abstract class MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(responseMessage.toString(), user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();
@@ -100,7 +102,7 @@ public abstract class MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(CHOOSE_GROUP_FOR_VIEW_MESSAGE, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();
@@ -112,7 +114,7 @@ public abstract class MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(Messages.SETTING_GROUP_MESSAGE, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();
@@ -124,7 +126,7 @@ public abstract class MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(true)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(INSTRUCTION_CREATE_GROUP_MESSAGE, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();
@@ -136,7 +138,7 @@ public abstract class MainProcessing {
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(SETTING_LEARNING_MESSAGE, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();
@@ -145,13 +147,13 @@ public abstract class MainProcessing {
     protected Response settingMain(User user, Integer messageId) {
         user = userController.setState(user, StateUser.SETTING_MAIN_STATE);
 
-        ReplyKeyboard replyKeyboard = keyboard.getSettingMain();
+        ReplyKeyboard replyKeyboard = keyboard.getSettingMain(user);
 
         String response = String.format(SETTING_MAIN_MESSAGE_FORMAT, user.getCountSuccessful());
 
         return Response.builder()
                 .isSaveSentMessageId(false)
-                .deleteMessage(getDeleteMessage(messageId, user.getChatId()))
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
                 .responseMessage(getResponseMessage(response, user.getChatId(), replyKeyboard))
                 .build();
     }
@@ -167,6 +169,15 @@ public abstract class MainProcessing {
         return ResponseMessage.builder()
                 .message(message)
                 .chatId(chatId)
+                .keyboard(keyboard).build();
+    }
+
+    protected ResponseMessage getResponseMessage(String message, Long chatId, ReplyKeyboard keyboard, File audio, String audioName){
+        return ResponseMessage.builder()
+                .message(message)
+                .chatId(chatId)
+                .audio(audio)
+                .audioName(audioName)
                 .keyboard(keyboard).build();
     }
 }
