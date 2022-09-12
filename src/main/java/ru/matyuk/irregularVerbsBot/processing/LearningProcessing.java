@@ -33,12 +33,10 @@ import static ru.matyuk.irregularVerbsBot.utils.CommonUtils.getDeleteAudio;
 @Slf4j
 public class LearningProcessing extends MainProcessing {
 
-    @Value("")
-    private Resource res;
-    @Autowired
-    ResourceLoader resourceLoader;
-    public LearningProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController) {
+    final ResourceLoader resourceLoader;
+    public LearningProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController, ResourceLoader resourceLoader) {
         super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController);
+        this.resourceLoader = resourceLoader;
     }
 
     @Override
@@ -78,7 +76,7 @@ public class LearningProcessing extends MainProcessing {
                             file = ResourceUtils.getFile("classpath:" + learningVerb.getVerb().getAudio());
                             nameAudio = learningVerb.getVerb().getFirstForm();
                         } catch (FileNotFoundException e) {
-                            log.error("Файл не найден " + file.getAbsolutePath() + e.getMessage());
+                            log.error("Файл не найден " + e.getMessage());
                         }
                     }
                     responseText.append(RIGHT_MESSAGE).append("\n").append(getAdvice(learningVerb, verbsAnswer));
