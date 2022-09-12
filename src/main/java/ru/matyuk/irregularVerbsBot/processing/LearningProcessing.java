@@ -3,6 +3,7 @@ package ru.matyuk.irregularVerbsBot.processing;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -74,7 +75,9 @@ public class LearningProcessing extends MainProcessing {
                 if(learningController.isValidAnswerUser(verbsAnswer, learningVerb)){
                     if(learningVerb.getVerb().getAudio() != null && user.isViewAudio()){
                         try {
-                            file = resourceLoader.getResource("classpath:" + learningVerb.getVerb().getAudio()).getFile();
+                            Resource resource = new ClassPathResource(learningVerb.getVerb().getAudio());
+                            file = new File(resource.getURI());
+                            //file = resourceLoader.getResource("classpath:" + learningVerb.getVerb().getAudio()).getFile();
                             nameAudio = learningVerb.getVerb().getFirstForm();
                         } catch (IOException e) {
                             log.error("Файл не найден " + e.getMessage());
