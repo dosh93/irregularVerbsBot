@@ -18,26 +18,24 @@ import java.util.*;
 @Slf4j
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private GroupController groupController;
-
-    @Autowired
-    private LearningController learningController;
-
-    @Autowired
-    private GroupVerbController groupVerbController;
-
-    @Autowired
-    private FeedbackController feedbackController;
-
-    @Autowired
-    private UserGroupLearningController userGroupLearningController;
+    private final UserRepository userRepository;
+    private final GroupController groupController;
+    private final LearningController learningController;
+    private final GroupVerbController groupVerbController;
+    private final FeedbackController feedbackController;
+    private final UserGroupLearningController userGroupLearningController;
 
     @Value("${learning.count_successful}")
     Integer countSuccessful;
+
+    public UserController(UserRepository userRepository, GroupController groupController, LearningController learningController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController) {
+        this.userRepository = userRepository;
+        this.groupController = groupController;
+        this.learningController = learningController;
+        this.groupVerbController = groupVerbController;
+        this.feedbackController = feedbackController;
+        this.userGroupLearningController = userGroupLearningController;
+    }
 
 
     public User registerUser(Chat chat) {
@@ -132,5 +130,10 @@ public class UserController {
 
         user = userRepository.findById(user.getChatId()).get();
         userRepository.delete(user);
+    }
+
+    public User setCountSuccessful(int count, User user) {
+        user.setCountSuccessful(count);
+        return userRepository.save(user);
     }
 }

@@ -9,7 +9,7 @@ public enum ButtonInline {
     GROUP(Smiles.CARD_FILE_BOX +" Группы", ButtonCommand.NONE, Smiles.CARD_FILE_BOX),
     VIEW_GROUP(Smiles.BOOK + " Посмотреть", ButtonCommand.VIEW_GROUP, Smiles.BOOK),
     CHOOSE_GROUP(Smiles.PUSH_PIN + " Выбрать", ButtonCommand.CHOOSE_GROUP, Smiles.PUSH_PIN),
-    SETTING_GROUP(Smiles.SETTING + " Настройка групп", ButtonCommand.SETTING_GROUP, Smiles.SETTING),
+    SETTING_GROUP(Smiles.SAW + " Настройка групп", ButtonCommand.SETTING_GROUP, Smiles.SAW),
     LEARNING(Smiles.BRAIN + " Учить", ButtonCommand.LEARNING, Smiles.BRAIN),
     BACK(Smiles.BACK + " Назад", ButtonCommand.BACK_TO_MAIN, Smiles.BACK),
     START_LEARN(Smiles.START + " Начать", ButtonCommand.START_LEARN, Smiles.START),
@@ -25,7 +25,10 @@ public enum ButtonInline {
     FEEDBACK( Smiles.MESSAGE + " Обратная связь", ButtonCommand.FEEDBACK, Smiles.MESSAGE),
     SETTING_LEARNING( Smiles.JOYSTICK + " Управление обучением", ButtonCommand.SETTING_LEARNING, Smiles.JOYSTICK),
     RESET_LEARNING_ALL( Smiles.RELOAD + " Сбросить всё", ButtonCommand.RESET_LEARNING_ALL, Smiles.RELOAD),
-    RESET_LEARNING_GROUP( Smiles.RELOAD_BY_GROUP + " Сбросить по группе", ButtonCommand.RESET_LEARNING_GROUP, Smiles.RELOAD_BY_GROUP);
+    RESET_LEARNING_GROUP( Smiles.RELOAD_BY_GROUP + " Сбросить по группе", ButtonCommand.RESET_LEARNING_GROUP, Smiles.RELOAD_BY_GROUP),
+    SETTING_MAIN( Smiles.SETTING + " Настройки", ButtonCommand.SETTING_MAIN, Smiles.SETTING),
+    BACK_TO_SETTING_MAIN( Smiles.BACK + " Назад", ButtonCommand.BACK_TO_SETTING_MAIN, Smiles.BACK),
+    SET_COUNT_SUCCESSFUL( Smiles.KEY + " Установить значение", ButtonCommand.SET_COUNT_SUCCESSFUL, Smiles.KEY);
 
 
 

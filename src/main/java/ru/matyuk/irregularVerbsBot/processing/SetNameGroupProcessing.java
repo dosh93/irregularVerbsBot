@@ -30,7 +30,7 @@ public class SetNameGroupProcessing extends MainProcessing {
         user = userController.setState(user, MAIN_MENU_STATE);
         Group group = groupController.getGroup(user.getChatId().toString());
         groupController.setName(group, messageText);
-        String responseText = String.format(GROUP_DONE_MESSAGE, messageText) + MAIN_MENU_MESSAGE;
+        String responseText =  MAIN_MENU_MESSAGE + String.format(GROUP_DONE_MESSAGE, messageText);
         ReplyKeyboard replyKeyboard = keyboard.getMainMenu(user);
 
         return Response.builder()

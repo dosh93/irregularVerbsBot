@@ -27,4 +27,6 @@ public class Smiles {
     public static final String JOYSTICK = "\uD83D\uDD79";
     public static final String RELOAD = "\uD83D\uDD04";
     public static final String RELOAD_BY_GROUP = "\uD83D\uDD02";
+    public static final String SAW = "\uD83E\uDE9A";
+    public static final String KEY = "\uD83D\uDD11";
 }
