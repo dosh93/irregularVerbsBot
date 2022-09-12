@@ -75,9 +75,7 @@ public class LearningProcessing extends MainProcessing {
                 if(learningController.isValidAnswerUser(verbsAnswer, learningVerb)){
                     if(learningVerb.getVerb().getAudio() != null && user.isViewAudio()){
                         try {
-                            Resource resource = new ClassPathResource(learningVerb.getVerb().getAudio());
-                            file = new File(resource.getURI());
-                            //file = resourceLoader.getResource("classpath:" + learningVerb.getVerb().getAudio()).getFile();
+                            file = resourceLoader.getResource("classpath:" + learningVerb.getVerb().getAudio()).getFile();
                             nameAudio = learningVerb.getVerb().getFirstForm();
                         } catch (IOException e) {
                             log.error("Файл не найден " + e.getMessage());
