@@ -77,25 +77,10 @@ public class LearningProcessing extends MainProcessing {
             Learning learningVerb = learningController.getLearningActive(user);
 
             if(learningVerb != null){
+                file = verbController.getAudioFile(learningVerb.getVerb(), user);
+                if(file != null) nameAudio = learningVerb.getVerb().getFirstForm();
+
                 if(learningController.isValidAnswerUser(verbsAnswer, learningVerb)){
-                    if(learningVerb.getVerb().getAudio() != null && user.isViewAudio()){
-                        try {
-                            ClassPathResource classPathResource = new ClassPathResource(learningVerb.getVerb().getAudio());
-
-                            InputStream inputStream = classPathResource.getInputStream();
-                            File tmpAudioFile = File.createTempFile(String.valueOf(UUID.randomUUID()), ".aac");
-                            try {
-                                FileUtils.copyInputStreamToFile(inputStream, tmpAudioFile);
-                            } finally {
-                                IOUtils.close(inputStream);
-                            }
-
-                            file = tmpAudioFile;
-                            nameAudio = learningVerb.getVerb().getFirstForm();
-                        } catch (IOException e) {
-                            log.error("Файл не найден " + e.getMessage());
-                        }
-                    }
                     responseText.append(RIGHT_MESSAGE).append("\n").append(getAdvice(learningVerb, verbsAnswer));
                     learningController.setInactiveAndAddSuccessful(learningVerb);
                 }else {
@@ -123,6 +108,9 @@ public class LearningProcessing extends MainProcessing {
     private String getAdvice(Learning learningVerb, List<String> verbsAnswer) {
         StringBuilder result = new StringBuilder();
         Verb verb = learningVerb.getVerb();
+        if(verb.getSecondForm().split("/").length == 1 &&
+                verb.getThirdForm().split("/").length == 1)
+            return "";
         result.append(MORE_VARIANT_VERB_MESSAGE).append("\n")
                 .append(verb.getFirstForm()).append(" - ");
         String secondFormAnswer = verbsAnswer.get(0);
