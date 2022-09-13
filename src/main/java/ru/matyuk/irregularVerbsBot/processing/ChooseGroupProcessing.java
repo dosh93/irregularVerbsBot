@@ -23,9 +23,8 @@ import static ru.matyuk.irregularVerbsBot.design.Messages.NO_SELECTED_GROUP_MESS
 @Component
 public class ChooseGroupProcessing extends MainProcessing {
 
-
-    public ChooseGroupProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController) {
-        super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController);
+    public ChooseGroupProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController, SessionController sessionController) {
+        super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController, sessionController);
     }
 
     public Response processing(CallbackQuery callbackQuery, User user) {

@@ -141,4 +141,8 @@ public class UserController {
         user.setViewAudio(!user.isViewAudio());
         return userRepository.save(user);
     }
+
+    public User save(User user){
+        return userRepository.save(user);
+    }
 }

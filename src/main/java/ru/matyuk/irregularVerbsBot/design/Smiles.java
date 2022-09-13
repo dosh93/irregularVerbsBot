@@ -31,4 +31,10 @@ public class Smiles {
     public static final String KEY = "\uD83D\uDD11";
     public static final String MUTE = "\uD83D\uDD07";
     public static final String SOUND = "\uD83D\uDD08";
+    public static final String BAR_CHAT = "\uD83D\uDCCA";
+    public static final String GREEN_CIRCLE = "\uD83D\uDFE2";
+    public static final String RED_CIRCLE = "\uD83D\uDD34";
+    public static final String TIME = "⏰";
+
+
 }

@@ -2,16 +2,8 @@ package ru.matyuk.irregularVerbsBot.processing;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.util.ResourceUtils;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -20,18 +12,16 @@ import ru.matyuk.irregularVerbsBot.design.Keyboard;
 import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
 import ru.matyuk.irregularVerbsBot.model.Learning;
+import ru.matyuk.irregularVerbsBot.model.Session;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.model.Verb;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static ru.matyuk.irregularVerbsBot.design.Messages.*;
 import static ru.matyuk.irregularVerbsBot.utils.CommonUtils.getDeleteAudio;
@@ -40,10 +30,9 @@ import static ru.matyuk.irregularVerbsBot.utils.CommonUtils.getDeleteAudio;
 @Slf4j
 public class LearningProcessing extends MainProcessing {
 
-    final ResourceLoader resourceLoader;
-    public LearningProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController, ResourceLoader resourceLoader) {
-        super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController);
-        this.resourceLoader = resourceLoader;
+
+    public LearningProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController, SessionController sessionController) {
+        super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController, sessionController);
     }
 
     @Override
@@ -81,9 +70,31 @@ public class LearningProcessing extends MainProcessing {
                 if(file != null) nameAudio = learningVerb.getVerb().getFirstForm();
 
                 if(learningController.isValidAnswerUser(verbsAnswer, learningVerb)){
+                    Session activeSession = user.getActiveSession();
+                    if (activeSession == null) {
+                        Session session = sessionController.createSession(user);
+                        session.setSuccess(1);
+                        user.getSessions().add(session);
+                        userController.save(user);
+                    } else {
+                        user.getActiveSession().setSuccess(user.getActiveSession().getSuccess() + 1);
+                        userController.save(user);
+                    }
+
                     responseText.append(RIGHT_MESSAGE).append("\n").append(getAdvice(learningVerb, verbsAnswer));
                     learningController.setInactiveAndAddSuccessful(learningVerb);
                 }else {
+                    Session activeSession = user.getActiveSession();
+                    if (activeSession == null) {
+                        Session session = sessionController.createSession(user);
+                        session.setFail(1);
+                        user.getSessions().add(session);
+                        userController.save(user);
+                    } else {
+                        user.getActiveSession().setFail(user.getActiveSession().getFail() + 1);
+                        userController.save(user);
+                    }
+
                     responseText.append(NOT_RIGHT_MESSAGE).append("\n")
                             .append(learningVerb.getVerb().toString()).append("\n\n");
                     learningController.resetCountSuccessful(learningVerb);
@@ -144,6 +155,7 @@ public class LearningProcessing extends MainProcessing {
     }
 
     private Response learning(User user, Integer messageId) {
+        user.getSessions().add(sessionController.createSession(user));
         ReplyKeyboard replyKeyboard = keyboard.getEndLearningButton();
 
         return Response.builder()
@@ -167,10 +179,21 @@ public class LearningProcessing extends MainProcessing {
     private Response endLearning(User user, Integer messageId) {
         Learning learningVerb = learningController.getLearningActive(user);
         if(learningVerb != null)learningController.setInactive(learningVerb);
-        user = userController.setState(user, StateUser.MAIN_MENU_STATE);
+        ReplyKeyboard replyKeyboard;
+        String responseText;
 
-        ReplyKeyboard replyKeyboard = keyboard.getMainMenu(user);
-        String responseText = MAIN_MENU_MESSAGE + GOOD_WORK_MESSAGE;
+        Session activeSession = user.getActiveSession();
+        if (activeSession != null) {
+            activeSession.setState(false);
+            activeSession.setStop(new Timestamp(System.currentTimeMillis()));
+            responseText = getStatisticMessage(activeSession);
+            replyKeyboard = keyboard.getStatisticsButton();
+            user = userController.save(user);
+        } else {
+            user = userController.setState(user, StateUser.MAIN_MENU_STATE);
+            replyKeyboard = keyboard.getMainMenu(user);
+            responseText = MAIN_MENU_MESSAGE + GOOD_WORK_MESSAGE;
+        }
 
         List<DeleteMessage> deleteMessages = new ArrayList<>();
         deleteMessages.add(getDeleteMessage(messageId, user.getChatId()));

@@ -10,12 +10,14 @@ import ru.matyuk.irregularVerbsBot.design.Keyboard;
 import ru.matyuk.irregularVerbsBot.design.Messages;
 import ru.matyuk.irregularVerbsBot.design.Smiles;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
+import ru.matyuk.irregularVerbsBot.model.Session;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.model.UserGroupLearning;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
 
 import java.io.File;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,8 +33,8 @@ public abstract class MainProcessing {
     protected GroupVerbController groupVerbController;
     protected FeedbackController feedbackController;
     protected UserGroupLearningController userGroupLearningController;
+    protected SessionController sessionController;
 
-    @Autowired
     public MainProcessing(Keyboard keyboard,
                           UserController userController,
                           GroupController groupController,
@@ -40,7 +42,8 @@ public abstract class MainProcessing {
                           VerbController verbController,
                           GroupVerbController groupVerbController,
                           FeedbackController feedbackController,
-                          UserGroupLearningController userGroupLearningController
+                          UserGroupLearningController userGroupLearningController,
+                          SessionController sessionController
     ){
         this.keyboard = keyboard;
         this.userController = userController;
@@ -50,6 +53,7 @@ public abstract class MainProcessing {
         this.groupVerbController = groupVerbController;
         this.feedbackController = feedbackController;
         this.userGroupLearningController = userGroupLearningController;
+        this.sessionController = sessionController;
     }
 
     protected Gson gson = new Gson();
@@ -179,5 +183,15 @@ public abstract class MainProcessing {
                 .audio(audio)
                 .audioName(audioName)
                 .keyboard(keyboard).build();
+    }
+
+    protected String getStatisticMessage(Session session) {
+        int fail = session.getFail();
+        int success = session.getSuccess();
+        long diff = session.getStop().getTime() - session.getStart().getTime();
+        int secondAll = (int) (diff / 1000);
+        int min = secondAll / 60;
+        int second = min == 0 ? secondAll : secondAll - min * 60;
+        return String.format(STATISTICS_MESSAGE_FORMAT, min, second, success, fail);
     }
 }
