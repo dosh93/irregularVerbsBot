@@ -36,7 +36,6 @@ public class Keyboard {
     public InlineKeyboardMarkup getMainMenu(User user){
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
-        List<InlineKeyboardButton> row1 = new ArrayList<>();
         List<InlineKeyboardButton> row2 = new ArrayList<>();
         List<InlineKeyboardButton> row3 = new ArrayList<>();
         List<InlineKeyboardButton> row5 = new ArrayList<>();
@@ -51,9 +50,6 @@ public class Keyboard {
             rows.add(row);
         }
 
-        InlineKeyboardButton group = createButtonInline(
-                ButtonInline.GROUP.getText(),
-                ButtonInline.GROUP.getCommand().name());
         InlineKeyboardButton groupView = createButtonInline(
                 ButtonInline.VIEW_GROUP.getText(),
                 ButtonInline.VIEW_GROUP.getCommand().name());
@@ -70,7 +66,6 @@ public class Keyboard {
                 ButtonInline.FEEDBACK.getText(),
                 ButtonInline.FEEDBACK.getCommand().name());
 
-        row1.add(group);
         row2.add(groupView);
         row2.add(groupChoose);
         row3.add(settingLearning);
@@ -78,7 +73,6 @@ public class Keyboard {
         row5.add(settingMain);
         row6.add(feedback);
 
-        rows.add(row1);
         rows.add(row2);
         rows.add(row3);
         rows.add(row5);
@@ -391,6 +385,23 @@ public class Keyboard {
         InlineKeyboardButton back = createButtonInline(
                 ButtonInline.BACK_TO_SETTING_MAIN.getText(),
                 ButtonInline.BACK_TO_SETTING_MAIN.getCommand().name());
+
+        row1.add(back);
+
+        rows.add(row1);
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+    public ReplyKeyboard getStatisticsButton() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+
+        InlineKeyboardButton back = createButtonInline(
+                ButtonInline.BACK_MAIN_HOME.getText(),
+                ButtonInline.BACK_MAIN_HOME.getCommand().name());
 
         row1.add(back);
 

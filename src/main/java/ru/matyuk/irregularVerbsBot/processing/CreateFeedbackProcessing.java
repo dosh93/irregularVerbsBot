@@ -19,8 +19,8 @@ import static ru.matyuk.irregularVerbsBot.design.Messages.MAIN_MENU_MESSAGE;
 @Component
 public class CreateFeedbackProcessing extends MainProcessing {
 
-    public CreateFeedbackProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController) {
-        super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController);
+    public CreateFeedbackProcessing(Keyboard keyboard, UserController userController, GroupController groupController, LearningController learningController, VerbController verbController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController, SessionController sessionController) {
+        super(keyboard, userController, groupController, learningController, verbController, groupVerbController, feedbackController, userGroupLearningController, sessionController);
     }
 
     @Override

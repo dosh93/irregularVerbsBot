@@ -75,4 +75,9 @@ public final class Messages {
     public static final String TYPE_NUMERICAL_MESSAGE = "Введи число больше 0:";
     public static final String SET_DONE_COUNT_SUCCESSFUL_MESSAGE = Smiles.WHITE_CHECK_MARK + "Значение установлено";
 
+    public static final String STATISTICS_MESSAGE_FORMAT = "<b>Результат </b>" + Smiles.BAR_CHAT + "\n\n" +
+            Smiles.TIME + " Время: %s мин. %s сек.\n" +
+            Smiles.GREEN_CIRCLE + " Правильно: %s\n" +
+            Smiles.RED_CIRCLE + " Не правильно: %s\n\n";
+
 }

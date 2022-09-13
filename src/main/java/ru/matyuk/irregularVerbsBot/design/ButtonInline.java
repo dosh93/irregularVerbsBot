@@ -6,7 +6,6 @@ import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 @Getter
 public enum ButtonInline {
 
-    GROUP(Smiles.CARD_FILE_BOX +" Группы", ButtonCommand.NONE, Smiles.CARD_FILE_BOX),
     VIEW_GROUP(Smiles.BOOK + " Посмотреть", ButtonCommand.VIEW_GROUP, Smiles.BOOK),
     CHOOSE_GROUP(Smiles.PUSH_PIN + " Выбрать", ButtonCommand.CHOOSE_GROUP, Smiles.PUSH_PIN),
     SETTING_GROUP(Smiles.SAW + " Настройка групп", ButtonCommand.SETTING_GROUP, Smiles.SAW),
@@ -30,7 +29,8 @@ public enum ButtonInline {
     BACK_TO_SETTING_MAIN( Smiles.BACK + " Назад", ButtonCommand.BACK_TO_SETTING_MAIN, Smiles.BACK),
     SET_COUNT_SUCCESSFUL( Smiles.KEY + " Установить значение", ButtonCommand.SET_COUNT_SUCCESSFUL, Smiles.KEY),
     ON_AUDIO(Smiles.SOUND + " Включить аудио", ButtonCommand.SWITCH_AUDIO, Smiles.SOUND),
-    OFF_AUDIO(Smiles.MUTE + " Выключить аудио", ButtonCommand.SWITCH_AUDIO, Smiles.MUTE);
+    OFF_AUDIO(Smiles.MUTE + " Выключить аудио", ButtonCommand.SWITCH_AUDIO, Smiles.MUTE),
+    BACK_MAIN_HOME(Smiles.HOUSE + " Главное меню", ButtonCommand.BACK_TO_MAIN, Smiles.HOUSE);
 
 
 

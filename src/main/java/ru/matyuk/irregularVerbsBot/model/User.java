@@ -55,4 +55,12 @@ public class User {
 
     @Column(columnDefinition = "bit(1) default 1")
     private boolean isViewAudio;
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true,
+        cascade = CascadeType.ALL)
+    private List<Session> sessions;
+
+    public Session getActiveSession(){
+        return sessions.stream().filter(Session::isState).findFirst().orElse(null);
+    }
 }

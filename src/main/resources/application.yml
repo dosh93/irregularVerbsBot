@@ -8,7 +8,9 @@ spring:
         enable_lazy_load_no_trans: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    initialization-mode: always
+  sql:
+    init:
+      mode: always
 
 learning:
   count_successful: 3
