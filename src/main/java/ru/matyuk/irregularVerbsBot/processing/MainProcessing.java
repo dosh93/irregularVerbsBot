@@ -10,9 +10,7 @@ import ru.matyuk.irregularVerbsBot.design.Keyboard;
 import ru.matyuk.irregularVerbsBot.design.Messages;
 import ru.matyuk.irregularVerbsBot.design.Smiles;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
-import ru.matyuk.irregularVerbsBot.model.Session;
-import ru.matyuk.irregularVerbsBot.model.User;
-import ru.matyuk.irregularVerbsBot.model.UserGroupLearning;
+import ru.matyuk.irregularVerbsBot.model.*;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 import ru.matyuk.irregularVerbsBot.processing.data.ResponseMessage;
 
@@ -146,6 +144,84 @@ public abstract class MainProcessing {
                 .responseMessage(getResponseMessage(SETTING_LEARNING_MESSAGE, user.getChatId(), replyKeyboard))
                 .user(user)
                 .build();
+    }
+
+    protected Response startChallenge(User user, Integer messageId) {
+        user = userController.setState(user, StateUser.CHALLENGE_STATE);
+
+        ReplyKeyboard replyKeyboard = keyboard.getChallengeButtons();
+
+        return Response.builder()
+                .isSaveSentMessageId(false)
+                .deleteMessage(new ArrayList<>(List.of(getDeleteMessage(messageId, user.getChatId()))))
+                .responseMessage(getResponseMessage(Messages.START_CHALLENGE_MESSAGE, user.getChatId(), replyKeyboard))
+                .user(user)
+                .build();
+    }
+
+    protected String getAdvice(Verb verb, List<String> verbsAnswer) {
+        StringBuilder result = new StringBuilder();
+        if(verb.getSecondForm().split("/").length == 1 &&
+                verb.getThirdForm().split("/").length == 1)
+            return "";
+        result.append(MORE_VARIANT_VERB_MESSAGE).append("\n")
+                .append(verb.getFirstForm()).append(" - ");
+        String secondFormAnswer = verbsAnswer.get(0);
+        String thirdFormAnswer = verbsAnswer.get(1);
+        if (verb.getSecondForm().split("/").length > 1) {
+            if (secondFormAnswer.split("/").length > 1) result.append(verb.getSecondForm()).append(" - ");
+            else {
+                String[] split = verb.getSecondForm().split("/");
+                for (String str : split) {
+                    if (!str.equals(secondFormAnswer)){
+                        result.append(str).append(" - ");
+                        break;
+                    }
+                }
+            }
+        } else result.append(verb.getSecondForm()).append(" - ");
+
+        if (verb.getThirdForm().split("/").length > 1) {
+            if (thirdFormAnswer.split("/").length > 1) result.append(verb.getThirdForm());
+            else {
+                String[] split = verb.getThirdForm().split("/");
+                for (String str : split) {
+                    if (!str.equals(thirdFormAnswer)){
+                        result.append(str);
+                        break;
+                    }
+                }
+            }
+        } else result.append(verb.getThirdForm());
+        return result.append("\n\n").toString();
+    }
+
+    protected String validAnswer(User user, Verb learningVerb, List<String> verbsAnswer){
+        Session activeSession = user.getActiveSession();
+        if (activeSession == null) {
+            Session session = sessionController.createSession(user);
+            session.setSuccess(1);
+            user.getSessions().add(session);
+            userController.save(user);
+        } else {
+            user.getActiveSession().setSuccess(user.getActiveSession().getSuccess() + 1);
+            userController.save(user);
+        }
+        return RIGHT_MESSAGE + "\n" + getAdvice(learningVerb, verbsAnswer);
+    }
+
+    protected String invalidAnswer(User user, Verb learningVerb){
+        Session activeSession = user.getActiveSession();
+        if (activeSession == null) {
+            Session session = sessionController.createSession(user);
+            session.setFail(1);
+            user.getSessions().add(session);
+            userController.save(user);
+        } else {
+            user.getActiveSession().setFail(user.getActiveSession().getFail() + 1);
+            userController.save(user);
+        }
+        return NOT_RIGHT_MESSAGE + "\n" + learningVerb + "\n\n";
     }
 
     protected Response settingMain(User user, Integer messageId) {

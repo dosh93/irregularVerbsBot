@@ -48,10 +48,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     private final ChooseGroupResetProcessing chooseGroupResetProcessing;
     private final SettingMainProcessing settingMainProcessing;
     private final SetCountSuccessfulProcessing setCountSuccessfulProcessing;
+    private final ChallengeProcessing challengeProcessing;
 
     final BotConfig config;
 
-    public TelegramBot(BotConfig config, UserController userController, StartProcessing startProcessing, SetNameGroupProcessing setNameGroupProcessing, MainMenuProcessing mainMenuProcessing, ViewGroupProcessing viewGroupProcessing, ChooseGroupResetProcessing chooseGroupResetProcessing, ChooseGroupProcessing chooseGroupProcessing, SettingGroupProcessing settingGroupProcessing, CreateGroupProcessing createGroupProcessing, ConfirmCreateGroupProcessing confirmCreateGroupProcessing, SettingLearningProcessing settingLearningProcessing, SettingMainProcessing settingMainProcessing, DeleteGroupProcessing deleteGroupProcessing, LearningProcessing learningProcessing, AllDeleteProcessing allDeleteProcessing, CreateFeedbackProcessing createFeedbackProcessing, SetCountSuccessfulProcessing setCountSuccessfulProcessing)
+    public TelegramBot(BotConfig config, UserController userController, StartProcessing startProcessing, SetNameGroupProcessing setNameGroupProcessing, MainMenuProcessing mainMenuProcessing, ViewGroupProcessing viewGroupProcessing, ChooseGroupResetProcessing chooseGroupResetProcessing, ChooseGroupProcessing chooseGroupProcessing, SettingGroupProcessing settingGroupProcessing, CreateGroupProcessing createGroupProcessing, ConfirmCreateGroupProcessing confirmCreateGroupProcessing, SettingLearningProcessing settingLearningProcessing, SettingMainProcessing settingMainProcessing, DeleteGroupProcessing deleteGroupProcessing, LearningProcessing learningProcessing, AllDeleteProcessing allDeleteProcessing, CreateFeedbackProcessing createFeedbackProcessing, SetCountSuccessfulProcessing setCountSuccessfulProcessing, ChallengeProcessing challengeProcessing)
     {
         this.config = config;
         this.setCountSuccessfulProcessing = setCountSuccessfulProcessing;
@@ -76,6 +77,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.learningProcessing = learningProcessing;
         this.allDeleteProcessing = allDeleteProcessing;
         this.createFeedbackProcessing = createFeedbackProcessing;
+        this.challengeProcessing = challengeProcessing;
     }
 
     @Override
@@ -141,6 +143,9 @@ public class TelegramBot extends TelegramLongPollingBot {
             case SET_COUNT_SUCCESSFUL_STATE:
                 processingResponse(setCountSuccessfulProcessing.processing(messageText, user));
                 break;
+            case CHALLENGE_STATE:
+                processingResponse(challengeProcessing.processing(messageText, user));
+                break;
             default:
                 deleteMessage(message.getMessageId(), user.getChatId());
         }
@@ -194,6 +199,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 processingResponse(settingMainProcessing.processing(callbackQuery, user));
             case SET_COUNT_SUCCESSFUL_STATE:
                 processingResponse(setCountSuccessfulProcessing.processing(callbackQuery, user));
+                break;
+            case CHALLENGE_STATE:
+                processingResponse(challengeProcessing.processing(callbackQuery, user));
                 break;
         }
     }

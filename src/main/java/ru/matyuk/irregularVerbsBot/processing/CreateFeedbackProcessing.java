@@ -7,14 +7,14 @@ import ru.matyuk.irregularVerbsBot.controller.*;
 import ru.matyuk.irregularVerbsBot.design.Keyboard;
 import ru.matyuk.irregularVerbsBot.enums.ButtonCommand;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
+import ru.matyuk.irregularVerbsBot.model.Session;
 import ru.matyuk.irregularVerbsBot.model.User;
 import ru.matyuk.irregularVerbsBot.processing.data.Response;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.matyuk.irregularVerbsBot.design.Messages.FEEDBACK_CREATED_MESSAGE;
-import static ru.matyuk.irregularVerbsBot.design.Messages.MAIN_MENU_MESSAGE;
+import static ru.matyuk.irregularVerbsBot.design.Messages.*;
 
 @Component
 public class CreateFeedbackProcessing extends MainProcessing {

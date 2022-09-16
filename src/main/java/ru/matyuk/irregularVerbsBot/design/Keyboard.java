@@ -1,6 +1,5 @@
 package ru.matyuk.irregularVerbsBot.design;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
@@ -18,13 +17,15 @@ import java.util.stream.Collectors;
 @Component
 public class Keyboard {
 
-    @Autowired
-    private GroupController groupVerbController;
-
-    @Autowired
-    private UserController userController;
+    private final GroupController groupVerbController;
+    private final UserController userController;
 
     private int lengthRow = 3;
+
+    public Keyboard(GroupController groupVerbController, UserController userController) {
+        this.groupVerbController = groupVerbController;
+        this.userController = userController;
+    }
 
     private InlineKeyboardButton createButtonInline(String text, String callbackData){
         InlineKeyboardButton button = new InlineKeyboardButton();
@@ -40,15 +41,20 @@ public class Keyboard {
         List<InlineKeyboardButton> row3 = new ArrayList<>();
         List<InlineKeyboardButton> row5 = new ArrayList<>();
         List<InlineKeyboardButton> row6 = new ArrayList<>();
+        List<InlineKeyboardButton> row = new ArrayList<>();
 
         if(userController.isLearning(user)){
-            List<InlineKeyboardButton> row = new ArrayList<>();
             InlineKeyboardButton learning = createButtonInline(
                     ButtonInline.LEARNING.getText(),
                     ButtonInline.LEARNING.getCommand().name());
             row.add(learning);
-            rows.add(row);
         }
+
+        InlineKeyboardButton challenge = createButtonInline(
+                ButtonInline.CHALLENGE.getText(),
+                ButtonInline.CHALLENGE.getCommand().name());
+        row.add(challenge);
+
 
         InlineKeyboardButton groupView = createButtonInline(
                 ButtonInline.VIEW_GROUP.getText(),
@@ -73,6 +79,7 @@ public class Keyboard {
         row5.add(settingMain);
         row6.add(feedback);
 
+        rows.add(row);
         rows.add(row2);
         rows.add(row3);
         rows.add(row5);
@@ -112,6 +119,29 @@ public class Keyboard {
         InlineKeyboardButton back = createButtonInline(
                 ButtonInline.BACK.getText(),
                 ButtonInline.BACK.getCommand().name());
+
+        row1.add(start);
+        row2.add(back);
+
+        rows.add(row1);
+        rows.add(row2);
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+    public ReplyKeyboard getStartChallengingButton() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+
+        InlineKeyboardButton start = createButtonInline(
+                ButtonInline.START_LEARN.getText(),
+                ButtonInline.START_LEARN.getCommand().name());
+        InlineKeyboardButton back = createButtonInline(
+                ButtonInline.BACK_TO_CHOSE_CHALLENGE.getText(),
+                ButtonInline.BACK_TO_CHOSE_CHALLENGE.getCommand().name());
 
         row1.add(start);
         row2.add(back);
@@ -406,6 +436,54 @@ public class Keyboard {
         row1.add(back);
 
         rows.add(row1);
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+        return inlineKeyboardMarkup;
+    }
+
+    public ReplyKeyboard getChallengeButtons() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        List<InlineKeyboardButton> row4 = new ArrayList<>();
+
+        InlineKeyboardButton random10 = createButtonInline(
+                ButtonInline.RANDOM_10.getText(),
+                ButtonInline.RANDOM_10.getCommand().name());
+        InlineKeyboardButton random20 = createButtonInline(
+                ButtonInline.RANDOM_20.getText(),
+                ButtonInline.RANDOM_20.getCommand().name());
+        InlineKeyboardButton random30 = createButtonInline(
+                ButtonInline.RANDOM_30.getText(),
+                ButtonInline.RANDOM_30.getCommand().name());
+        InlineKeyboardButton random40 = createButtonInline(
+                ButtonInline.RANDOM_40.getText(),
+                ButtonInline.RANDOM_40.getCommand().name());
+        InlineKeyboardButton random50 = createButtonInline(
+                ButtonInline.RANDOM_50.getText(),
+                ButtonInline.RANDOM_50.getCommand().name());
+        InlineKeyboardButton random100 = createButtonInline(
+                ButtonInline.RANDOM_100.getText(),
+                ButtonInline.RANDOM_100.getCommand().name());
+
+        InlineKeyboardButton back = createButtonInline(
+                ButtonInline.BACK_MAIN_HOME.getText(),
+                ButtonInline.BACK_MAIN_HOME.getCommand().name());
+
+        row1.add(random10);
+        row1.add(random20);
+        row1.add(random30);
+
+        row2.add(random40);
+        row2.add(random50);
+        row2.add(random100);
+
+        row4.add(back);
+
+        rows.add(row1);
+        rows.add(row2);
+        rows.add(row4);
 
         inlineKeyboardMarkup.setKeyboard(rows);
         return inlineKeyboardMarkup;

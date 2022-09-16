@@ -10,7 +10,8 @@ public class CommonUtils {
     }
 
     public static DeleteMessage getDeleteAudio(User user){
-        if(user.getTmp().contains("audioId:")){
+        String tmp = user.getTmp();
+        if(user.getTmp() != null && user.getTmp().contains("audioId:")){
             return DeleteMessage.builder()
                     .messageId(Integer.parseInt(user.getTmp().replace("audioId:", "")))
                     .chatId(String.valueOf(user.getChatId()))

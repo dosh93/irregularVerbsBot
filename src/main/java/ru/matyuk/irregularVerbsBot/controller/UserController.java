@@ -1,15 +1,18 @@
 package ru.matyuk.irregularVerbsBot.controller;
 
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import ru.matyuk.irregularVerbsBot.enums.StateUser;
+import ru.matyuk.irregularVerbsBot.jsonPojo.ChallengeVerbPojo;
+import ru.matyuk.irregularVerbsBot.jsonPojo.CreateGroupPojo;
 import ru.matyuk.irregularVerbsBot.model.*;
 import ru.matyuk.irregularVerbsBot.model.id.UserGroupId;
 import ru.matyuk.irregularVerbsBot.model.id.UserVerbId;
 import ru.matyuk.irregularVerbsBot.repository.UserRepository;
+import ru.matyuk.irregularVerbsBot.utils.CommonUtils;
 
 import java.sql.Timestamp;
 import java.util.*;
@@ -24,17 +27,19 @@ public class UserController {
     private final GroupVerbController groupVerbController;
     private final FeedbackController feedbackController;
     private final UserGroupLearningController userGroupLearningController;
+    private final VerbController verbController;
 
     @Value("${learning.count_successful}")
     Integer countSuccessful;
 
-    public UserController(UserRepository userRepository, GroupController groupController, LearningController learningController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController) {
+    public UserController(UserRepository userRepository, GroupController groupController, LearningController learningController, GroupVerbController groupVerbController, FeedbackController feedbackController, UserGroupLearningController userGroupLearningController, VerbController verbController) {
         this.userRepository = userRepository;
         this.groupController = groupController;
         this.learningController = learningController;
         this.groupVerbController = groupVerbController;
         this.feedbackController = feedbackController;
         this.userGroupLearningController = userGroupLearningController;
+        this.verbController = verbController;
     }
 
 
@@ -50,6 +55,7 @@ public class UserController {
             user.setUserName(chat.getUserName());
             user.setCountSuccessful(countSuccessful);
             user.setRegisterAt(new Timestamp(System.currentTimeMillis()));
+            user.setViewAudio(true);
 
             user = userRepository.save(user);
             log.info("Сохранен юзер " + user);
@@ -144,5 +150,35 @@ public class UserController {
 
     public User save(User user){
         return userRepository.save(user);
+    }
+
+    public void stopSession(User user) {
+        Session activeSession = user.getActiveSession();
+        if(activeSession != null) activeSession.setState(false);
+        save(user);
+    }
+
+    public Verb getNextVerbForChallenge(User user) {
+        Gson gson = new Gson();
+
+        Session activeSession = user.getActiveSession();
+        ChallengeVerbPojo challengeVerbPojo = gson.fromJson(activeSession.getJson(), ChallengeVerbPojo.class);
+
+        if(challengeVerbPojo.getVerbIds().size() == activeSession.getCount()) return null;
+        long count = verbController.getCount();
+        long newId = -1;
+        while (newId  == -1){
+            int randomNumber = CommonUtils.getRandomNumber(1, (int) count);
+            if(challengeVerbPojo.getVerbIds().contains((long) randomNumber)) continue;
+            newId = randomNumber;
+        }
+
+        Verb verbById = verbController.getVerbById(newId);
+
+        challengeVerbPojo.getVerbIds().add(newId);
+        activeSession.setJson(gson.toJson(challengeVerbPojo));
+        save(user);
+
+        return verbById;
     }
 }

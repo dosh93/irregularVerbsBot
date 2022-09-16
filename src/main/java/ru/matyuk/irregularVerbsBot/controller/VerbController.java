@@ -56,4 +56,12 @@ public class VerbController {
         }
         return null;
     }
+
+    public long getCount(){
+        return verbRepository.count();
+    }
+
+    public Verb getVerbById(long newId) {
+        return verbRepository.findById(newId).orElse(null);
+    }
 }
