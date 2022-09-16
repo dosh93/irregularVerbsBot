@@ -2,7 +2,6 @@ package ru.matyuk.irregularVerbsBot.processing;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -69,34 +68,11 @@ public class LearningProcessing extends MainProcessing {
                 file = verbController.getAudioFile(learningVerb.getVerb(), user);
                 if(file != null) nameAudio = learningVerb.getVerb().getFirstForm();
 
-                if(learningController.isValidAnswerUser(verbsAnswer, learningVerb)){
-                    Session activeSession = user.getActiveSession();
-                    if (activeSession == null) {
-                        Session session = sessionController.createSession(user);
-                        session.setSuccess(1);
-                        user.getSessions().add(session);
-                        userController.save(user);
-                    } else {
-                        user.getActiveSession().setSuccess(user.getActiveSession().getSuccess() + 1);
-                        userController.save(user);
-                    }
-
-                    responseText.append(RIGHT_MESSAGE).append("\n").append(getAdvice(learningVerb, verbsAnswer));
+                if(learningController.isValidAnswerUser(verbsAnswer, learningVerb.getVerb())){
+                    responseText.append(validAnswer(user, learningVerb.getVerb(), verbsAnswer));
                     learningController.setInactiveAndAddSuccessful(learningVerb);
                 }else {
-                    Session activeSession = user.getActiveSession();
-                    if (activeSession == null) {
-                        Session session = sessionController.createSession(user);
-                        session.setFail(1);
-                        user.getSessions().add(session);
-                        userController.save(user);
-                    } else {
-                        user.getActiveSession().setFail(user.getActiveSession().getFail() + 1);
-                        userController.save(user);
-                    }
-
-                    responseText.append(NOT_RIGHT_MESSAGE).append("\n")
-                            .append(learningVerb.getVerb().toString()).append("\n\n");
+                    responseText.append(invalidAnswer(user, learningVerb.getVerb()));
                     learningController.resetCountSuccessful(learningVerb);
                     learningController.setInactive(learningVerb);
                 }
@@ -114,44 +90,6 @@ public class LearningProcessing extends MainProcessing {
                 .responseMessage(getResponseMessage(responseText.toString(), user.getChatId(), replyKeyboard, file, nameAudio))
                 .user(user)
                 .build();
-    }
-
-    private String getAdvice(Learning learningVerb, List<String> verbsAnswer) {
-        StringBuilder result = new StringBuilder();
-        Verb verb = learningVerb.getVerb();
-        if(verb.getSecondForm().split("/").length == 1 &&
-                verb.getThirdForm().split("/").length == 1)
-            return "";
-        result.append(MORE_VARIANT_VERB_MESSAGE).append("\n")
-                .append(verb.getFirstForm()).append(" - ");
-        String secondFormAnswer = verbsAnswer.get(0);
-        String thirdFormAnswer = verbsAnswer.get(1);
-        if (verb.getSecondForm().split("/").length > 1) {
-            if (secondFormAnswer.split("/").length > 1) result.append(verb.getSecondForm()).append(" - ");
-            else {
-                String[] split = verb.getSecondForm().split("/");
-                for (String str : split) {
-                    if (!str.equals(secondFormAnswer)){
-                        result.append(str).append(" - ");
-                        break;
-                    }
-                }
-            }
-        } else result.append(verb.getSecondForm()).append(" - ");
-
-        if (verb.getThirdForm().split("/").length > 1) {
-            if (thirdFormAnswer.split("/").length > 1) result.append(verb.getThirdForm());
-            else {
-                String[] split = verb.getThirdForm().split("/");
-                for (String str : split) {
-                    if (!str.equals(thirdFormAnswer)){
-                        result.append(str);
-                        break;
-                    }
-                }
-            }
-        } else result.append(verb.getThirdForm());
-        return result.append("\n\n").toString();
     }
 
     private Response learning(User user, Integer messageId) {

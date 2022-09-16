@@ -30,7 +30,15 @@ public enum ButtonInline {
     SET_COUNT_SUCCESSFUL( Smiles.KEY + " Установить значение", ButtonCommand.SET_COUNT_SUCCESSFUL, Smiles.KEY),
     ON_AUDIO(Smiles.SOUND + " Включить аудио", ButtonCommand.SWITCH_AUDIO, Smiles.SOUND),
     OFF_AUDIO(Smiles.MUTE + " Выключить аудио", ButtonCommand.SWITCH_AUDIO, Smiles.MUTE),
-    BACK_MAIN_HOME(Smiles.HOUSE + " Главное меню", ButtonCommand.BACK_TO_MAIN, Smiles.HOUSE);
+    BACK_MAIN_HOME(Smiles.HOUSE + " Главное меню", ButtonCommand.BACK_TO_MAIN, Smiles.HOUSE),
+    CHALLENGE(Smiles.MUSCLE + " Челлендж", ButtonCommand.CHALLENGE, Smiles.MUSCLE),
+    RANDOM_10(Smiles.ONE + Smiles.ZERO, ButtonCommand.RANDOM_10, Smiles.ONE + Smiles.ZERO),
+    RANDOM_20(Smiles.TWO + Smiles.ZERO, ButtonCommand.RANDOM_20, Smiles.TWO + Smiles.ZERO),
+    RANDOM_30(Smiles.THREE + Smiles.ZERO, ButtonCommand.RANDOM_30, Smiles.THREE + Smiles.ZERO),
+    RANDOM_40(Smiles.FOUR + Smiles.ZERO, ButtonCommand.RANDOM_40, Smiles.FOUR + Smiles.ZERO),
+    RANDOM_50(Smiles.FIVE + Smiles.ZERO, ButtonCommand.RANDOM_50, Smiles.FIVE + Smiles.ZERO),
+    RANDOM_100(Smiles.ONE + Smiles.ZERO + Smiles.ZERO, ButtonCommand.RANDOM_100, Smiles.ONE + Smiles.ZERO + Smiles.ZERO),
+    BACK_TO_CHOSE_CHALLENGE(Smiles.BACK + " Назад", ButtonCommand.BACK_TO_CHOSE_CHALLENGE, Smiles.BACK);
 
 
 

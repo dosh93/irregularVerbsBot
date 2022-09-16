@@ -35,6 +35,12 @@ public class Smiles {
     public static final String GREEN_CIRCLE = "\uD83D\uDFE2";
     public static final String RED_CIRCLE = "\uD83D\uDD34";
     public static final String TIME = "⏰";
+    public static final String ZERO = "0️⃣";
+    public static final String ONE = "1️⃣";
+    public static final String TWO = "2️⃣";
+    public static final String THREE = "3️⃣";
+    public static final String FOUR = "4️⃣";
+    public static final String FIVE = "5️⃣";
 
 
 }

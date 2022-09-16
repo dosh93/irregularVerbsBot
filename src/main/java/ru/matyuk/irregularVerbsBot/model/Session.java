@@ -31,4 +31,6 @@ public class Session {
 
     @Column(columnDefinition = "bit(1) default 0")
     private boolean state;
+
+    private String json;
 }

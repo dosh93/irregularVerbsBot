@@ -41,6 +41,8 @@ public class MainMenuProcessing extends MainProcessing {
                 return settingLearning(user, messageId);
             case SETTING_MAIN:
                 return settingMain(user, messageId);
+            case CHALLENGE:
+                return startChallenge(user, messageId);
         }
         return null;
     }

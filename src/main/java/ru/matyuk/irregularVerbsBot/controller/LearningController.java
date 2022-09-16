@@ -54,9 +54,9 @@ public class LearningController {
         learningRepository.save(learningVerb);
     }
 
-    public boolean isValidAnswerUser(List<String> answerUserList, Learning learningVerb){
-        return checkVerb(learningVerb.getVerb().getSecondForm(), answerUserList.get(0))
-                && checkVerb(learningVerb.getVerb().getThirdForm(), answerUserList.get(1));
+    public boolean isValidAnswerUser(List<String> answerUserList, Verb learningVerb){
+        return checkVerb(learningVerb.getSecondForm(), answerUserList.get(0))
+                && checkVerb(learningVerb.getThirdForm(), answerUserList.get(1));
     }
 
     private boolean checkVerb(String correct, String answer){

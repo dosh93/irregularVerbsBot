@@ -9,6 +9,7 @@ public final class Messages {
     public static final String VERBS_IN_GROUP_MESSAGE = "<b>Глаголы в группе:</b> " + Smiles.POINT_DOWN + "\n\n";
     public static final String MAIN_MENU_MESSAGE = "<b>Главное меню</b> " + Smiles.HOUSE + "\n\n" +
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.LEARNING.getSmile() + " чтобы начать учить глаголы (кнопка доступна, если выбрана хоть одна группа)\n\n" +
+            Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.CHALLENGE.getSmile() + " чтобы испытать себя с рандомными глаголами\n\n" +
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.VIEW_GROUP.getSmile() + " чтобы ознакомиться с группами глаголов\n\n" +
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.CHOOSE_GROUP.getSmile() + " чтобы выбрать группы глаголов для изучения\n\n" +
             Smiles.RADIO_BUTTON + "Нажми " + ButtonInline.SETTING_LEARNING.getSmile() + " чтобы сбросить прогресс обучения\n\n" +
@@ -80,4 +81,16 @@ public final class Messages {
             Smiles.GREEN_CIRCLE + " Правильно: %s\n" +
             Smiles.RED_CIRCLE + " Не правильно: %s\n\n";
 
+    public static final String START_CHALLENGE_MESSAGE = "<b>Челлендж </b>"  + Smiles.MUSCLE + "\n\n" + "Выбери количество глаголов:";
+
+    public static final String INSTRUCTION_CHALLENGE_MESSAGE_FORMAT = "<b>Челлендж на %s слов</b>" + Smiles.MUSCLE + "\n\n" +
+            "Бот предлагает инфинитив, а тебе нужно написать вторую и третью форму через пробел.\n" +
+            "Некоторые формы глаголов имеют два варианта написания в этом случае вводим один из вариантов или оба через /.\n\n" +
+            "<b>Например:</b>\n" +
+            "get - получить\n" +
+            "<b>Правильный ответ:</b>\n" +
+            "got got\ngot got/gotten\ngot gotten";
+
+    public static final String WRITE_ANSWER_CHALLENGE_MESSAGE =  "<b>Челлендж на %s слов осталось %s</b> " + Smiles.MUSCLE + "\n\n" +
+            "Напиши <b>вторую и третью форму через пробел</b>:\n\n%s - %s";
 }
